@@ -67,3 +67,5 @@ L4,Qwen/Qwen2.5-1.5B-Instruct,True,prefix_length_ratio,0.6667,32,16,725,363,128,
 L4,Qwen/Qwen2.5-1.5B-Instruct,True,prefix_length_ratio,0.7778,32,16,846,242,128,55.69529681700078,512,586435,65536,65470,1176.688225853846,162.5468500005809,20.729434499116905,3465.905146820319,3338.0538435003473
 L4,Qwen/Qwen2.5-1.5B-Instruct,True,prefix_length_ratio,0.8889,32,16,967,121,128,52.147753934999855,512,586777,65536,65528,1256.7367730101678,109.25590399983776,20.654717500292463,3240.1561147929847,3088.7781909996193
 L4,Qwen/Qwen2.5-1.5B-Instruct,True,prefix_length_ratio,1.0,32,16,1088,0,128,49.10895816899938,512,586624,65536,65504,1334.5019410607329,96.72135950040683,20.527710001260857,3053.6477570352963,2900.219909500265
+gpu_type,model_name,is_prefix_cached,sweep_type,sweep_value,num_groups,prompts_per_group,system_prompt_len,question_len,output_len,duration,completed,total_input_tokens,total_output_tokens,total_output_tokens_retokenized,output_throughput,median_ttft_ms,median_itl_ms,mean_e2e_latency_ms,median_e2e_latency_ms
+L4,Qwen/Qwen2.5-1.5B-Instruct,True,prefix_reuse_rate,1.0,1,1,47,3,10,0.1483,1,55,10,10,67.4398,21.6299,14.0156,147.5798,147.5798
