@@ -4,7 +4,7 @@ Script to run VLLM worker replicas.
 This script starts multiple VLLM servers on different ports.
 
 Usage:
-    python run_replicas.py --host 127.0.0.1 --worker-ports 8001,8002,8003,8004 --gpu-indices 0,1,2,3 --model-name "Qwen/Qwen2.5-1.5B-Instruct" --enable-prefix-caching --disable-log-requests
+    python run_replicas.py --host 127.0.0.1 --worker-ports 8001,8002,8003,8004 --gpu-indices 0,1,2,3 --model-name "Qwen/Qwen2.5-1.5B-Instruct" --enable-prefix-caching
 """
 
 import argparse
@@ -24,8 +24,12 @@ def parse_args():
                         help="Comma-separated list of GPU indices to use")
     parser.add_argument("--model-name", type=str, default="Qwen/Qwen2.5-1.5B-Instruct",
                         help="Model name to load")
-    parser.add_argument("--enable-prefix-caching", type=bool, default=True,
+    parser.add_argument("--enable-prefix-caching", action="store_true", 
+                        dest="enable_prefix_caching", default=True,
                         help="Enable prefix caching in VLLM")
+    parser.add_argument("--no-enable-prefix-caching", action="store_false", 
+                        dest="enable_prefix_caching",
+                        help="Disable prefix caching in VLLM")
     return parser.parse_args()
 
 def start_replicas(

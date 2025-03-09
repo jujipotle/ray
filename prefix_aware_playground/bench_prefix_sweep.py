@@ -59,10 +59,10 @@ def parse_arguments():
                         choices=["prefix_reuse_rate", "prefix_length_ratio"], 
                         help="Type of sweep to run")
     parser.add_argument("--num-points", type=int, default=DEFAULT_CONFIG["num_points"], help="Number of points in the sweep")
-    parser.add_argument("--total-requests", type=int, default=DEFAULT_CONFIG["total_requests"], help="Total number of requests")
-    parser.add_argument("--total-prompt-len", type=int, default=DEFAULT_CONFIG["total_prompt_len"], help="Total prompt length (system + question)")
+    parser.add_argument("--total-requests", type=int, default=DEFAULT_CONFIG["total_requests"], help="Total number of requests per server")
+    parser.add_argument("--total-prompt-len", type=int, default=DEFAULT_CONFIG["total_prompt_len"], help="Total prompt length (system + question) per server")
     parser.add_argument("--output-len", type=int, default=DEFAULT_CONFIG["output_len"], help="Output length")
-    parser.add_argument("--max-concurrency", type=int, default=DEFAULT_CONFIG["max_concurrency"], help="Maximum concurrency")
+    parser.add_argument("--max-concurrency", type=int, default=DEFAULT_CONFIG["max_concurrency"], help="Maximum concurrency per server")
     parser.add_argument("--is-prefix-cached", type=bool, default=DEFAULT_CONFIG["prefix_cached"], help="Whether prefix caching is enabled")
     parser.add_argument("--default-system-prompt-ratio", type=float, default=DEFAULT_CONFIG["default_system_prompt_ratio"], help="Default system prompt ratio")
     parser.add_argument("--default-num-groups-ratio", type=float, default=DEFAULT_CONFIG["default_num_groups_ratio"], help="Default number of groups ratio")
@@ -158,6 +158,7 @@ def run_single_benchmark(sweep_type, r, args, num_groups, prompts_per_group, sys
         "output_len": args.output_len,
         "total_prompt_len": system_prompt_len + question_len,
         "total_requests": num_groups * prompts_per_group,
+        "max_concurrency": args.max_concurrency,
     })
     
     return result
@@ -166,7 +167,7 @@ def save_results_to_csv(sweep_results):
     """Save the benchmark results to a CSV file."""
     # Define CSV column order
     server_params = ["gpu_type", "model_name", "num_servers", "is_prefix_cached"]
-    sweep_params = ["sweep_type", "sweep_value", "num_groups", "prompts_per_group", "system_prompt_len", "question_len", "output_len", "max_concurrency"]
+    sweep_params = ["sweep_type", "sweep_value", "num_groups", "prompts_per_group", "system_prompt_len", "question_len", "output_len", "total_prompt_len", "total_requests", "max_concurrency"]
     result_keys = [
         "duration",
         "completed",
