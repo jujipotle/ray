@@ -156,6 +156,7 @@ class RunningReplica:
         return self._replica_info.is_cross_language
 
     def _get_replica_wrapper(self, pr: PendingRequest) -> ReplicaWrapper:
+        print(f"[replica_wrapper.py: RunningReplica: _get_replica_wrapper] Getting actor replica wrapper for {self._actor_handle}")
         return ActorReplicaWrapper(self._actor_handle)
 
     def push_proxy_handle(self, handle: ActorHandle):
@@ -180,12 +181,14 @@ class RunningReplica:
         self, pr: PendingRequest, with_rejection: bool
     ) -> Tuple[Optional[ReplicaResult], Optional[ReplicaQueueLengthInfo]]:
         """Send request to this replica."""
+        print(f"[replica_wrapper.py: RunningReplica: send_request] Sending request to {self._actor_handle}")
         wrapper = self._get_replica_wrapper(pr)
         if self._replica_info.is_cross_language:
             assert not with_rejection, "Request rejection not supported for Java."
             return wrapper.send_request_java(pr), None
-
+        
         result, queue_len_info = await wrapper.send_request_python(pr, with_rejection)
+        print(f"[replica_wrapper.py: RunningReplica: send_request] Result: {result}, Queue Length Info: {queue_len_info}")
         if queue_len_info and not queue_len_info.accepted:
             return None, queue_len_info
 

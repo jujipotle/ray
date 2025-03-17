@@ -520,13 +520,14 @@ class AsyncioRouter:
     async def schedule_and_send_request(
         self, pr: PendingRequest
     ) -> Tuple[ReplicaResult, ReplicaID]:
+        print(f"[router.py] Scheduling and sending request for {pr}")
         """Choose a replica for the request and send it.
 
         This will block indefinitely if no replicas are available to handle the
         request, so it's up to the caller to time out or cancel the request.
         """
         r = await self._replica_scheduler.choose_replica_for_request(pr)
-
+        print(f"[router.py] Chosen replica: {r}")
         # If the queue len cache is disabled or we're sending a request to Java,
         # then directly send the query and hand the response back. The replica will
         # never reject requests in this code path.
@@ -617,6 +618,7 @@ class AsyncioRouter:
                         metadata=request_meta,
                     ),
                 )
+                print(f"[router.py] Replica result: {replica_result}, Replica ID: {replica_id}")
 
                 # Keep track of requests that have been sent out to replicas
                 if RAY_SERVE_COLLECT_AUTOSCALING_METRICS_ON_HANDLE:

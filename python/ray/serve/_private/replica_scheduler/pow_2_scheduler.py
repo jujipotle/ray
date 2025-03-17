@@ -638,6 +638,7 @@ class PowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
             # Populate available queue lens from the cache.
             for r in candidates:
                 queue_len = self._replica_queue_len_cache.get(r.replica_id)
+                print(f"[pow_2_scheduler.py: select_from_candidate_replicas] Cache Lookup: Replica {r.replica_id} Queue Length: {queue_len}")
                 # Include replicas whose queues are full as not in the cache so we will
                 # actively probe them. Otherwise we may end up in "deadlock" until their
                 # cache entries expire.
@@ -656,6 +657,7 @@ class PowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
                 not_in_cache,
                 backoff_index,
             ):
+                print(f"[pow_2_scheduler.py: select_from_candidate_replicas] Probe Queue Length: Replica {r.replica_id} Queue Length: {queue_len}")
                 if queue_len is None:
                     # None is returned if we failed to get the queue len.
                     continue
@@ -664,6 +666,7 @@ class PowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
                     lowest_queue_len = queue_len
                     chosen_replica_id = r.replica_id
         elif len(not_in_cache) > 0:
+            print(f"[pow_2_scheduler.py: select_from_candidate_replicas] Background Probing: Triggered for: {[r.replica_id for r in not_in_cache]}")
             # If there are replicas without a valid cache entry, probe them in the
             # background to populate the cache.
             self._event_loop.create_task(
@@ -672,6 +675,7 @@ class PowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
 
         # `self._replicas` may have been updated since the candidates were chosen.
         # In that case, return `None` so a new one is selected.
+        print(f"[pow_2_scheduler.py: select_from_candidate_replicas] Final Decision: Chosen Replica ID: {chosen_replica_id} with Queue Length: {lowest_queue_len}")
         return self._replicas.get(chosen_replica_id, None)
 
     def _get_pending_request_matching_metadata(
@@ -746,6 +750,8 @@ class PowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
                 async for candidates in self.choose_two_replicas_with_backoff(
                     request_metadata
                 ):
+                    print(f"[pow_2_scheduler.py: fulfill_pending_requests] Candidates: {candidates}")
+                    print(f"[pow_2_scheduler.py: fulfill_pending_requests] Request metadata: {request_metadata}")
                     # Clear out pending requests at the front of the
                     # queue that have been cancelled, then reevaluate
                     # if we need to continue this scheduling task.
@@ -824,6 +830,7 @@ class PowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
         Upon cancellation (by the caller), the future is cancelled and will be passed
         over when a replica becomes available.
         """
+        print(f"[pow_2_scheduler.py: choose_replica_for_request] Choose replica for request")
         try:
             if not is_retry:
                 self._pending_requests_to_fulfill.append(pending_request)

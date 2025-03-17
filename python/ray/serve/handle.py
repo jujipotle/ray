@@ -138,6 +138,7 @@ class _DeploymentHandleBase:
             )
 
         init_options = create_init_handle_options(**kwargs)
+        print(f"[handle.py: _init] Creating router with handle_id: {self.handle_id}, deployment_id: {self.deployment_id}, handle_options: {init_options}")
         self._router = self._create_router(
             handle_id=self.handle_id,
             deployment_id=self.deployment_id,
@@ -202,8 +203,10 @@ class _DeploymentHandleBase:
                 "application": metadata.app_name,
             }
         )
-
-        return self._router.assign_request(metadata, *args, **kwargs), metadata
+        print(f"[handle.py: _remote] Assigning request to router with handle_id: {self.handle_id}, deployment_id: {self.deployment_id}, handle_options: {self.handle_options}")
+        replica_result = self._router.assign_request(metadata, *args, **kwargs)
+        print(f"[handle.py: _remote] Replica result: {replica_result}")
+        return replica_result, metadata
 
     def __getattr__(self, name):
         return self.options(method_name=name)

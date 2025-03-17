@@ -268,6 +268,7 @@ class LLMRouter:
         body: Union[CompletionRequest, ChatCompletionRequest],
         call_method: str,
     ) -> AsyncGenerator[Union[LLMChatResponse, LLMCompletionsResponse], None]:
+        print(f"[llm router.py] Getting response for {body.model}")
         """Calls the model deployment and returns the stream."""
         model: str = body.model
         base_model_id = get_base_model_id(model)
