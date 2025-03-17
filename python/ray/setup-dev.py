@@ -142,6 +142,8 @@ if __name__ == "__main__":
     do_link("_private", force=args.yes, skip_list=args.skip)
     do_link("dashboard", force=args.yes, skip_list=args.skip)
 
+    do_link("serve/_private", force=args.yes, skip_list=args.skip)
+
     if args.extras is not None:
         for package in args.extras:
             do_link(package, force=args.yes, skip_list=args.skip)

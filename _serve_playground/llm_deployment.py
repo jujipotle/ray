@@ -14,11 +14,11 @@ llm_config = LLMConfig(
         )
     ),
     # Pass the desired accelerator type (e.g. A10G, L4, etc.)
-    # accelerator_type="A10G",
+    accelerator_type="L4",
     # You can customize the engine arguments (e.g. vLLM engine kwargs)
-    engine_kwargs=dict(
-        tensor_parallel_size=2,
-    ),
+    # engine_kwargs=dict(
+    #     tensor_parallel_size=2,
+    # ),
 )
 
 # Deploy the application
@@ -26,4 +26,3 @@ deployment = VLLMService.as_deployment(
     llm_config.get_serve_options(name_prefix="VLLM:")
 ).bind(llm_config)
 llm_app = LLMRouter.as_deployment().bind([deployment])
-serve.run(llm_app)
