@@ -150,7 +150,9 @@ def create_router(
     node_id, availability_zone = _get_node_id_and_az()
     controller_handle = _get_global_client()._controller
     is_inside_ray_client_context = inside_ray_client_context()
-    print(f"[default_impl.py: create_router] Creating router with actor_id: {actor_id}, node_id: {node_id}, availability_zone: {availability_zone}")
+    print(
+        f"[default_impl.py: create_router] Creating router with actor_id: {actor_id}, node_id: {node_id}, availability_zone: {availability_zone}"
+    )
     replica_scheduler = PowerOfTwoChoicesReplicaScheduler(
         deployment_id,
         handle_options._source,

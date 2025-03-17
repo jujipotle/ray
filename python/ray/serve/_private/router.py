@@ -618,7 +618,9 @@ class AsyncioRouter:
                         metadata=request_meta,
                     ),
                 )
-                print(f"[router.py] Replica result: {replica_result}, Replica ID: {replica_id}")
+                print(
+                    f"[router.py] Replica result: {replica_result}, Replica ID: {replica_id}"
+                )
 
                 # Keep track of requests that have been sent out to replicas
                 if RAY_SERVE_COLLECT_AUTOSCALING_METRICS_ON_HANDLE:

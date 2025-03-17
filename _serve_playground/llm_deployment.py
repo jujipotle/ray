@@ -9,7 +9,8 @@ llm_config = LLMConfig(
     ),
     deployment_config=dict(
         autoscaling_config=dict(
-            min_replicas=1, max_replicas=2,
+            min_replicas=1,
+            max_replicas=2,
         )
     ),
     # Pass the desired accelerator type (e.g. A10G, L4, etc.)
@@ -21,6 +22,8 @@ llm_config = LLMConfig(
 )
 
 # Deploy the application
-deployment = VLLMService.as_deployment(llm_config.get_serve_options(name_prefix="VLLM:")).bind(llm_config)
+deployment = VLLMService.as_deployment(
+    llm_config.get_serve_options(name_prefix="VLLM:")
+).bind(llm_config)
 llm_app = LLMRouter.as_deployment().bind([deployment])
 serve.run(llm_app)
