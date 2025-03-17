@@ -59,6 +59,10 @@ class Router:
             self.tree = Tree()
             self.tree.tenant_char_count = {url: 0 for url in worker_urls}
             self.running_queue = {url: 0 for url in worker_urls}
+            self.processed_queue = {url: 0 for url in worker_urls}
+            self.cache_threshold = 0.50
+            self.balance_abs_threshold = 32
+            self.balance_rel_threshold = 1.0001
             self.queue_lock = threading.Lock()
         
         print(f"Initialized Router with policy: {policy.value}, worker URLs: {self.worker_urls}")
@@ -85,33 +89,54 @@ class Router:
         
         elif self.policy == PolicyType.PREFIX_AWARE:
             with self.queue_lock:
-                # Use tree-based prefix matching
-                matched_text, matched_worker = self.tree.prefix_match(text)
+                # Compute current load statistics from the running queue
+                if self.running_queue:
+                    max_load = max(self.running_queue.values())
+                    min_load = min(self.running_queue.values())
+                else:
+                    max_load = 0
+                    min_load = 0
+                # Determine if the load is imbalanced.
+                is_imbalanced = ((max_load - min_load) > self.balance_abs_threshold and 
+                                 (max_load > self.balance_rel_threshold * min_load))
                 
-                if matched_worker != "empty" and matched_worker in self.worker_urls:
-                    # Calculate match rate
-                    match_rate = len(matched_text) / len(text) if text else 0
-                    print(f"Match rate: {match_rate}")
-                    if match_rate > 0.5:  # Use 0.5 as threshold
-                        # Update running queue
-                        self.running_queue[matched_worker] += 1
-                        
-                        # Insert text into tree for future matching
-                        if text:
-                            self.tree.insert(text, matched_worker)
-                        
-                        return matched_worker
-                
-                # No good match, use worker with smallest tree
-                selected_url = self.tree.get_smallest_tenant()
-                if selected_url == "empty" or selected_url not in self.worker_urls:
-                    # Fall back to first worker
-                    selected_url = self.worker_urls[0]
-                
-                # Update running queue
-                self.running_queue[selected_url] += 1
-                
-                # Insert text into tree for future matching
+                if is_imbalanced:
+                    print(
+                        f"Load balancing triggered due to workload imbalance:\n"
+                        f"Max load: {max_load}, Min load: {min_load}\n"
+                        f"Current running queue: {self.running_queue}"
+                    )
+                    # Select the worker with the smallest load.
+                    selected_url = min(self.running_queue.items(), key=lambda kv: kv[1])[0]
+                else:
+                    # Use tree-based prefix matching.
+                    matched_text, matched_worker = self.tree.prefix_match(text)
+                    if matched_worker != "empty" and matched_worker in self.worker_urls:
+                        match_rate = len(matched_text) / len(text) if text else 0
+                        # print(f"Match rate: {match_rate}")
+                        if match_rate > 0.5:  # Threshold can be adjusted as needed.
+                            selected_url = matched_worker
+                        else:
+                            selected_url = self.tree.get_smallest_tenant()
+                    else:
+                        selected_url = self.tree.get_smallest_tenant()
+                    
+                    # Fallback to the first worker if necessary.
+                    if selected_url == "empty" or selected_url not in self.worker_urls:
+                        selected_url = self.worker_urls[0]
+                # Update running queue (and processed queue if applicable)
+                if selected_url in self.running_queue:
+                    self.running_queue[selected_url] += 1
+                else:
+                    self.running_queue[selected_url] = 1
+
+                if hasattr(self, "processed_queue"):
+                    if selected_url in self.processed_queue:
+                        self.processed_queue[selected_url] += 1
+                    else:
+                        self.processed_queue[selected_url] = 1
+
+                # Insert the text into the tree for future matching.
                 if text:
                     self.tree.insert(text, selected_url)
                 

@@ -21,7 +21,7 @@ DEFAULT_CONFIG = {
     "host": "127.0.0.1",
     "router_port": 8000,
     "worker_ports": "8001",
-    "router_strategies": ["prefix_aware", "random", "round_robin"],
+    "router_strategies": ["prefix_aware", "round_robin", "random"],
 
     # Model Info
     "model_name": "Qwen/Qwen2.5-1.5B-Instruct",
@@ -45,7 +45,7 @@ DEFAULT_CONFIG = {
     # ShareGPT Info
     "num_prompts": 100,  # Number of prompts to sample from ShareGPT
     "max_conversations": 100,  # Max conversations to include from ShareGPT; num_unique_prefixes is approximately max_conversations / 10. To aim for num_unique_prefixes = num_prompts / 10, set max_conversations = num_prompts.
-    "dataset_path": "/home/ray/default/work/ray/prefix_aware_playground/combine_all/sharegpt.json",  # Path to ShareGPT dataset
+    "dataset_path": "/home/ray/default/work/ray/prefix_aware_playground/current_work/sharegpt.json",  # Path to ShareGPT dataset
 }
 
 
@@ -120,7 +120,11 @@ def restart_server_with_strategy(host, router_port, worker_ports, strategy):
         time.sleep(2)  # Give it time to shut down
     except Exception as e:
         print(f"Error stopping server: {e}")
-    
+
+    original_dir = os.getcwd()
+
+    # Change to new_backend directory
+    os.chdir("old_backend")
     # Start server with the specified strategy
     cmd = [
         "python", "-m", "server",
@@ -132,6 +136,9 @@ def restart_server_with_strategy(host, router_port, worker_ports, strategy):
     print("Starting server with command:", " ".join(cmd))
     # Start server in background
     server_process = subprocess.Popen(cmd)
+    
+    # Change back to original directory
+    os.chdir(original_dir)
     
     # Wait for server to start - give it more time and retry health checks
     print("Waiting for server to start...")
@@ -286,7 +293,7 @@ def main():
     # Define sweep configurations
     sweeps_configs = [
         {"worker_ports": "8001,8002,8003,8004", "num_servers": 4, "benchmark_label": "custom-prefix-router_long-conversations_4-gpu_40-concurrency", "max_concurrency": 40, "with_warmup": "False", "num_prompts": 1000, "max_conversations": 10000},
-        {"worker_ports": "8001,8002,8003,8004", "num_servers": 4, "benchmark_label": "custom-prefix-router_long-conversations_4-gpu_40-concurrency_with-warmup", "max_concurrency": 40, "with_warmup": "True", "num_prompts": 1000, "max_conversations": 10000},
+        # {"worker_ports": "8001,8002,8003,8004", "num_servers": 4, "benchmark_label": "custom-prefix-router_long-conversations_4-gpu_40-concurrency_with-warmup", "max_concurrency": 40, "with_warmup": "True", "num_prompts": 1000, "max_conversations": 10000},
     ]
     
     # Loop through each sweep configuration

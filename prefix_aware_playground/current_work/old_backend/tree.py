@@ -3,16 +3,6 @@ from collections import defaultdict
 from threading import RLock
 
 
-def shared_prefix_count(a, b):
-    """Count the number of shared characters at the beginning of two strings."""
-    i = 0
-    for char_a, char_b in zip(a, b):
-        if char_a == char_b:
-            i += 1
-        else:
-            break
-    return i
-
 
 class Node:
     """
@@ -21,10 +11,10 @@ class Node:
     Each node represents a segment of text and can belong to multiple tenants.
     """
     def __init__(self, text="", parent=None):
-        self.children = {}  # Maps char -> Node
         self.text = text
-        self.tenant_last_access_time = {}  # Maps tenant -> timestamp
         self.parent = parent
+        self.children = {}  # Maps char -> Node
+        self.tenant_last_access_time = {}  # Maps tenant -> timestamp
         self.lock = RLock()  # For thread safety
         
     def __str__(self):
@@ -44,87 +34,100 @@ class Tree:
         self.root = Node()
         self.tenant_char_count = defaultdict(int)  # Maps tenant -> character count
         self.lock = RLock()  # For operations that need to lock the entire tree
-        
+
+    @staticmethod
+    def shared_prefix_count(a, b):
+        """Count the number of shared characters at the beginning of two strings."""
+        i = 0
+        for char_a, char_b in zip(a, b):
+            if char_a == char_b:
+                i += 1
+            else:
+                break
+        return i
+
+    
     def insert(self, text, tenant):
         """Insert text into tree with given tenant."""
-        curr = self.root
-        curr_idx = 0
-        timestamp_ms = int(time.time() * 1000)
-        
-        # Update access time for root node
-        with curr.lock:
-            curr.tenant_last_access_time[tenant] = timestamp_ms
-        
-        prev = self.root
-        text_len = len(text)
-        
-        while curr_idx < text_len:
-            first_char = text[curr_idx]
-            curr = prev
-            
-            with curr.lock:
-                if first_char not in curr.children:
+        with self.lock:
+            curr_node = self.root
+            timestamp_ms = int(time.time() * 1000)
+            i = 0
+            while i < len(text):
+                curr_node.tenant_last_access_time[tenant] = timestamp_ms
+                first_char = text[i]
+                curr_text = text[i:]
+                if first_char not in curr_node.children:
                     # No match, create new node
-                    curr_text = text[curr_idx:]
-                    new_node = Node(text=curr_text, parent=curr)
+                    # e.g. curr_node.children = {}, curr_text = "hello" -> curr_node.children = {"h": Node("hello")}
+                    new_node = Node(text=curr_text, parent=curr_node)
                     new_node.tenant_last_access_time[tenant] = timestamp_ms
                     
                     # Increment char count for tenant
-                    with self.lock:
-                        self.tenant_char_count[tenant] += len(curr_text)
+                    self.tenant_char_count[tenant] += len(curr_text)
                     
-                    curr.children[first_char] = new_node
-                    prev = new_node
-                    curr_idx = text_len  # End loop
+                    curr_node.children[first_char] = new_node
+                    return
                 else:
                     # Match found, check if need to split
-                    matched_node = curr.children[first_char]
+                    matched_node = curr_node.children[first_char]
+                    shared_count = self.shared_prefix_count(matched_node.text, curr_text)
                     
-                    with matched_node.lock:
-                        matched_node_text = matched_node.text
-                        matched_node_text_len = len(matched_node_text)
+                    if shared_count < len(matched_node.text):
+                        # Partial match, split at matched point
+                        # Example:
+                        ## Before update:
+                        ### curr_node.children = {"h": Node("helloworld")}, curr_text = "hellothere" -> shared_count = 6
+                        ### matched_node = Node("helloworld")
+
+                        ## During update:
+                        ### Increment tenant_char_count[tenant] by shared_count if matched_node has not seen this tenant before
+
+                        ## After update:
+                        ### curr_node.children = {"h": Node("hello", children = {"w": Node("world")})}
+                        ### parent_node = Node("hello"), matched_node = Node("world")
+                        ### Update tenant_last_access_time for parent_node, NOT matched_node
+                        ### (new) curr_text = "there", (new) curr_node = parent_node
+                        ### Continue adding "there" to tree in next iteration
+
+                        matched_text = matched_node.text[:shared_count]
+                        remaining_text = matched_node.text[shared_count:]
+
+                        # Update tenant char count for the new split node
+                        if tenant not in matched_node.tenant_last_access_time:
+                            self.tenant_char_count[tenant] += shared_count
                         
-                        curr_text = text[curr_idx:]
-                        shared_count = shared_prefix_count(matched_node_text, curr_text)
+                        # Create new parent node
+                        new_parent = Node(text=matched_text, parent=curr_node)
+                        new_parent.tenant_last_access_time = matched_node.tenant_last_access_time.copy()
+                        # new_parent.tenant_last_access_time[tenant] = timestamp_ms
                         
-                        if shared_count < matched_node_text_len:
-                            # Split the matched node
-                            matched_text = matched_node_text[:shared_count]
-                            contracted_text = matched_node_text[shared_count:]
-                            
-                            # Create new intermediate node
-                            new_node = Node(text=matched_text, parent=curr)
-                            new_node.tenant_last_access_time = matched_node.tenant_last_access_time.copy()
-                            
-                            # Update the original matched node
-                            matched_node.text = contracted_text
-                            matched_node.parent = new_node
-                            
-                            # Connect new node to the tree
-                            first_new_char = contracted_text[0]
-                            new_node.children[first_new_char] = matched_node
-                            curr.children[first_char] = new_node
-                            
-                            prev = new_node
-                            
-                            # Update tenant char count for the new split node
-                            if tenant not in prev.tenant_last_access_time:
-                                with self.lock:
-                                    self.tenant_char_count[tenant] += len(matched_text)
-                            
-                            prev.tenant_last_access_time[tenant] = timestamp_ms
-                            curr_idx += shared_count
-                        else:
-                            # Move to next node (full match with current node)
-                            prev = matched_node
-                            
-                            # Update tenant char count if this is a new tenant for this node
-                            if tenant not in prev.tenant_last_access_time:
-                                with self.lock:
-                                    self.tenant_char_count[tenant] += len(matched_node_text)
-                            
-                            prev.tenant_last_access_time[tenant] = timestamp_ms
-                            curr_idx += shared_count
+                        # Update matched_node
+                        matched_node.text = remaining_text
+                        matched_node.parent = new_parent
+
+                        # Connect new parent node to matched_node
+                        new_parent.children[remaining_text[0]] = matched_node
+
+                        # Connect current node to new parent
+                        curr_node.children[first_char] = new_parent
+                        
+                        # Move down the tree
+                        curr_node = new_parent
+                        i += shared_count
+                    else:
+                        # Full match
+
+                        # Update tenant char count if this is a new tenant for this node
+                        if tenant not in matched_node.tenant_last_access_time:
+                            self.tenant_char_count[tenant] += shared_count
+                        
+                        # # Update tenant last access time
+                        # matched_node.tenant_last_access_time[tenant] = timestamp_ms
+
+                        # Move down the tree
+                        curr_node = matched_node
+                        i += shared_count
     
     def prefix_match(self, text):
         """
@@ -147,7 +150,7 @@ class Tree:
                     matched_node = curr.children[first_char]
                     
                     with matched_node.lock:
-                        shared_count = shared_prefix_count(matched_node.text, curr_text)
+                        shared_count = self.shared_prefix_count(matched_node.text, curr_text)
                         matched_node_text_len = len(matched_node.text)
                         
                         if shared_count == matched_node_text_len:
@@ -210,7 +213,7 @@ class Tree:
                         if tenant not in matched_node.tenant_last_access_time:
                             break
                             
-                        shared_count = shared_prefix_count(matched_node.text, curr_text)
+                        shared_count = self.shared_prefix_count(matched_node.text, curr_text)
                         matched_node_text_len = len(matched_node.text)
                         
                         if shared_count == matched_node_text_len:
