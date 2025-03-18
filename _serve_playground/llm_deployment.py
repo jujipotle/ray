@@ -1,6 +1,6 @@
 from ray import serve
-from ray.serve.llm.configs import LLMConfig
-from ray.serve.llm.deployments import VLLMService, LLMRouter
+from ray.serve.llm import LLMConfig
+from ray.serve.llm import LLMServer, LLMRouter
 
 llm_config = LLMConfig(
     model_loading_config=dict(
@@ -9,7 +9,7 @@ llm_config = LLMConfig(
     ),
     deployment_config=dict(
         autoscaling_config=dict(
-            min_replicas=1,
+            min_replicas=2,
             max_replicas=2,
         )
     ),
@@ -22,7 +22,7 @@ llm_config = LLMConfig(
 )
 
 # Deploy the application
-deployment = VLLMService.as_deployment(
+deployment = LLMServer.as_deployment(
     llm_config.get_serve_options(name_prefix="VLLM:")
 ).bind(llm_config)
 llm_app = LLMRouter.as_deployment().bind([deployment])

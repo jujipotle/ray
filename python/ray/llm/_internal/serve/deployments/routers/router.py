@@ -179,6 +179,7 @@ class LLMRouter:
             Callable[[str, LLMConfig], Awaitable[Dict[str, Any]]]
         ] = None,
     ):
+        print(f"[llm router.py] Initializing LLMRouter with {len(llm_deployments)} deployments")
         self._default_serve_handles: Dict[str, DeploymentHandle] = {}
         self._llm_configs: Dict[str, LLMConfig] = {}
 
@@ -252,7 +253,10 @@ class LLMRouter:
                     configured_handle = default_handle.options(
                         stream=True,
                         multiplexed_model_id=model_id,
+                        enable_prefix_routing=True,
                     )
+                    # handle.options(...)
+                    # handle._init(...)
                     self._configured_serve_handles[model_id] = configured_handle
             else:
                 raise HTTPException(
@@ -387,6 +391,7 @@ class LLMRouter:
         Returns:
             A response object with completions.
         """
+        print(f"Chat request for model '{body.model}' with messages: {body.messages}")
 
         async with timeout(RAYLLM_ROUTER_HTTP_TIMEOUT):
             results = self._get_response(body=body, call_method="chat")

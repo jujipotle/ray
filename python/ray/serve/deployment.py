@@ -212,7 +212,8 @@ class Deployment:
         The returned Application can be deployed using `serve.run` (or via
         config file) or bound to another deployment for composition.
         """
-        print("Binded")
+        print("Binding")
+        print(f"Self: {self}")
         print(f"Args: {args}")
         print(f"Kwargs: {kwargs}")
         return Application(self.options(_init_args=args, _init_kwargs=kwargs))
