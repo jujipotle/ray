@@ -8,3 +8,6 @@ from ray.serve._private.replica_scheduler.replica_scheduler import (  # noqa: F4
 from ray.serve._private.replica_scheduler.replica_wrapper import (  # noqa: F401
     RunningReplica,
 )
+from ray.serve._private.replica_scheduler.prefix_aware_scheduler import ( # noqa: F401
+    PrefixAwareReplicaScheduler
+)

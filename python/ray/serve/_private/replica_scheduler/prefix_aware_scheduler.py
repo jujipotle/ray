@@ -49,7 +49,7 @@ class LocalityScope(str, enum.Enum):
     AVAILABILITY_ZONE = "AVAILABILITY_ZONE"
 
 
-class PowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
+class PrefixAwareReplicaScheduler(ReplicaScheduler):
     """Chooses a replica for each request using the "power of two choices" procedure.
 
     Requests are scheduled in FIFO order.
@@ -104,6 +104,7 @@ class PowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
             Callable[[RunningReplicaInfo], RunningReplica]
         ] = None,
     ):
+        print(f"[prefix_aware_scheduler.py: __init__] Initializing Prefix Aware Replica Scheduler")
         self._deployment_id = deployment_id
         self._handle_source = handle_source
         self._prefer_local_node_routing = prefer_local_node_routing
@@ -616,10 +617,23 @@ class PowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
         assert len(result) == len(replicas)
         return result
 
+    def _get_input_text(self, pending_request: PendingRequest) -> str:
+        chat_completion_request = pending_request.args[0]
+        print(f"[prefix_aware_scheduler.py: _get_input_text] Chat completion request: {chat_completion_request}")
+        if hasattr(chat_completion_request, "messages"):
+            messages = chat_completion_request.messages
+            return "".join(msg.get("content", "") for msg in messages if "content" in msg)
+        elif hasattr(chat_completion_request, "prompt"):
+            return chat_completion_request.prompt
+        else:
+            raise ValueError("Invalid chat completion request")
+
     async def select_from_candidate_replicas(
         self,
         candidates: List[RunningReplica],
         backoff_index: int,
+        request_metadata: Optional[RequestMetadata],
+        pending_request: Optional[PendingRequest],
     ) -> Optional[RunningReplica]:
         """Chooses the best replica from the list of candidates.
 
@@ -631,6 +645,39 @@ class PowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
         Among replicas that respond within the deadline and don't have full queues, the
         one with the lowest queue length is chosen.
         """
+        print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Request metadata: {request_metadata}")
+        print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Pending request: {pending_request}")
+
+        if request_metadata.tree_deployment is not None:
+            first_tenant = None
+            print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Scheduling generator exists!")
+            input_text = self._get_input_text(pending_request)
+            async for matched_text, tenant_id_unique_id in request_metadata.tree_deployment.options(stream=True).prefix_match_generator.remote(input_text):
+                print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Checking tenant: {tenant_id_unique_id} with matched text: {matched_text}")
+                # Find replicas for this tenant
+                for replica in candidates:
+                    replica_id = replica.replica_id
+                    if first_tenant is None:
+                        first_tenant = replica
+                    # Check if replica ID contains tenant info
+                    if tenant_id_unique_id == replica_id.unique_id:
+                        # Check if replica has capacity
+                        queue_len = self._replica_queue_len_cache.get(replica_id)
+                        
+                        if queue_len is not None and queue_len < replica.max_ongoing_requests:
+                            print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Selected replica {replica_id} for tenant {tenant_id_unique_id}")
+                            return replica
+            if first_tenant is None:
+                print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] No matches for input_text {input_text}; setting first_tenant to {candidates[0]} and returning it")
+                first_tenant = candidates[0]
+            else:
+                print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Found matches for input_text {input_text}, but all replicas are full; returning first tenant {first_tenant}")
+            
+            print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Updating tree with input_text {input_text} and tenant {first_tenant.replica_id.unique_id}")
+            request_metadata.tree_deployment.update_tree.remote(input_text, first_tenant.replica_id.unique_id)
+            return first_tenant
+        else:
+            print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Generator does not exist!")
         lowest_queue_len = math.inf
         chosen_replica_id: Optional[str] = None
         not_in_cache: List[RunningReplica] = []
@@ -746,6 +793,9 @@ class PowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
                 async for candidates in self.choose_two_replicas_with_backoff(
                     request_metadata
                 ):
+                    print(
+                        f"[prefix_aware_scheduler.py: fulfill_pending_requests] Candidates: {candidates}"
+                    )
                     # Clear out pending requests at the front of the
                     # queue that have been cancelled, then reevaluate
                     # if we need to continue this scheduling task.
@@ -824,6 +874,9 @@ class PowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
         Upon cancellation (by the caller), the future is cancelled and will be passed
         over when a replica becomes available.
         """
+        print(
+            f"[prefix_aware_scheduler.py: choose_replica_for_request] Choose replica for request"
+        )
         try:
             if not is_retry:
                 self._pending_requests_to_fulfill.append(pending_request)

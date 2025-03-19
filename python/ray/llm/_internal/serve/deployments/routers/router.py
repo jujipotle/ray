@@ -1,3 +1,4 @@
+from ray.serve._private.replica_scheduler.prefix_aware_scheduler import PrefixAwareReplicaScheduler
 import asyncio
 import json
 import os
@@ -249,22 +250,22 @@ class LLMRouter:
             base_model_id = get_base_model_id(model_id)
             if base_model_id in self._default_serve_handles:
                 if model_id == base_model_id:
-                    print(f"[llm router.py] Initializing serve handle with scheduling generator for base model {model_id}")
+                    print(f"[llm router.py] Initializing serve handle with tree deployment for base model {model_id}")
                     default_handle = self._default_serve_handles[model_id]
                     configured_handle = default_handle.options(
                         stream=True,
-                        scheduling_generator=self.tree_deployment.options(stream=True).prefix_match_generator,
-                        update_tree = self.tree_deployment.update_tree,
+                        tree_deployment = self.tree_deployment,
+                        scheduler=PrefixAwareReplicaScheduler,
+                        # scheduling_generator=self.tree_deployment.options(stream=True).prefix_match_generator,
+                        # update_tree = self.tree_deployment.update_tree,
                     )
                     print(f"[llm router.py] Configured handle .handle_options: {configured_handle.handle_options}")
                     self._configured_serve_handles[model_id] = configured_handle
                 else:
-                    print("THIS SHOULD NOT HAPPEN")
                     default_handle = self._default_serve_handles[base_model_id]
                     configured_handle = default_handle.options(
                         stream=True,
                         multiplexed_model_id=model_id,
-                        scheduling_generator=None,
                     )
                     # handle.options(...)
                     # handle._init(...)

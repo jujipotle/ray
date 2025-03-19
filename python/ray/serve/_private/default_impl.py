@@ -26,7 +26,7 @@ from ray.serve._private.deployment_scheduler import (
 )
 from ray.serve._private.grpc_util import gRPCGenericServer
 from ray.serve._private.handle_options import DynamicHandleOptions, InitHandleOptions
-from ray.serve._private.replica_scheduler import PowerOfTwoChoicesReplicaScheduler
+from ray.serve._private.replica_scheduler import PowerOfTwoChoicesReplicaScheduler, PrefixAwareReplicaScheduler
 from ray.serve._private.replica_scheduler.replica_wrapper import RunningReplica
 from ray.serve._private.router import Router, SingletonThreadRouter
 from ray.serve._private.utils import (
@@ -117,8 +117,10 @@ def get_request_metadata(init_options, handle_options):
         _request_protocol=request_protocol,
         grpc_context=_request_context.grpc_context,
         _by_reference=True,
-        scheduling_generator=handle_options.scheduling_generator,
-        update_tree=handle_options.update_tree,
+        # scheduling_generator=handle_options.scheduling_generator,
+        # update_tree=handle_options.update_tree,
+        tree_deployment=handle_options.tree_deployment,
+        scheduler=handle_options.scheduler,
     )
 
 
@@ -144,6 +146,7 @@ def create_router(
     handle_id: str,
     deployment_id: DeploymentID,
     handle_options: InitHandleOptions,
+    dynamic_handle_options: DynamicHandleOptions,
 ) -> Router:
     # NOTE(edoakes): this is lazy due to a nasty circular import that should be fixed.
     from ray.serve.context import _get_global_client
@@ -156,23 +159,42 @@ def create_router(
         f"[default_impl.py: create_router] Creating router with actor_id: {actor_id}, node_id: {node_id}, availability_zone: {availability_zone}"
     )
     print(f"[default_impl.py: create_router] handle_options: {handle_options}")
-    replica_scheduler = PowerOfTwoChoicesReplicaScheduler(
-        deployment_id,
-        handle_options._source,
-        handle_options._prefer_local_routing,
-        RAY_SERVE_PROXY_PREFER_LOCAL_AZ_ROUTING,
-        node_id,
-        actor_id,
-        ray.get_runtime_context().current_actor
-        if ray.get_runtime_context().get_actor_id()
-        else None,
-        availability_zone,
-        # Streaming ObjectRefGenerators are not supported in Ray Client
-        use_replica_queue_len_cache=(
-            not is_inside_ray_client_context and RAY_SERVE_ENABLE_QUEUE_LENGTH_CACHE
-        ),
-        create_replica_wrapper_func=lambda r: RunningReplica(r),
-    )
+    if dynamic_handle_options.scheduler is None:
+        replica_scheduler = PrefixAwareReplicaScheduler(
+            deployment_id,
+            handle_options._source,
+            handle_options._prefer_local_routing,
+            RAY_SERVE_PROXY_PREFER_LOCAL_AZ_ROUTING,
+            node_id,
+            actor_id,
+            ray.get_runtime_context().current_actor
+            if ray.get_runtime_context().get_actor_id()
+            else None,
+            availability_zone,
+            # Streaming ObjectRefGenerators are not supported in Ray Client
+            use_replica_queue_len_cache=(
+                not is_inside_ray_client_context and RAY_SERVE_ENABLE_QUEUE_LENGTH_CACHE
+            ),
+            create_replica_wrapper_func=lambda r: RunningReplica(r),
+        )
+    else:
+        replica_scheduler = handle_options.scheduler(
+            deployment_id,
+            handle_options._source,
+            handle_options._prefer_local_routing,
+            RAY_SERVE_PROXY_PREFER_LOCAL_AZ_ROUTING,
+            node_id,
+            actor_id,
+            ray.get_runtime_context().current_actor
+            if ray.get_runtime_context().get_actor_id()
+            else None,
+            availability_zone,
+            # Streaming ObjectRefGenerators are not supported in Ray Client
+            use_replica_queue_len_cache=(
+                not is_inside_ray_client_context and RAY_SERVE_ENABLE_QUEUE_LENGTH_CACHE
+            ),
+            create_replica_wrapper_func=lambda r: RunningReplica(r),
+        )
 
     return SingletonThreadRouter(
         controller_handle=controller_handle,

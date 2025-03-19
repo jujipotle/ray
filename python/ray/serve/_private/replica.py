@@ -265,18 +265,12 @@ class ReplicaMetricsManager:
     def inc_num_ongoing_requests(self) -> int:
         """Increment the current total queue length of requests for this replica."""
         self._num_ongoing_requests += 1
-        print(
-            f"[replica_metrics_manager.py: inc_num_ongoing_requests] Incremented Queue Length to: {self._num_ongoing_requests}"
-        )
         if not self._cached_metrics_enabled:
             self._num_ongoing_requests_gauge.set(self._num_ongoing_requests)
 
     def dec_num_ongoing_requests(self) -> int:
         """Decrement the current total queue length of requests for this replica."""
         self._num_ongoing_requests -= 1
-        print(
-            f"[replica_metrics_manager.py: dec_num_ongoing_requests] Decremented Queue Length to: {self._num_ongoing_requests}"
-        )
 
         if not self._cached_metrics_enabled:
             self._num_ongoing_requests_gauge.set(self._num_ongoing_requests)

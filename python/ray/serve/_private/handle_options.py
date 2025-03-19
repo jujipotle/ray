@@ -51,8 +51,10 @@ class DynamicHandleOptionsBase(ABC):
     method_name: str = "__call__"
     multiplexed_model_id: str = ""
     stream: bool = False
-    scheduling_generator: Any = None
-    update_tree: Any = None
+    # scheduling_generator: Any = None
+    # update_tree: Any = None
+    tree_deployment: Any = None
+    scheduler: Any = None
     @abstractmethod
     def copy_and_update(self, **kwargs) -> "DynamicHandleOptionsBase":
         pass

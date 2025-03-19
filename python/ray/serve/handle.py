@@ -139,12 +139,13 @@ class _DeploymentHandleBase:
 
         init_options = create_init_handle_options(**kwargs)
         print(
-            f"[handle.py: _init] Creating router with handle_id: {self.handle_id}, deployment_id: {self.deployment_id}, handle_options: {init_options}"
+            f"[handle.py: _init] Creating handle with handle_id: {self.handle_id}, deployment_id: {self.deployment_id}, handle_options: {init_options}"
         )
         self._router = self._create_router(
             handle_id=self.handle_id,
             deployment_id=self.deployment_id,
             handle_options=init_options,
+            dynamic_handle_options=self.handle_options,
         )
         self.init_options = init_options
 
@@ -674,8 +675,10 @@ class DeploymentHandle(_DeploymentHandleBase):
         stream: Union[bool, DEFAULT] = DEFAULT.VALUE,
         use_new_handle_api: Union[bool, DEFAULT] = DEFAULT.VALUE,
         _prefer_local_routing: Union[bool, DEFAULT] = DEFAULT.VALUE,
-        scheduling_generator: Any = DEFAULT.VALUE, # NOTE: This MUST be DEFAULT.VALUE, setting to None, False, anything else prevents the scheduling generator from propogating to RequestMetadata.
-        update_tree: Any = DEFAULT.VALUE, # Same as above.
+        # scheduling_generator: Any = DEFAULT.VALUE, # NOTE: This MUST be DEFAULT.VALUE, setting to None, False, anything else prevents the scheduling generator from propogating to RequestMetadata.
+        # update_tree: Any = DEFAULT.VALUE, # Same as above.
+        tree_deployment: Any = DEFAULT.VALUE,
+        scheduler: Any = DEFAULT.VALUE,
     ) -> "DeploymentHandle":
         """Set options for this handle and return an updated copy of it.
 
@@ -699,14 +702,16 @@ class DeploymentHandle(_DeploymentHandleBase):
                 "Modifying `_prefer_local_routing` with `options()` is "
                 "deprecated. Please use `init()` instead."
             )
-        print(f"[handle.py: DeploymentHandle.options] returning ._options with scheduling_generator={scheduling_generator}, update_tree={update_tree}")
+        print(f"[handle.py: DeploymentHandle.options] returning ._options with tree_deployment={tree_deployment}, scheduler={scheduler}")
         return self._options(
             method_name=method_name,
             multiplexed_model_id=multiplexed_model_id,
             stream=stream,
             _prefer_local_routing=_prefer_local_routing,
-            scheduling_generator=scheduling_generator,
-            update_tree=update_tree,
+            tree_deployment=tree_deployment,
+            scheduler=scheduler,
+            # scheduling_generator=scheduling_generator,
+            # update_tree=update_tree,
         )
 
     def remote(
