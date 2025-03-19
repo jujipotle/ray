@@ -4,7 +4,7 @@ from dataclasses import dataclass, fields
 import ray
 from ray.serve._private.common import DeploymentHandleSource
 from ray.serve._private.utils import DEFAULT
-
+from typing import Any, Optional
 
 @dataclass(frozen=True)
 class InitHandleOptionsBase(ABC):
@@ -16,7 +16,6 @@ class InitHandleOptionsBase(ABC):
 
     _prefer_local_routing: bool = False
     _source: DeploymentHandleSource = DeploymentHandleSource.UNKNOWN
-
     @classmethod
     @abstractmethod
     def create(cls, **kwargs) -> "InitHandleOptionsBase":
@@ -52,7 +51,8 @@ class DynamicHandleOptionsBase(ABC):
     method_name: str = "__call__"
     multiplexed_model_id: str = ""
     stream: bool = False
-    enable_prefix_routing: bool = False
+    scheduling_generator: Any = None
+    update_tree: Any = None
     @abstractmethod
     def copy_and_update(self, **kwargs) -> "DynamicHandleOptionsBase":
         pass

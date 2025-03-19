@@ -26,7 +26,7 @@ from ray.serve._private.deployment_scheduler import (
 )
 from ray.serve._private.grpc_util import gRPCGenericServer
 from ray.serve._private.handle_options import DynamicHandleOptions, InitHandleOptions
-from ray.serve._private.replica_scheduler import PowerOfTwoChoicesReplicaScheduler
+from ray.serve._private.replica_scheduler import PowerOfTwoChoicesReplicaScheduler, PrefixAwareReplicaScheduler
 from ray.serve._private.replica_scheduler.replica_wrapper import RunningReplica
 from ray.serve._private.router import Router, SingletonThreadRouter
 from ray.serve._private.utils import (
@@ -101,7 +101,7 @@ def get_request_metadata(init_options, handle_options):
             request_protocol = RequestProtocol.HTTP
         elif _request_context.grpc_context:
             request_protocol = RequestProtocol.GRPC
-
+    print(f"[default_impl.py: get_request_metadata] handle_options: {handle_options}")
     return RequestMetadata(
         request_id=_request_context.request_id
         if _request_context.request_id
@@ -117,6 +117,8 @@ def get_request_metadata(init_options, handle_options):
         _request_protocol=request_protocol,
         grpc_context=_request_context.grpc_context,
         _by_reference=True,
+        scheduling_generator=handle_options.scheduling_generator,
+        update_tree=handle_options.update_tree,
     )
 
 
@@ -153,6 +155,7 @@ def create_router(
     print(
         f"[default_impl.py: create_router] Creating router with actor_id: {actor_id}, node_id: {node_id}, availability_zone: {availability_zone}"
     )
+    print(f"[default_impl.py: create_router] handle_options: {handle_options}")
     replica_scheduler = PowerOfTwoChoicesReplicaScheduler(
         deployment_id,
         handle_options._source,

@@ -1,3 +1,5 @@
+from ray.llm._internal.serve.deployments.routers.tree import Tree
+
 from typing import List, Optional, Sequence
 
 from ray.serve.deployment import Application
@@ -50,6 +52,7 @@ def _get_llm_deployments(
 
 
 def build_openai_app(llm_serving_args: LLMServingArgs) -> Application:
+    print(f"[application_builders.py: build_openai_app] llm_serving_args: {llm_serving_args}")
     rayllm_args = LLMServingArgs.model_validate(llm_serving_args).parse_args()
 
     llm_configs = rayllm_args.llm_configs
@@ -63,7 +66,7 @@ def build_openai_app(llm_serving_args: LLMServingArgs) -> Application:
         )
 
     llm_deployments = _get_llm_deployments(llm_configs)
-
-    return LLMRouter.as_deployment(llm_configs=llm_configs).bind(
-        llm_deployments=llm_deployments
+    return LLMRouter.as_deployment(llm_configs=llm_configs).options(autoscaling_config=dict(min_replicas=1, max_replicas=1, initial_replicas=1)).bind(
+        llm_deployments=llm_deployments, 
+        tree_deployment=Tree.bind()
     )

@@ -1,12 +1,30 @@
+# # applications:
+# #   - name: translator_app
+# #     route_prefix: /
+# #     import_path: deployment:translator_app
 # applications:
 #   - name: translator_app
-#     route_prefix: /
+#     max_ongoing_requests: 5
+#     autoscaling_config:
+#       target_ongoing_requests: 2
+#       min_replicas: 1
+#       max_replicas: 100
 #     import_path: deployment:translator_app
+
+# config.yaml
 applications:
-  - name: translator_app
-    max_ongoing_requests: 5
-    autoscaling_config:
-      target_ongoing_requests: 2
-      min_replicas: 1
-      max_replicas: 100
-    import_path: deployment:translator_app
+- args:
+    llm_configs:
+        - model_loading_config:
+            model_id: qwen-0.5b
+            model_source: Qwen/Qwen2.5-0.5B-Instruct
+          accelerator_type: L4
+          engine_kwargs:
+            enable_prefix_caching: true
+          deployment_config:
+            autoscaling_config:
+                min_replicas: 2
+                max_replicas: 2
+  import_path: ray.serve.llm:build_openai_app
+  name: llm_app
+  route_prefix: "/"

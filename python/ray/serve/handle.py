@@ -194,7 +194,7 @@ class _DeploymentHandleBase:
     ) -> Tuple[concurrent.futures.Future, RequestMetadata]:
         if not self.is_initialized:
             self._init()
-
+        print(f"[handle.py: _remote] self.handle_options: {self.handle_options}")
         metadata = serve._private.default_impl.get_request_metadata(
             self.init_options, self.handle_options
         )
@@ -674,6 +674,8 @@ class DeploymentHandle(_DeploymentHandleBase):
         stream: Union[bool, DEFAULT] = DEFAULT.VALUE,
         use_new_handle_api: Union[bool, DEFAULT] = DEFAULT.VALUE,
         _prefer_local_routing: Union[bool, DEFAULT] = DEFAULT.VALUE,
+        scheduling_generator: Any = DEFAULT.VALUE, # NOTE: This MUST be DEFAULT.VALUE, setting to None, False, anything else prevents the scheduling generator from propogating to RequestMetadata.
+        update_tree: Any = DEFAULT.VALUE, # Same as above.
     ) -> "DeploymentHandle":
         """Set options for this handle and return an updated copy of it.
 
@@ -697,12 +699,14 @@ class DeploymentHandle(_DeploymentHandleBase):
                 "Modifying `_prefer_local_routing` with `options()` is "
                 "deprecated. Please use `init()` instead."
             )
-
+        print(f"[handle.py: DeploymentHandle.options] returning ._options with scheduling_generator={scheduling_generator}, update_tree={update_tree}")
         return self._options(
             method_name=method_name,
             multiplexed_model_id=multiplexed_model_id,
             stream=stream,
             _prefer_local_routing=_prefer_local_routing,
+            scheduling_generator=scheduling_generator,
+            update_tree=update_tree,
         )
 
     def remote(

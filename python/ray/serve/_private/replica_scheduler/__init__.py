@@ -2,6 +2,9 @@ from ray.serve._private.replica_scheduler.common import PendingRequest  # noqa: 
 from ray.serve._private.replica_scheduler.pow_2_scheduler import (  # noqa: F401
     PowerOfTwoChoicesReplicaScheduler,
 )
+from ray.serve._private.replica_scheduler.prefix_aware_scheduler import (  # noqa: F401
+    PrefixAwareReplicaScheduler,
+)
 from ray.serve._private.replica_scheduler.replica_scheduler import (  # noqa: F401
     ReplicaScheduler,
 )

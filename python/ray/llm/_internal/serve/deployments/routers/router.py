@@ -174,6 +174,7 @@ class LLMRouter:
     def __init__(
         self,
         llm_deployments: List[DeploymentHandle],
+        tree_deployment: DeploymentHandle,
         *,
         _get_lora_model_metadata_func: Optional[
             Callable[[str, LLMConfig], Awaitable[Dict[str, Any]]]
@@ -198,6 +199,8 @@ class LLMRouter:
             self._setup_handle_and_config_maps(llm_deployments=llm_deployments)
         )
 
+        self.tree_deployment = tree_deployment
+
     async def _default_get_lora_model_metadata_func(
         self, model_id: str, llm_config: LLMConfig
     ) -> Dict[str, Any]:
@@ -209,6 +212,7 @@ class LLMRouter:
         for handle in llm_deployments:
             llm_config = await handle.llm_config.remote()
             self._default_serve_handles[llm_config.model_id] = handle
+            print(f"[llm router.py] Default serve handles: {self._default_serve_handles}")
             self._llm_configs[llm_config.model_id] = llm_config
 
         # Note (genesu): Even though we have already checked model id uniqueness in
@@ -245,15 +249,22 @@ class LLMRouter:
             base_model_id = get_base_model_id(model_id)
             if base_model_id in self._default_serve_handles:
                 if model_id == base_model_id:
+                    print(f"[llm router.py] Initializing serve handle with scheduling generator for base model {model_id}")
                     default_handle = self._default_serve_handles[model_id]
-                    configured_handle = default_handle.options(stream=True)
+                    configured_handle = default_handle.options(
+                        stream=True,
+                        scheduling_generator=self.tree_deployment.options(stream=True).prefix_match_generator,
+                        update_tree = self.tree_deployment.update_tree,
+                    )
+                    print(f"[llm router.py] Configured handle .handle_options: {configured_handle.handle_options}")
                     self._configured_serve_handles[model_id] = configured_handle
                 else:
+                    print("THIS SHOULD NOT HAPPEN")
                     default_handle = self._default_serve_handles[base_model_id]
                     configured_handle = default_handle.options(
                         stream=True,
                         multiplexed_model_id=model_id,
-                        enable_prefix_routing=True,
+                        scheduling_generator=None,
                     )
                     # handle.options(...)
                     # handle._init(...)
@@ -282,9 +293,9 @@ class LLMRouter:
                 f'Got request for model "{model}". '
                 f'Could not find base model with ID "{base_model_id}".',
             )
-
+        
         model_handle = self._get_configured_serve_handle(model)
-
+        print(f"[llm router.py] Model handle .handle_options: {model_handle.handle_options}")
         async for response in getattr(model_handle, call_method).remote(body):
             yield response
 
