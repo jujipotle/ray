@@ -53,8 +53,9 @@ class DynamicHandleOptionsBase(ABC):
     stream: bool = False
     # scheduling_generator: Any = None
     # update_tree: Any = None
-    tree_deployment: Any = None
+    # tree_deployment: Any = None
     scheduler: Any = None
+    scheduler_params: Any = None
     @abstractmethod
     def copy_and_update(self, **kwargs) -> "DynamicHandleOptionsBase":
         pass

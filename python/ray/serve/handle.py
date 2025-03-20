@@ -59,7 +59,7 @@ class _DeploymentHandleBase:
         self.handle_options: DynamicHandleOptionsBase = (
             handle_options or create_dynamic_handle_options()
         )
-
+        print(f"[handle.py: _DeploymentHandleBase] handle_options: {self.handle_options}")
         # Handle ID is shared among handles that are returned by
         # `handle.options` or `handle.method`
         self.handle_id = _handle_id or get_random_string()
@@ -137,15 +137,13 @@ class _DeploymentHandleBase:
                 f"was initialized with {self.init_options}."
             )
 
+        # We create the initial router using PowOf2, because _init is called before _options.
         init_options = create_init_handle_options(**kwargs)
-        print(
-            f"[handle.py: _init] Creating handle with handle_id: {self.handle_id}, deployment_id: {self.deployment_id}, handle_options: {init_options}, dynamic_handle_options: {self.handle_options}"
-        )
+
         self._router = self._create_router(
             handle_id=self.handle_id,
             deployment_id=self.deployment_id,
             handle_options=init_options,
-            dynamic_handle_options=self.handle_options, # I added this so create_router has access to scheduler
         )
         self.init_options = init_options
 
@@ -167,7 +165,6 @@ class _DeploymentHandleBase:
                 "Streaming DeploymentHandles are not currently supported when "
                 "connected to a remote Ray cluster using Ray Client."
             )
-
         new_handle_options = self.handle_options.copy_and_update(**kwargs)
 
         # TODO(zcin): remove when _prefer_local_routing is removed from options() path
@@ -176,6 +173,25 @@ class _DeploymentHandleBase:
 
         if not self.is_initialized:
             self._init()
+        
+        print(f"[handle.py: _options] new_handle_options: {new_handle_options}, self.handle_options: {self.handle_options}")
+        # If scheduler is specified, we swap out self._router with a new router that uses the new scheduler.
+        # We pass scheduler_params to the new router.
+        if new_handle_options.scheduler is not None:
+            self._router = self._create_router(
+                handle_id=self.handle_id,
+                deployment_id=self.deployment_id,
+                handle_options=self.init_options,
+                replica_scheduler_cls=new_handle_options.scheduler,
+                scheduler_params=new_handle_options.scheduler_params,
+            )
+            # # self._router is a SingletonThreadRouter
+            # # self._router._asyncio_router.replica_scheduler is a PowerOfTwoChoicesReplicaScheduler by default
+            # # We want to update to PrefixAwareReplicaScheduler
+            # print(f"[handle.py: _options] Updating scheduler from {self._router._asyncio_router._replica_scheduler} to {new_handle_options.scheduler}")
+            # self._router._asyncio_router.update_scheduler(new_handle_options.scheduler)
+            # print(f"[handle.py: _options] Updated scheduler to {self._router._asyncio_router._replica_scheduler}")
+            # # new_handle_options.scheduler = None # To prevent the scheduler from being re-updated.
 
         return DeploymentHandle(
             self.deployment_name,
@@ -677,7 +693,7 @@ class DeploymentHandle(_DeploymentHandleBase):
         _prefer_local_routing: Union[bool, DEFAULT] = DEFAULT.VALUE,
         # scheduling_generator: Any = DEFAULT.VALUE, # NOTE: This MUST be DEFAULT.VALUE, setting to None, False, anything else prevents the scheduling generator from propogating to RequestMetadata.
         # update_tree: Any = DEFAULT.VALUE, # Same as above.
-        tree_deployment: Any = DEFAULT.VALUE,
+        scheduler_params: Any = DEFAULT.VALUE,
         scheduler: Any = DEFAULT.VALUE,
     ) -> "DeploymentHandle":
         """Set options for this handle and return an updated copy of it.
@@ -702,14 +718,15 @@ class DeploymentHandle(_DeploymentHandleBase):
                 "Modifying `_prefer_local_routing` with `options()` is "
                 "deprecated. Please use `init()` instead."
             )
-        print(f"[handle.py: DeploymentHandle.options] returning ._options with tree_deployment={tree_deployment}, scheduler={scheduler}")
+        print(f"[handle.py: DeploymentHandle.options] returning ._options with scheduler_params={scheduler_params}, scheduler={scheduler}")
         return self._options(
             method_name=method_name,
             multiplexed_model_id=multiplexed_model_id,
             stream=stream,
             _prefer_local_routing=_prefer_local_routing,
-            tree_deployment=tree_deployment,
+            # tree_deployment=tree_deployment,
             scheduler=scheduler,
+            scheduler_params=scheduler_params,
             # scheduling_generator=scheduling_generator,
             # update_tree=update_tree,
         )

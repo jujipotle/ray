@@ -15,6 +15,7 @@ from typing import (
     Optional,
     Set,
     Tuple,
+    Any
 )
 
 from ray.actor import ActorHandle
@@ -103,6 +104,7 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         create_replica_wrapper_func: Optional[
             Callable[[RunningReplicaInfo], RunningReplica]
         ] = None,
+        scheduler_params: Optional[Dict[str, Any]] = None,
     ):
         print(f"[prefix_aware_scheduler.py: __init__] Initializing Prefix Aware Replica Scheduler")
         self._deployment_id = deployment_id
@@ -110,10 +112,16 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         self._prefer_local_node_routing = prefer_local_node_routing
         self._prefer_local_az_routing = prefer_local_az_routing
         self._self_node_id = self_node_id
+        self._self_actor_id = self_actor_id # Why is this needed?
         self._self_actor_handle = self_actor_handle
         self._self_availability_zone = self_availability_zone
         self._use_replica_queue_len_cache = use_replica_queue_len_cache
         self._create_replica_wrapper_func = create_replica_wrapper_func
+
+        # Extracting tree_deployment from scheduler_params
+        self._tree_deployment = scheduler_params.get("tree_deployment", None)
+        if self._tree_deployment is None:
+            raise ValueError("tree_deployment must be provided in scheduler_params")
 
         # Current replicas available to be scheduled.
         # Updated via `update_replicas`.
@@ -632,7 +640,6 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         self,
         candidates: List[RunningReplica],
         backoff_index: int,
-        request_metadata: Optional[RequestMetadata],
         pending_request: Optional[PendingRequest],
     ) -> Optional[RunningReplica]:
         """Chooses the best replica from the list of candidates.
@@ -645,14 +652,13 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         Among replicas that respond within the deadline and don't have full queues, the
         one with the lowest queue length is chosen.
         """
-        print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Request metadata: {request_metadata}")
         print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Pending request: {pending_request}")
 
-        if request_metadata.tree_deployment is not None:
+        if self._tree_deployment is not None:
             first_tenant = None
             print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Scheduling generator exists!")
             input_text = self._get_input_text(pending_request)
-            async for matched_text, tenant_id_unique_id in request_metadata.tree_deployment.options(stream=True).prefix_match_generator.remote(input_text):
+            async for matched_text, tenant_id_unique_id in self._tree_deployment.options(stream=True).prefix_match_generator.remote(input_text):
                 print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Checking tenant: {tenant_id_unique_id} with matched text: {matched_text}")
                 # Find replicas for this tenant
                 for replica in candidates:
@@ -674,7 +680,7 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
                 print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Found matches for input_text {input_text}, but all replicas are full; returning first tenant {first_tenant}")
             
             print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Updating tree with input_text {input_text} and tenant {first_tenant.replica_id.unique_id}")
-            request_metadata.tree_deployment.update_tree.remote(input_text, first_tenant.replica_id.unique_id)
+            self._tree_deployment.update_tree.remote(input_text, first_tenant.replica_id.unique_id)
             return first_tenant
         else:
             print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Generator does not exist!")
@@ -766,6 +772,7 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
                 pr.future.set_result(replica)
                 break
 
+    # Modify this to pass pending_request too
     def _get_next_pending_request_metadata_to_schedule(
         self,
     ) -> Optional[Tuple[RequestMetadata, PendingRequest]]:
@@ -785,11 +792,14 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         has exceeded the target number. Else it will loop again to schedule another
         replica.
         """
+        print(f"[prefix_aware_scheduler.py: fulfill_pending_requests] called")
         try:
             while len(self._scheduling_tasks) <= self.target_num_scheduling_tasks:
                 start_time = time.time()
                 backoff_index = 0
                 request_metadata, pending_request = self._get_next_pending_request_metadata_to_schedule()
+                print(f"[prefix_aware_scheduler.py: fulfill_pending_requests] Request metadata: {request_metadata}")
+                print(f"[prefix_aware_scheduler.py: fulfill_pending_requests] Pending request: {pending_request}")
                 async for candidates in self.choose_two_replicas_with_backoff(
                     request_metadata
                 ):
@@ -809,7 +819,7 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
                         break
 
                     replica = await self.select_from_candidate_replicas(
-                        candidates, backoff_index, request_metadata, pending_request
+                        candidates, backoff_index, pending_request
                     )
                     if replica is not None:
                         self.fulfill_next_pending_request(replica, request_metadata)
@@ -850,6 +860,7 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         in for scheduling. However, in cases where the number of available replicas
         is updated or a task exits unexpectedly, we may need to start multiple.
         """
+        print(f"[prefix_aware_scheduler.py: maybe_start_scheduling_tasks] maybe_start_scheduling_tasks() called")
         tasks_to_start = (
             self.target_num_scheduling_tasks - self.curr_num_scheduling_tasks
         )
@@ -900,7 +911,6 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
                     index += 1
 
                 self._pending_requests_to_schedule.insert(index, pending_request)
-
             self.maybe_start_scheduling_tasks()
             replica = await pending_request.future
         except asyncio.CancelledError as e:
