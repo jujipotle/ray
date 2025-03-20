@@ -155,12 +155,10 @@ def create_router(
     node_id, availability_zone = _get_node_id_and_az()
     controller_handle = _get_global_client()._controller
     is_inside_ray_client_context = inside_ray_client_context()
-    print(
-        f"[default_impl.py: create_router] Creating router with actor_id: {actor_id}, node_id: {node_id}, availability_zone: {availability_zone}"
-    )
-    print(f"[default_impl.py: create_router] handle_options: {handle_options}")
+    print(f"[default_impl.py: create_router] init_handle_options: {handle_options}")
+    print(f"[default_impl.py: create_router] dynamic_handle_options: {dynamic_handle_options}")
     if dynamic_handle_options.scheduler is None:
-        replica_scheduler = PrefixAwareReplicaScheduler(
+        replica_scheduler = PowerOfTwoChoicesReplicaScheduler(
             deployment_id,
             handle_options._source,
             handle_options._prefer_local_routing,

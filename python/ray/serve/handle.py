@@ -139,13 +139,13 @@ class _DeploymentHandleBase:
 
         init_options = create_init_handle_options(**kwargs)
         print(
-            f"[handle.py: _init] Creating handle with handle_id: {self.handle_id}, deployment_id: {self.deployment_id}, handle_options: {init_options}"
+            f"[handle.py: _init] Creating handle with handle_id: {self.handle_id}, deployment_id: {self.deployment_id}, handle_options: {init_options}, dynamic_handle_options: {self.handle_options}"
         )
         self._router = self._create_router(
             handle_id=self.handle_id,
             deployment_id=self.deployment_id,
             handle_options=init_options,
-            dynamic_handle_options=self.handle_options,
+            dynamic_handle_options=self.handle_options, # I added this so create_router has access to scheduler
         )
         self.init_options = init_options
 

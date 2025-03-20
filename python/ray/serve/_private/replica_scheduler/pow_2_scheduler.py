@@ -721,11 +721,11 @@ class PowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
 
     def _get_next_pending_request_metadata_to_schedule(
         self,
-    ) -> Optional[Tuple[RequestMetadata, PendingRequest]]:
+    ) -> Optional[RequestMetadata]:
         while len(self._pending_requests_to_schedule) > 0:
             pr = self._pending_requests_to_schedule.popleft()
             if not pr.future.done():
-                return pr.metadata, pr
+                return pr.metadata
 
         return None
 
@@ -742,7 +742,7 @@ class PowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
             while len(self._scheduling_tasks) <= self.target_num_scheduling_tasks:
                 start_time = time.time()
                 backoff_index = 0
-                request_metadata, pending_request = self._get_next_pending_request_metadata_to_schedule()
+                request_metadata = self._get_next_pending_request_metadata_to_schedule()
                 async for candidates in self.choose_two_replicas_with_backoff(
                     request_metadata
                 ):
@@ -759,7 +759,7 @@ class PowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
                         break
 
                     replica = await self.select_from_candidate_replicas(
-                        candidates, backoff_index, request_metadata, pending_request
+                        candidates, backoff_index
                     )
                     if replica is not None:
                         self.fulfill_next_pending_request(replica, request_metadata)
