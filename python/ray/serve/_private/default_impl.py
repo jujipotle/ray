@@ -117,10 +117,7 @@ def get_request_metadata(init_options, handle_options):
         _request_protocol=request_protocol,
         grpc_context=_request_context.grpc_context,
         _by_reference=True,
-        # scheduling_generator=handle_options.scheduling_generator,
-        # update_tree=handle_options.update_tree,
         # tree_deployment=handle_options.tree_deployment,
-        # scheduler=handle_options.scheduler,
     )
 
 

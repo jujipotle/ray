@@ -622,10 +622,7 @@ class RequestMetadata:
 
     _by_reference: bool = True
 
-    # scheduling_generator: Any = None
-    # update_tree: Any = None
     # tree_deployment: Any = None
-    # scheduler: Any = None
     @property
     def is_http_request(self) -> bool:
         return self._request_protocol == RequestProtocol.HTTP

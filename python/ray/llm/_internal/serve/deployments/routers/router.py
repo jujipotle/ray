@@ -255,10 +255,8 @@ class LLMRouter:
                     configured_handle = default_handle.options(
                         stream=True,
                         # tree_deployment = self.tree_deployment,
-                        scheduler=PrefixAwareReplicaScheduler,
+                        replica_scheduler_cls=PrefixAwareReplicaScheduler,
                         scheduler_params={"tree_deployment": self.tree_deployment},
-                        # scheduling_generator=self.tree_deployment.options(stream=True).prefix_match_generator,
-                        # update_tree = self.tree_deployment.update_tree,
                     )
                     print(f"[llm router.py] Configured handle .handle_options: {configured_handle.handle_options}")
                     self._configured_serve_handles[model_id] = configured_handle

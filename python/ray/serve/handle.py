@@ -175,23 +175,16 @@ class _DeploymentHandleBase:
             self._init()
         
         print(f"[handle.py: _options] new_handle_options: {new_handle_options}, self.handle_options: {self.handle_options}")
-        # If scheduler is specified, we swap out self._router with a new router that uses the new scheduler.
+        # If replica_scheduler_cls is specified, we swap out self._router with a new router that uses the new scheduler.
         # We pass scheduler_params to the new router.
-        if new_handle_options.scheduler is not None:
+        if new_handle_options.replica_scheduler_cls is not None:
             self._router = self._create_router(
                 handle_id=self.handle_id,
                 deployment_id=self.deployment_id,
                 handle_options=self.init_options,
-                replica_scheduler_cls=new_handle_options.scheduler,
+                replica_scheduler_cls=new_handle_options.replica_scheduler_cls,
                 scheduler_params=new_handle_options.scheduler_params,
             )
-            # # self._router is a SingletonThreadRouter
-            # # self._router._asyncio_router.replica_scheduler is a PowerOfTwoChoicesReplicaScheduler by default
-            # # We want to update to PrefixAwareReplicaScheduler
-            # print(f"[handle.py: _options] Updating scheduler from {self._router._asyncio_router._replica_scheduler} to {new_handle_options.scheduler}")
-            # self._router._asyncio_router.update_scheduler(new_handle_options.scheduler)
-            # print(f"[handle.py: _options] Updated scheduler to {self._router._asyncio_router._replica_scheduler}")
-            # # new_handle_options.scheduler = None # To prevent the scheduler from being re-updated.
 
         return DeploymentHandle(
             self.deployment_name,
@@ -212,8 +205,10 @@ class _DeploymentHandleBase:
         if not self.is_initialized:
             self._init()
         print(f"[handle.py: _remote] self.handle_options: {self.handle_options}")
+        # This sets metadata.tree_deployment
         metadata = serve._private.default_impl.get_request_metadata(
-            self.init_options, self.handle_options
+            self.init_options, self.handle_options # <-- this would contain
+            # tree_deployment if handle.remote() is called from LLMRouter
         )
 
         self.request_counter.inc(
@@ -691,10 +686,9 @@ class DeploymentHandle(_DeploymentHandleBase):
         stream: Union[bool, DEFAULT] = DEFAULT.VALUE,
         use_new_handle_api: Union[bool, DEFAULT] = DEFAULT.VALUE,
         _prefer_local_routing: Union[bool, DEFAULT] = DEFAULT.VALUE,
-        # scheduling_generator: Any = DEFAULT.VALUE, # NOTE: This MUST be DEFAULT.VALUE, setting to None, False, anything else prevents the scheduling generator from propogating to RequestMetadata.
-        # update_tree: Any = DEFAULT.VALUE, # Same as above.
+        # tree_deployment: Any = DEFAULT.VALUE, # NOTE: This MUST be DEFAULT.VALUE, setting to None, False, anything else prevents the tree_deployment from propogating to RequestMetadata.
         scheduler_params: Any = DEFAULT.VALUE,
-        scheduler: Any = DEFAULT.VALUE,
+        replica_scheduler_cls: Any = DEFAULT.VALUE,
     ) -> "DeploymentHandle":
         """Set options for this handle and return an updated copy of it.
 
@@ -718,14 +712,14 @@ class DeploymentHandle(_DeploymentHandleBase):
                 "Modifying `_prefer_local_routing` with `options()` is "
                 "deprecated. Please use `init()` instead."
             )
-        print(f"[handle.py: DeploymentHandle.options] returning ._options with scheduler_params={scheduler_params}, scheduler={scheduler}")
+        print(f"[handle.py: DeploymentHandle.options] returning ._options with scheduler_params={scheduler_params}, replica_scheduler_cls={replica_scheduler_cls}")
         return self._options(
             method_name=method_name,
             multiplexed_model_id=multiplexed_model_id,
             stream=stream,
             _prefer_local_routing=_prefer_local_routing,
             # tree_deployment=tree_deployment,
-            scheduler=scheduler,
+            replica_scheduler_cls=replica_scheduler_cls,
             scheduler_params=scheduler_params,
             # scheduling_generator=scheduling_generator,
             # update_tree=update_tree,

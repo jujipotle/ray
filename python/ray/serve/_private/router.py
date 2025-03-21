@@ -430,22 +430,6 @@ class AsyncioRouter:
         )
         shared.register(self)
 
-    def update_scheduler(self, replica_scheduler: ReplicaScheduler):
-        old_scheduler = self._replica_scheduler
-        print(f"[router.py] Updating scheduler from {old_scheduler} to {replica_scheduler}")
-        self._replica_scheduler = replica_scheduler(
-            deployment_id=old_scheduler._deployment_id,
-            handle_source=old_scheduler._handle_source,
-            prefer_local_node_routing=old_scheduler._prefer_local_node_routing,
-            prefer_local_az_routing=old_scheduler._prefer_local_az_routing,
-            self_node_id=old_scheduler._self_node_id,
-            self_actor_id=old_scheduler._self_actor_id,
-            self_actor_handle=old_scheduler._self_actor_handle,
-            self_availability_zone=old_scheduler._self_availability_zone,
-            use_replica_queue_len_cache=old_scheduler._use_replica_queue_len_cache,
-            create_replica_wrapper_func=old_scheduler._create_replica_wrapper_func,
-        )
-        # return self._replica_scheduler
 
     def running_replicas_populated(self) -> bool:
         return self._running_replicas_populated
@@ -734,10 +718,6 @@ class SingletonThreadRouter(Router):
         return asyncio.run_coroutine_threadsafe(
             self._asyncio_router.shutdown(), loop=self._asyncio_loop
         )
-
-    # def update_scheduler(self, replica_scheduler: ReplicaScheduler):
-    #     print(f"[router.py: update_scheduler] Updating self.replica_scheduler from {self._asyncio_router.replica_scheduler} to {replica_scheduler}")
-    #     self.replica_scheduler = self._asyncio_router.update_scheduler(replica_scheduler)
 
 
 class SharedRouterLongPollClient:
