@@ -22,7 +22,7 @@ class Node:
         return f"Node(text='{self.text}', tenants={list(self.tenant_last_access_time.keys())})"
 
 @serve.deployment
-class Tree:
+class PrefixTree:
     """
     Thread-safe multi-tenant prefix tree (approximate radix tree).
     
@@ -35,11 +35,7 @@ class Tree:
         self.root = Node()
         self.tenant_char_count = defaultdict(int)  # Maps tenant -> character count
         self.lock = RLock()  # For operations that need to lock the entire tree
-
-    def test_generator(self, input_text):
-        for i in range(10):
-            yield f"Hello, world! {input_text} {i}"
-    
+ 
 
     @staticmethod
     def shared_prefix_count(a, b):
@@ -53,7 +49,7 @@ class Tree:
         return i
 
     # TODO: Verify that updating access time behavior is correct.
-    def update_tree(self, text, tenant):
+    def insert(self, text, tenant):
         """Insert text into tree with given tenant."""
         with self.lock:
             curr_node = self.root

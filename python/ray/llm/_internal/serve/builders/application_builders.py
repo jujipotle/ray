@@ -1,4 +1,4 @@
-from ray.llm._internal.serve.deployments.routers.tree import Tree
+from ray.llm._internal.serve.deployments.routers.prefix_tree import PrefixTree
 
 from typing import List, Optional, Sequence
 
@@ -68,5 +68,5 @@ def build_openai_app(llm_serving_args: LLMServingArgs) -> Application:
     llm_deployments = _get_llm_deployments(llm_configs)
     return LLMRouter.as_deployment(llm_configs=llm_configs).options(autoscaling_config=dict(min_replicas=1, max_replicas=1, initial_replicas=1)).bind(
         llm_deployments=llm_deployments, 
-        tree_deployment=Tree.bind()
+        tree_deployment=PrefixTree.bind()
     )
