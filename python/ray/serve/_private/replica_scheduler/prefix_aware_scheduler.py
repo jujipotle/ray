@@ -667,7 +667,7 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         if chosen_replica is None:
             chosen_replica = candidates[0]
             print(f"[prefix_aware_scheduler.py: choose_replica_for_request] No matches for input_text {input_text}; choosing candidates[0]: {chosen_replica.replica_id.unique_id}")
-        print(f"[prefix_aware_scheduler.py: choose_replica_fo   r_request] Updating tree with input_text {input_text} and tenant {chosen_replica.replica_id.unique_id}")
+        print(f"[prefix_aware_scheduler.py: choose_replica_for_request] Updating tree with input_text {input_text} and tenant {chosen_replica.replica_id.unique_id}")
         self._tree_deployment.insert.remote(input_text, chosen_replica.replica_id.unique_id)
         return chosen_replica
 

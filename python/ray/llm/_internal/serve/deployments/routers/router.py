@@ -1,4 +1,4 @@
-from ray.serve._private.replica_scheduler.prefix_aware_scheduler import PrefixAwareReplicaScheduler
+from ray.serve._private.replica_scheduler import PrefixAwareReplicaScheduler, PowerOfTwoChoicesReplicaScheduler
 import asyncio
 import json
 import os
@@ -58,6 +58,7 @@ from ray.llm._internal.serve.configs.openai_api_models_patch import (
 )
 from ray.llm._internal.serve.configs.server_models import (
     LLMConfig,
+    LLMServingArgs,
     ModelData,
     Model,
 )
@@ -67,6 +68,7 @@ from ray.llm._internal.serve.deployments.routers.middleware import (
 )
 from ray.llm._internal.serve.deployments.utils.server_utils import replace_prefix
 from ray.serve.config import AutoscalingConfig
+from ray._common.utils import import_attr
 
 # Import asyncio timeout depends on python version
 if sys.version_info >= (3, 11):
@@ -214,6 +216,8 @@ class LLMRouter:
             llm_config = await handle.llm_config.remote()
             self._default_serve_handles[llm_config.model_id] = handle
             print(f"[llm router.py] Default serve handles: {self._default_serve_handles}")
+            if hasattr(llm_config, 'replica_scheduler_cls') and llm_config.replica_scheduler_cls:
+                print(f"[llm router.py] Found replica_scheduler_cls in llm_config: {llm_config.replica_scheduler_cls}")
             self._llm_configs[llm_config.model_id] = llm_config
 
         # Note (genesu): Even though we have already checked model id uniqueness in
@@ -252,10 +256,21 @@ class LLMRouter:
                 if model_id == base_model_id:
                     print(f"[llm router.py] Initializing serve handle with tree deployment for base model {model_id}")
                     default_handle = self._default_serve_handles[model_id]
+                    
+                    # Get the replica scheduler class from the llm_config if it exists
+                    llm_config = self._llm_configs[model_id]
+                    scheduler_cls = PowerOfTwoChoicesReplicaScheduler  # Default fallback
+                    
+                    if llm_config.replica_scheduler_cls:
+                        try:
+                            print(f"[llm router.py] Importing replica scheduler class from {llm_config.replica_scheduler_cls}")
+                            scheduler_cls = import_attr(llm_config.replica_scheduler_cls)
+                        except Exception as e:
+                            print(f"[llm router.py] Error importing replica scheduler class: {e}. Using default.")
+                    
                     configured_handle = default_handle.options(
                         stream=True,
-                        # tree_deployment = self.tree_deployment,
-                        replica_scheduler_cls=PrefixAwareReplicaScheduler,
+                        replica_scheduler_cls=scheduler_cls,
                         scheduler_params={"tree_deployment": self.tree_deployment},
                     )
                     print(f"[llm router.py] Configured handle .handle_options: {configured_handle.handle_options}")
