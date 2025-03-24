@@ -35,7 +35,8 @@ applications:
             model_source: Qwen/Qwen2.5-0.5B-Instruct
           accelerator_type: L4
           engine_kwargs:
-            enable_prefix_caching: true
+            enable_prefix_caching: true,
+            disable_log_requests: true
           deployment_config:
             autoscaling_config:
                 initial_replicas: 4

@@ -28,8 +28,8 @@ DEFAULT_CONFIG = {
     "router_port": 8000,
     # "worker_ports": "8001",
     "scheduler_strategies_dict": {
-        "prefix_aware": "ray.serve._private.replica_scheduler.prefix_aware_scheduler.PrefixAwareReplicaScheduler",
-        "pow_of_2": "ray.serve._private.replica_scheduler.pow_2_scheduler.PowerOfTwoChoicesReplicaScheduler",
+        # "prefix_aware": "ray.serve._private.replica_scheduler.prefix_aware_scheduler.PrefixAwareReplicaScheduler",
+        # "pow_of_2": "ray.serve._private.replica_scheduler.pow_2_scheduler.PowerOfTwoChoicesReplicaScheduler",
         "round_robin": "ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler",
     },
 
@@ -40,7 +40,7 @@ DEFAULT_CONFIG = {
     "is_prefix_cached": True,
 
     # Benchmark Info
-    "benchmark_label": "4-gpu_40-concurrency",
+    "benchmark_label": "serve-long-conversations_4-gpu_40-concurrency",
     "dataset_name": "sharegpt",
     "max_concurrency": 40,  # Max concurrency (total)
     "output_len": 32,
@@ -53,8 +53,8 @@ DEFAULT_CONFIG = {
     "gen-question-len": 512,
 
     # ShareGPT Info
-    "num_prompts": 10,  # Number of prompts to sample from ShareGPT
-    "max_conversations": 10,  # Max conversations to include from ShareGPT; num_unique_prefixes is approximately max_conversations / 10. To aim for num_unique_prefixes = num_prompts / 10, set max_conversations = num_prompts.
+    "num_prompts": 1000,  # Number of prompts to sample from ShareGPT
+    "max_conversations": 10000,  # Max conversations to include from ShareGPT; num_unique_prefixes is approximately max_conversations / 10. To aim for num_unique_prefixes = num_prompts / 10, set max_conversations = num_prompts.
     "dataset_path": "/home/ray/default/work/ray/_prefix_aware_playground/benchmarking/sharegpt.json",  # Path to ShareGPT dataset
 }
 
@@ -124,14 +124,14 @@ def restart_server_with_strategy(strategy, args):
     """Restart the server with a specific routing strategy."""
     print(f"\nRestarting server with routing strategy: {strategy}")
     
-    # Kill existing server process if running
-    print(f"Shutting down existing server...")
-    try:
-        # Shut down the Ray Serve instance
-        subprocess.run(["serve", "shutdown"], check=False)
-        time.sleep(2)  # Give it time to shut down
-    except Exception as e:
-        print(f"Error stopping server: {e}")
+    # # Kill existing server process if running
+    # print(f"Shutting down existing server...")
+    # try:
+    #     # Shut down the Ray Serve instance
+    #     subprocess.run(["serve", "shutdown"], check=False)
+    #     time.sleep(2)  # Give it time to shut down
+    # except Exception as e:
+    #     print(f"Error stopping server: {e}")
 
     # Create a temporary JSON config for passing arguments
     config = {
@@ -147,7 +147,7 @@ def restart_server_with_strategy(strategy, args):
                             "accelerator_type": args.gpu_type,
                             "engine_kwargs": {
                                 "enable_prefix_caching": args.is_prefix_cached,
-                                "disable-lot-requests": True
+                                "disable_log_requests": True
                             },
                             "deployment_config": {
                                 "autoscaling_config": {
@@ -185,7 +185,7 @@ def restart_server_with_strategy(strategy, args):
         try:
             response = requests.get(f"http://{args.host}:{args.router_port}/v1/models")
             if response.status_code == 200:
-                print(f"Server started successfully with strategy {strategy}")
+                print(f"Health check attempt {i+1}/{max_retries}: Server started successfully with strategy {strategy}")
                 return server_process
             else:
                 print(f"Health check attempt {i+1}/{max_retries}: Status code {response.status_code}")
@@ -345,21 +345,21 @@ def main():
         
         # Store results for all strategies in this configuration
         sweep_results = []        
-        try:
-            for strategy in args.scheduler_strategies_dict.keys():
-                restart_server_with_strategy(strategy, args)
-                
-                # Run benchmark with this strategy
-                try:
-                    result = run_single_benchmark(strategy, args)
-                    sweep_results.append(result)
-                except Exception as e:
-                    print(f"Error running benchmark with strategy {strategy}: {e}")
+        # try:
+        for strategy in args.scheduler_strategies_dict.keys():
+            restart_server_with_strategy(strategy, args)
+            
+            # Run benchmark with this strategy
+            try:
+                result = run_single_benchmark(strategy, args)
+                sweep_results.append(result)
+            except Exception as e:
+                print(f"Error running benchmark with strategy {strategy}: {e}")
         
-        finally:
-            # Clean up: stop server if still running
-            subprocess.run(["serve", "shutdown"], check=False)
-            time.sleep(2)  # Give it time to shut down
+        # finally:
+        #     # Clean up: stop server if still running
+        #     subprocess.run(["serve", "shutdown"], check=False)
+        #     time.sleep(2)  # Give it time to shut down
         
         save_results_to_csv(sweep_results, args)
     

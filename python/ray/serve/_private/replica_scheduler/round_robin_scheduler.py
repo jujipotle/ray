@@ -44,14 +44,13 @@ from ray.util import metrics
 
 logger = logging.getLogger(SERVE_LOGGER_NAME)
 
-
 class LocalityScope(str, enum.Enum):
     NODE = "NODE"
     AVAILABILITY_ZONE = "AVAILABILITY_ZONE"
 
 
 class RoundRobinReplicaScheduler(ReplicaScheduler):
-    """Chooses a replica for each request using round robin scheduling.
+    """Chooses a replica for each request using the "round robin" procedure.
 
     Requests are scheduled in FIFO order.
 
@@ -124,10 +123,6 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
         self._replica_queue_len_cache = ReplicaQueueLengthCache(
             get_curr_time_s=get_curr_time_s,
         )
-
-        # Counter for round robin scheduling
-        self._round_robin_counter = 0
-        self._replica_ids_list = []
 
         # NOTE(edoakes): Python 3.10 removed the `loop` parameter to `asyncio.Event`.
         # Now, the `asyncio.Event` will call `get_running_loop` in its constructor to
@@ -491,8 +486,8 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
                 if candidate_replica_ids:
                     chosen_ids = random.sample(
                         list(candidate_replica_ids),
-                        # k=min(2, len(candidate_replica_ids))
-                        k=len(candidate_replica_ids)
+                        k=len(candidate_replica_ids),
+                        # k=min(2, len(candidate_replica_ids)),
                     )
                     yield [self._replicas[chosen_id] for chosen_id in chosen_ids]
 
@@ -628,9 +623,7 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
         self,
         candidates: List[RunningReplica],
         backoff_index: int,
-        pending_request: Optional[PendingRequest],
     ) -> Optional[RunningReplica]:
-        print(f"[round_robin_scheduler.py: select_from_candidate_replicas] Candidates: {[c.replica_id.unique_id for c in candidates]}")
         """Chooses the best replica from the list of candidates.
 
         If none of the replicas can be scheduled, returns `None`.
@@ -671,6 +664,49 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
         # Fallback to first candidate if no replicas in set
         print(f"[round_robin_scheduler.py: select_from_candidate_replicas] No replicas in set, falling back to first candidate: {candidates[0].replica_id}")
         return candidates[0]
+
+        # lowest_queue_len = math.inf
+        # chosen_replica_id: Optional[str] = None
+        # not_in_cache: List[RunningReplica] = []
+        # if self._use_replica_queue_len_cache:
+        #     # Populate available queue lens from the cache.
+        #     for r in candidates:
+        #         queue_len = self._replica_queue_len_cache.get(r.replica_id)
+        #         # Include replicas whose queues are full as not in the cache so we will
+        #         # actively probe them. Otherwise we may end up in "deadlock" until their
+        #         # cache entries expire.
+        #         if queue_len is None or queue_len >= r.max_ongoing_requests:
+        #             not_in_cache.append(r)
+        #         elif queue_len < lowest_queue_len:
+        #             lowest_queue_len = queue_len
+        #             chosen_replica_id = r.replica_id
+        # else:
+        #     not_in_cache = candidates
+
+        # # If there is a valid replica to schedule based on the information in the
+        # # cache, schedule it. Else fall back to actively probing.
+        # if chosen_replica_id is None:
+        #     for r, queue_len in await self._probe_queue_lens(
+        #         not_in_cache,
+        #         backoff_index,
+        #     ):
+        #         if queue_len is None:
+        #             # None is returned if we failed to get the queue len.
+        #             continue
+
+        #         if queue_len < r.max_ongoing_requests and queue_len < lowest_queue_len:
+        #             lowest_queue_len = queue_len
+        #             chosen_replica_id = r.replica_id
+        # elif len(not_in_cache) > 0:
+        #     # If there are replicas without a valid cache entry, probe them in the
+        #     # background to populate the cache.
+        #     self._event_loop.create_task(
+        #         self._probe_queue_lens(not_in_cache, backoff_index)
+        #     )
+
+        # # `self._replicas` may have been updated since the candidates were chosen.
+        # # In that case, return `None` so a new one is selected.
+        # return self._replicas.get(chosen_replica_id, None)
 
     def _get_pending_request_matching_metadata(
         self,
@@ -717,14 +753,13 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
                 pr.future.set_result(replica)
                 break
 
-    # Modify this to pass pending_request too
     def _get_next_pending_request_metadata_to_schedule(
         self,
-    ) -> Optional[Tuple[RequestMetadata, PendingRequest]]:
+    ) -> Optional[RequestMetadata]:
         while len(self._pending_requests_to_schedule) > 0:
             pr = self._pending_requests_to_schedule.popleft()
             if not pr.future.done():
-                return pr.metadata, pr
+                return pr.metadata
 
         return None
 
@@ -737,20 +772,14 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
         has exceeded the target number. Else it will loop again to schedule another
         replica.
         """
-        print(f"[round_robin_scheduler.py: fulfill_pending_requests] called")
         try:
             while len(self._scheduling_tasks) <= self.target_num_scheduling_tasks:
                 start_time = time.time()
                 backoff_index = 0
-                request_metadata, pending_request = self._get_next_pending_request_metadata_to_schedule()
-                print(f"[round_robin_scheduler.py: fulfill_pending_requests] Request metadata: {request_metadata}")
-                # print(f"[round_robin_scheduler.py: fulfill_pending_requests] Pending request: {pending_request}")
+                request_metadata = self._get_next_pending_request_metadata_to_schedule()
                 async for candidates in self.choose_two_replicas_with_backoff(
                     request_metadata
                 ):
-                    print(
-                        f"[round_robin_scheduler.py: fulfill_pending_requests] Candidates: {candidates}"
-                    )
                     # Clear out pending requests at the front of the
                     # queue that have been cancelled, then reevaluate
                     # if we need to continue this scheduling task.
@@ -764,7 +793,7 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
                         break
 
                     replica = await self.select_from_candidate_replicas(
-                        candidates, backoff_index, pending_request
+                        candidates, backoff_index
                     )
                     if replica is not None:
                         self.fulfill_next_pending_request(replica, request_metadata)
@@ -805,7 +834,6 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
         in for scheduling. However, in cases where the number of available replicas
         is updated or a task exits unexpectedly, we may need to start multiple.
         """
-        print(f"[round_robin_scheduler.py: maybe_start_scheduling_tasks] maybe_start_scheduling_tasks() called")
         tasks_to_start = (
             self.target_num_scheduling_tasks - self.curr_num_scheduling_tasks
         )
@@ -830,30 +858,6 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
         Upon cancellation (by the caller), the future is cancelled and will be passed
         over when a replica becomes available.
         """
-        print(
-            f"[round_robin_scheduler.py: choose_replica_for_request] Choose replica for request"
-        )
-        # print(f"[prefix_aware_scheduler.py: choose_replica_for_request] self._replica_id_set: {self._replica_id_set}")
-        # candidates = list(self._replica_id_set)
-        # input_text = self._get_input_text(pending_request)
-        # chosen_replica = None
-        # async for matched_text, tenant_id_unique_id in self._tree_deployment.options(stream=True).prefix_match_generator.remote(input_text):
-        #     print(f"[prefix_aware_scheduler.py: choose_replica_for_request] Checking tenant: {tenant_id_unique_id} with matched text: {matched_text}")
-        #     # Find replicas for this tenant
-        #     if chosen_replica is None:
-        #         chosen_replica = candidates[0]
-        #     for replica in candidates:
-        #         # Check if candidate replica is the matched tenant
-        #         if tenant_id_unique_id == replica.replica_id.unique_id:
-        #             chosen_replica = replica
-        # if chosen_replica is None:
-        #     chosen_replica = candidates[0]
-        #     print(f"[prefix_aware_scheduler.py: choose_replica_for_request] No matches for input_text {input_text}; choosing candidates[0]: {chosen_replica.replica_id.unique_id}")
-        # print(f"[prefix_aware_scheduler.py: choose_replica_for_request] Updating tree with input_text {input_text} and tenant {chosen_replica.replica_id.unique_id}")
-        # self._tree_deployment.insert.remote(input_text, chosen_replica.replica_id.unique_id)
-        # return chosen_replica
-        
-        # return selected_url        
         try:
             if not is_retry:
                 self._pending_requests_to_fulfill.append(pending_request)
@@ -877,6 +881,7 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
                     index += 1
 
                 self._pending_requests_to_schedule.insert(index, pending_request)
+
             self.maybe_start_scheduling_tasks()
             replica = await pending_request.future
         except asyncio.CancelledError as e:
