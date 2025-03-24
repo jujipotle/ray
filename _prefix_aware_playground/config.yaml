@@ -34,11 +34,14 @@ applications:
             model_id: qwen-0.5b
             model_source: Qwen/Qwen2.5-0.5B-Instruct
           accelerator_type: L4
+          engine_kwargs:
+            enable_prefix_caching: true
           deployment_config:
             autoscaling_config:
-                min_replicas: 2
-                max_replicas: 2
-          replica_scheduler_cls: ray.serve._private.replica_scheduler.prefix_aware_scheduler.PrefixAwareReplicaScheduler
+                initial_replicas: 4
+                min_replicas: 4
+                max_replicas: 4
+          replica_scheduler_cls: ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler
   import_path: ray.serve.llm:build_openai_app
   name: llm_app
   route_prefix: "/"

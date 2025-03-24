@@ -584,7 +584,7 @@ def sample_sharegpt_requests(
                 if fixed_output_len is None
                 else fixed_output_len
             )
-            if prompt_len < 1500 or (fixed_output_len is None and output_len < 4):
+            if prompt_len < 4 or (fixed_output_len is None and output_len < 4):
                 # Prune too short sequences
                 continue
             # print(f"Prompt length: {prompt_len}, length of filtered dataset: {len(filtered_dataset)}")

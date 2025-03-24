@@ -50,8 +50,8 @@ class LocalityScope(str, enum.Enum):
     AVAILABILITY_ZONE = "AVAILABILITY_ZONE"
 
 
-class PrefixAwareReplicaScheduler(ReplicaScheduler):
-    """Chooses a replica for each request using the "power of two choices" procedure.
+class RoundRobinReplicaScheduler(ReplicaScheduler):
+    """Chooses a replica for each request using round robin scheduling.
 
     Requests are scheduled in FIFO order.
 
@@ -106,18 +106,12 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         ] = None,
         scheduler_params: Optional[Dict[str, Any]] = None,
     ):
-        print(f"[prefix_aware_scheduler.py: __init__] Initializing Prefix Aware Replica Scheduler")
-        # Extracting tree_deployment from scheduler_params
-        self._tree_deployment = scheduler_params.get("tree_deployment", None)
-        if self._tree_deployment is None:
-            raise ValueError("tree_deployment must be provided in scheduler_params")
-            
         self._deployment_id = deployment_id
         self._handle_source = handle_source
         self._prefer_local_node_routing = prefer_local_node_routing
         self._prefer_local_az_routing = prefer_local_az_routing
         self._self_node_id = self_node_id
-        self._self_actor_id = self_actor_id # Why is this needed?
+        self._self_actor_id = self_actor_id
         self._self_actor_handle = self_actor_handle
         self._self_availability_zone = self_availability_zone
         self._use_replica_queue_len_cache = use_replica_queue_len_cache
@@ -130,6 +124,10 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         self._replica_queue_len_cache = ReplicaQueueLengthCache(
             get_curr_time_s=get_curr_time_s,
         )
+
+        # Counter for round robin scheduling
+        self._round_robin_counter = 0
+        self._replica_ids_list = []
 
         # NOTE(edoakes): Python 3.10 removed the `loop` parameter to `asyncio.Event`.
         # Now, the `asyncio.Event` will call `get_running_loop` in its constructor to
@@ -626,23 +624,13 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         assert len(result) == len(replicas)
         return result
 
-    def _get_input_text(self, pending_request: PendingRequest) -> str:
-        chat_completion_request = pending_request.args[0]
-        # print(f"[prefix_aware_scheduler.py: _get_input_text] Chat completion request: {chat_completion_request}")
-        if hasattr(chat_completion_request, "messages"):
-            messages = chat_completion_request.messages
-            return "".join(msg.get("content", "") for msg in messages if "content" in msg)
-        elif hasattr(chat_completion_request, "prompt"):
-            return chat_completion_request.prompt
-        else:
-            raise ValueError("Invalid chat completion request")
-
     async def select_from_candidate_replicas(
         self,
         candidates: List[RunningReplica],
         backoff_index: int,
         pending_request: Optional[PendingRequest],
     ) -> Optional[RunningReplica]:
+        print(f"[round_robin_scheduler.py: select_from_candidate_replicas] Candidates: {[c.replica_id.unique_id for c in candidates]}")
         """Chooses the best replica from the list of candidates.
 
         If none of the replicas can be scheduled, returns `None`.
@@ -653,23 +641,36 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         Among replicas that respond within the deadline and don't have full queues, the
         one with the lowest queue length is chosen.
         """
-        # print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Pending request: {pending_request}")
-        print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Candidates: {[c.replica_id.unique_id for c in candidates]}")
-        input_text = self._get_input_text(pending_request)
-        chosen_replica = None
-        async for matched_text, tenant_id_unique_id in self._tree_deployment.options(stream=True).prefix_match_generator.remote(input_text):
-            print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Checking tenant: {tenant_id_unique_id} with matched text: {matched_text}")
-            # Find the candidate replica that matches the prefix-matched tenant
-            for replica in candidates:
-                if tenant_id_unique_id == replica.replica_id.unique_id:
-                    chosen_replica = replica
-                    break
-        if chosen_replica is None:
-            chosen_replica = candidates[0]
-            print(f"[prefix_aware_scheduler.py: choose_replica_for_request] No matches for input_text {input_text}; choosing candidates[0]: {chosen_replica.replica_id.unique_id}")
-        print(f"[prefix_aware_scheduler.py: choose_replica_for_request] Updating tree with input_text {input_text} and tenant {chosen_replica.replica_id.unique_id}")
-        self._tree_deployment.insert.remote(input_text, chosen_replica.replica_id.unique_id)
-        return chosen_replica
+        if not candidates:
+            print(f"[round_robin_scheduler.py: select_from_candidate_replicas] No candidates available")
+            return None
+
+        # Simple round robin selection
+        if len(self._replica_id_set) > 0:
+            if self._replica_ids_list == []:
+                self._replica_ids_list = list(self._replica_id_set)
+            print(f"[round_robin_scheduler.py: select_from_candidate_replicas] Replica IDs list: {self._replica_ids_list}")
+            print(f"[round_robin_scheduler.py: select_from_candidate_replicas] Current counter: {self._round_robin_counter}")
+            
+            # Use modulo to select the next replica in round robin fashion
+            index = self._round_robin_counter % len(self._replica_ids_list)
+            print(f"[round_robin_scheduler.py: select_from_candidate_replicas] Calculated index: {index}")
+            
+            # Return the selected replica
+            selected_replica_id = self._replica_ids_list[index]
+            print(f"[round_robin_scheduler.py: select_from_candidate_replicas] Selected replica ID: {selected_replica_id}")
+            selected_replica = self._replicas[selected_replica_id]
+            print(f"[round_robin_scheduler.py: select_from_candidate_replicas] Selected replica object: {selected_replica}")
+            
+            # Increment the counter for next time
+            self._round_robin_counter += 1
+            print(f"[round_robin_scheduler.py: select_from_candidate_replicas] Updated counter: {self._round_robin_counter}")
+
+            return selected_replica
+        
+        # Fallback to first candidate if no replicas in set
+        print(f"[round_robin_scheduler.py: select_from_candidate_replicas] No replicas in set, falling back to first candidate: {candidates[0].replica_id}")
+        return candidates[0]
 
     def _get_pending_request_matching_metadata(
         self,
@@ -736,19 +737,19 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         has exceeded the target number. Else it will loop again to schedule another
         replica.
         """
-        print(f"[prefix_aware_scheduler.py: fulfill_pending_requests] called")
+        print(f"[round_robin_scheduler.py: fulfill_pending_requests] called")
         try:
             while len(self._scheduling_tasks) <= self.target_num_scheduling_tasks:
                 start_time = time.time()
                 backoff_index = 0
                 request_metadata, pending_request = self._get_next_pending_request_metadata_to_schedule()
-                print(f"[prefix_aware_scheduler.py: fulfill_pending_requests] Request metadata: {request_metadata}")
-                # print(f"[prefix_aware_scheduler.py: fulfill_pending_requests] Pending request: {pending_request}")
+                print(f"[round_robin_scheduler.py: fulfill_pending_requests] Request metadata: {request_metadata}")
+                # print(f"[round_robin_scheduler.py: fulfill_pending_requests] Pending request: {pending_request}")
                 async for candidates in self.choose_two_replicas_with_backoff(
                     request_metadata
                 ):
                     print(
-                        f"[prefix_aware_scheduler.py: fulfill_pending_requests] Candidates: {candidates}"
+                        f"[round_robin_scheduler.py: fulfill_pending_requests] Candidates: {candidates}"
                     )
                     # Clear out pending requests at the front of the
                     # queue that have been cancelled, then reevaluate
@@ -804,7 +805,7 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         in for scheduling. However, in cases where the number of available replicas
         is updated or a task exits unexpectedly, we may need to start multiple.
         """
-        print(f"[prefix_aware_scheduler.py: maybe_start_scheduling_tasks] maybe_start_scheduling_tasks() called")
+        print(f"[round_robin_scheduler.py: maybe_start_scheduling_tasks] maybe_start_scheduling_tasks() called")
         tasks_to_start = (
             self.target_num_scheduling_tasks - self.curr_num_scheduling_tasks
         )
@@ -830,7 +831,7 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         over when a replica becomes available.
         """
         print(
-            f"[prefix_aware_scheduler.py: choose_replica_for_request] Choose replica for request"
+            f"[round_robin_scheduler.py: choose_replica_for_request] Choose replica for request"
         )
         # print(f"[prefix_aware_scheduler.py: choose_replica_for_request] self._replica_id_set: {self._replica_id_set}")
         # candidates = list(self._replica_id_set)

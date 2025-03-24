@@ -66,7 +66,7 @@ class _DeploymentHandleBase:
         self.request_counter = _request_counter or self._create_request_counter(
             app_name, deployment_name, self.handle_id
         )
-
+        self.switched_router = False
         self._router: Optional[Router] = _router
         if _create_router is None:
             self._create_router = create_router
@@ -177,7 +177,7 @@ class _DeploymentHandleBase:
         print(f"[handle.py: _options] new_handle_options: {new_handle_options}, self.handle_options: {self.handle_options}")
         # If replica_scheduler_cls is specified, we swap out self._router with a new router that uses the new scheduler.
         # We pass scheduler_params to the new router.
-        if new_handle_options.replica_scheduler_cls is not None:
+        if self.switched_router == False and new_handle_options.replica_scheduler_cls is not None:
             self._router = self._create_router(
                 handle_id=self.handle_id,
                 deployment_id=self.deployment_id,
@@ -185,6 +185,7 @@ class _DeploymentHandleBase:
                 replica_scheduler_cls=new_handle_options.replica_scheduler_cls,
                 scheduler_params=new_handle_options.scheduler_params,
             )
+            self.switched_router = True
 
         return DeploymentHandle(
             self.deployment_name,

@@ -1,4 +1,4 @@
-from ray.serve._private.replica_scheduler import PrefixAwareReplicaScheduler, PowerOfTwoChoicesReplicaScheduler
+from ray.serve._private.replica_scheduler import PrefixAwareReplicaScheduler, PowerOfTwoChoicesReplicaScheduler, RoundRobinReplicaScheduler
 import asyncio
 import json
 import os

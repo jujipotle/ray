@@ -11,3 +11,6 @@ from ray.serve._private.replica_scheduler.replica_wrapper import (  # noqa: F401
 from ray.serve._private.replica_scheduler.prefix_aware_scheduler import ( # noqa: F401
     PrefixAwareReplicaScheduler
 )
+from ray.serve._private.replica_scheduler.round_robin_scheduler import ( # noqa: F401
+    RoundRobinReplicaScheduler
+)
