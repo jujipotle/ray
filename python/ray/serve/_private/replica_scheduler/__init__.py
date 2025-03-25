@@ -14,3 +14,6 @@ from ray.serve._private.replica_scheduler.prefix_aware_scheduler import ( # noqa
 from ray.serve._private.replica_scheduler.round_robin_scheduler import ( # noqa: F401
     RoundRobinReplicaScheduler
 )
+from ray.serve._private.replica_scheduler.llm_pow_2_scheduler import ( # noqa: F401
+    LLMPowerOfTwoChoicesReplicaScheduler
+)

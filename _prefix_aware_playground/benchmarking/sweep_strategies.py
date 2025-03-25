@@ -29,8 +29,8 @@ DEFAULT_CONFIG = {
     # "worker_ports": "8001",
     "scheduler_strategies_dict": {
         "prefix_aware": "ray.serve._private.replica_scheduler.prefix_aware_scheduler.PrefixAwareReplicaScheduler",
-        # "pow_of_2": "ray.serve._private.replica_scheduler.pow_2_scheduler.PowerOfTwoChoicesReplicaScheduler",
-        # "round_robin": "ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler",
+        "pow_of_2": "ray.serve._private.replica_scheduler.llm_pow_2_scheduler.LLMPowerOfTwoChoicesReplicaScheduler",
+        "round_robin": "ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler",
     },
 
     # Model Info
@@ -53,7 +53,7 @@ DEFAULT_CONFIG = {
     "gen-question-len": 512,
 
     # ShareGPT Info
-    "num_prompts": 1000,  # Number of prompts to sample from ShareGPT
+    "num_prompts": 10,  # Number of prompts to sample from ShareGPT
     "max_conversations": 10000,  # Max conversations to include from ShareGPT; num_unique_prefixes is approximately max_conversations / 10. To aim for num_unique_prefixes = num_prompts / 10, set max_conversations = num_prompts.
     "dataset_path": "/home/ray/default/work/ray/_prefix_aware_playground/benchmarking/sharegpt.json",  # Path to ShareGPT dataset
 }
@@ -174,7 +174,16 @@ def restart_server_with_strategy(strategy, args):
     print(f"Starting server with strategy '{strategy}': {args.scheduler_strategies_dict[strategy]}")
     cmd = ["serve", "run", temp_path]
     print(f"Executing: {' '.join(cmd)}")
-    server_process = subprocess.Popen(cmd)
+    
+    # Open log files for writing (will overwrite if they exist)
+    stdout_log = open(f"logs/{strategy}_stdout.log", "w")
+    stderr_log = open(f"logs/{strategy}_stderr.log", "w")
+    
+    server_process = subprocess.Popen(
+        cmd,
+        stdout=stdout_log,
+        stderr=stderr_log
+    )
     
     # Wait for server to start - give it more time and retry health checks
     print("Waiting for server to start...")
@@ -186,14 +195,14 @@ def restart_server_with_strategy(strategy, args):
             response = requests.get(f"http://{args.host}:{args.router_port}/v1/models")
             if response.status_code == 200:
                 print(f"Health check attempt {i+1}/{max_retries}: Server started successfully with strategy {strategy}")
-                return server_process
+                return server_process, stdout_log, stderr_log
             else:
                 print(f"Health check attempt {i+1}/{max_retries}: Status code {response.status_code}")
         except Exception as e:
             print(f"Health check attempt {i+1}/{max_retries}: {e}")
     
     print(f"Failed to start server with strategy {strategy} after {max_retries} attempts")
-    return None
+    return None, None, None
 
 def run_single_benchmark(strategy, args):
     """Run a single benchmark with the given routing strategy and return the result."""
@@ -279,7 +288,7 @@ def run_single_benchmark(strategy, args):
         
     return result
 
-def save_results_to_csv(sweep_results, args):
+def save_results_to_csv(results, args):
     """Save the benchmark results to a CSV file."""
     # Define CSV column order
     shared_params = ["gpu_type", "model_name", "num_servers", "is_prefix_cached", "benchmark_label", "scheduler_strategy", "output_len", "max_concurrency", "with_warmup"]
@@ -310,7 +319,7 @@ def save_results_to_csv(sweep_results, args):
     ]
 
     ordered_columns = shared_params + dataset_params + result_keys
-    df = pd.DataFrame(sweep_results)
+    df = pd.DataFrame(results)
     df = df[[col for col in ordered_columns if col in df.columns]]
     
     # Round numeric values to 4 decimal places
@@ -343,26 +352,31 @@ def main():
         for key, value in sweep_config.items():
             setattr(args, key, value)
         
-        # Store results for all strategies in this configuration
-        sweep_results = []        
         # try:
         for strategy in args.scheduler_strategies_dict.keys():
-            restart_server_with_strategy(strategy, args)
+            # Store the returned log file handles
+            server_process, stdout_log, stderr_log = restart_server_with_strategy(strategy, args)
             
             # Run benchmark with this strategy
             try:
                 result = run_single_benchmark(strategy, args)
-                sweep_results.append(result)
+                # Save result immediately after each strategy run
+                save_results_to_csv([result], args)
             except Exception as e:
-                print(f"Error running benchmark with strategy {strategy}: {e}")
+                print(f"Error running benchmark with strategy {strategy}: {e}")        
+            finally:
+                print("Sleeping for 5 seconds (to allow load distribution to be written to file)...")
+                time.sleep(5)
+                # Close log files
+                stdout_log.close()
+                stderr_log.close()
+                
+                # Clean up: stop server if still running
+                subprocess.run(["serve", "shutdown", "--yes"], check=False)
+                print("Sleeping for 5 seconds (to allow server to shut down)...")
+                time.sleep(5)  # Give it time to shut down
         
-        # finally:
-        #     # Clean up: stop server if still running
-        #     subprocess.run(["serve", "shutdown"], check=False)
-        #     time.sleep(2)  # Give it time to shut down
-        
-        save_results_to_csv(sweep_results, args)
-    
+
 if __name__ == "__main__":
     try:
         exit_code = main()

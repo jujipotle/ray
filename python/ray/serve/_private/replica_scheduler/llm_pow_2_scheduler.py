@@ -51,7 +51,7 @@ class LocalityScope(str, enum.Enum):
     AVAILABILITY_ZONE = "AVAILABILITY_ZONE"
 
 
-class PowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
+class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
     """Chooses a replica for each request using the "power of two choices" procedure.
 
     Requests are scheduled in FIFO order.

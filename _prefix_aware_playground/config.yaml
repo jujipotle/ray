@@ -39,9 +39,9 @@ applications:
             disable_log_requests: true
           deployment_config:
             autoscaling_config:
-                initial_replicas: 4
-                min_replicas: 4
-                max_replicas: 4
+                initial_replicas: 1
+                min_replicas: 1
+                max_replicas: 1
           replica_scheduler_cls: ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler
   import_path: ray.serve.llm:build_openai_app
   name: llm_app

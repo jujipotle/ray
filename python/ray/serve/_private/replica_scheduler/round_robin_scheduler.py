@@ -1,3 +1,5 @@
+import os
+import json
 import asyncio
 import enum
 import logging
@@ -105,6 +107,13 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
         ] = None,
         scheduler_params: Optional[Dict[str, Any]] = None,
     ):
+        # Dictionary to track load distribution over time
+        self._load_distribution: Dict[float, Dict[str, int]] = {}
+        self._benchmark_start_time = 0.0
+        self._zero_load_count = 0
+        self._load_tracking_task = None
+        self._seen_first_request = False
+
         self._replica_ids_list = []
         self._round_robin_counter = 0
 
@@ -252,6 +261,53 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
     def replica_queue_len_cache(self) -> ReplicaQueueLengthCache:
         return self._replica_queue_len_cache
 
+    async def _track_load_distribution(self):
+        """Periodically track the load distribution across replicas."""
+        try:
+            # Start tracking immediately
+            self._benchmark_start_time = time.time()
+            print("Beginning to track load distribution immediately")
+            
+            while True:
+                await asyncio.sleep(0.1)
+                current_time = time.time()
+                
+                # Get current load for all replicas
+                total_load = 0
+                current_load = {}
+                
+                for replica_id, replica in self._replicas.items():
+                    queue_len = self._replica_queue_len_cache.get(replica_id) or 0
+                    current_load[replica_id.unique_id] = queue_len
+                    total_load += queue_len
+
+                print(f"Current time: {current_time}, total load: {total_load}")
+
+                elapsed_since_start = round(current_time - self._benchmark_start_time, 2) # Round to hundredth of a second
+                self._load_distribution[elapsed_since_start] = current_load
+                
+                if self._seen_first_request and total_load == 0:
+                    self._zero_load_count += 1
+                    if self._zero_load_count >= 10:
+                        print("Benchmark ended, writing load distribution to file")
+                        # Write results to file
+                        results_dir = "/home/ray/default/work/ray/_prefix_aware_playground/benchmarking/results/load_distributions"
+                        os.makedirs(results_dir, exist_ok=True)
+                        filename = os.path.join(
+                            results_dir, 
+                            f"round_robin_{int(time.time())}.json"
+                        )
+                        with open(filename, "w") as f:
+                            json.dump(self._load_distribution, f, indent=2)
+                        break
+                elif total_load > 4:
+                    self._zero_load_count = 0
+                    self._seen_first_request = True
+        except Exception as e:
+            print(f"Error in load distribution tracking: {e}")
+        finally:
+            self._load_tracking_task = None
+
     def create_replica_wrapper(
         self, replica_info: RunningReplicaInfo
     ) -> RunningReplica:
@@ -337,6 +393,11 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
         self._event_loop.create_task(self._probe_queue_lens(replicas_to_ping, 0))
         self._replicas_updated_event.set()
         self.maybe_start_scheduling_tasks()
+
+        # Start load tracking task if it's not already running and we have replicas
+        if self._load_tracking_task is None and len(self._replicas) > 0:
+            self._load_tracking_task = self._event_loop.create_task(self._track_load_distribution())
+
 
     def _get_replica_ids_with_fewest_multiplexed_models(self) -> Set[str]:
         """Get the set of replicas that have the fewest multiplexed models loaded."""
