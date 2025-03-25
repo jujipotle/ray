@@ -276,6 +276,7 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
             
             while True:
                 await asyncio.sleep(0.1)
+                self._probe_queue_lens(self._replicas.values(), 0)
                 current_time = time.time()
                 
                 # Get current load for all replicas
@@ -714,12 +715,12 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
 
         Among replicas that respond within the deadline and don't have full queues, the
         one with the lowest queue length is chosen.
-        """
+        # """
         # print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Pending request: {pending_request}")
         # print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Candidates: {[c.replica_id.unique_id for c in candidates]}")
         if pending_request is None:
-            # print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Pending request is None, choosing first replica")
-            chosen_replica = candidates[0]
+            # print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Pending request is None, choosing random replica")
+            chosen_replica = random.choice(candidates)
         else:
             input_text = self._get_input_text(pending_request)
             chosen_replica = None
@@ -728,48 +729,24 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
                 # Find the candidate replica that matches the prefix-matched tenant
                 for replica in candidates:
                     if tenant_id_unique_id == replica.replica_id.unique_id:
-                        chosen_replica = replica
-                        break
+                        if self._replica_queue_len_cache.get(replica.replica_id) <= 16:
+                            chosen_replica = replica
+                            break
             if chosen_replica is None:
-                chosen_replica = candidates[0]
-            #     print(f"[prefix_aware_scheduler.py: choose_replica_for_request] No matches for input_text {input_text}; choosing candidates[0]: {chosen_replica.replica_id.unique_id}")
+                chosen_replica = random.choice(candidates)
+            #     print(f"[prefix_aware_scheduler.py: choose_replica_for_request] No matches for input_text {input_text}; choosing random replica: {chosen_replica.replica_id.unique_id}")
             # print(f"[prefix_aware_scheduler.py: choose_replica_for_request] Updating tree with input_text {input_text} and tenant {chosen_replica.replica_id.unique_id}")
             self._tree_deployment.insert.remote(input_text, chosen_replica.replica_id.unique_id)
-        # return chosen_replica
-
-        # TO SEE IF THE SLOWNESS IF FROM THE TREE MATCHING ITSELF OR FROM BAD SCHEDULING LOGIC
-        if not candidates:
-            # print(f"[round_robin_scheduler.py: select_from_candidate_replicas] No candidates available")
-            return None
-
-        # Simple round robin selection
-        if len(self._replica_id_set) > 0:
-            if self._replica_ids_list == []:
-                self._replica_ids_list = list(self._replica_id_set)
-            # print(f"[round_robin_scheduler.py: select_from_candidate_replicas] Replica IDs list: {self._replica_ids_list}")
-            # print(f"[round_robin_scheduler.py: select_from_candidate_replicas] Current counter: {self._round_robin_counter}")
-            
-            # Use modulo to select the next replica in round robin fashion
-            index = self._round_robin_counter % len(self._replica_ids_list)
-            # print(f"[round_robin_scheduler.py: select_from_candidate_replicas] Calculated index: {index}")
-            
-            # Return the selected replica
-            selected_replica_id = self._replica_ids_list[index]
-            # print(f"[round_robin_scheduler.py: select_from_candidate_replicas] Selected replica ID: {selected_replica_id}")
-            selected_replica = self._replicas[selected_replica_id]
-            # print(f"[round_robin_scheduler.py: select_from_candidate_replicas] Selected replica object: {selected_replica}")
-            
-            # Increment the counter for next time
-            self._round_robin_counter += 1
-            # print(f"[round_robin_scheduler.py: select_from_candidate_replicas] Updated counter: {self._round_robin_counter}")
-
-            # return selected_replica
-        
-        # Fallback to first candidate if no replicas in set
-        # print(f"[round_robin_scheduler.py: select_from_candidate_replicas] No replicas in set, falling back to first candidate: {candidates[0].replica_id}")
-        # return candidates[0]
-
         return chosen_replica
+        
+        # 1. Load balancing: if imbalanced, select the replica with the smallest load
+
+        # 2. Use prefix-matching
+
+        # 2.1 If match-rate > 0.5: use the selected worker
+
+        # 2.2 If match-rate < 0.5: use the worker with the smallest prefix tree
+
 
     def _get_pending_request_matching_metadata(
         self,

@@ -270,6 +270,7 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
             
             while True:
                 await asyncio.sleep(0.1)
+                self._probe_queue_lens(self._replicas.values(), 0)
                 current_time = time.time()
                 
                 # Get current load for all replicas
@@ -726,51 +727,8 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
             return selected_replica
         
         # Fallback to first candidate if no replicas in set
-        print(f"[round_robin_scheduler.py: select_from_candidate_replicas] No replicas in set, falling back to first candidate: {candidates[0].replica_id}")
-        return candidates[0]
-
-        # lowest_queue_len = math.inf
-        # chosen_replica_id: Optional[str] = None
-        # not_in_cache: List[RunningReplica] = []
-        # if self._use_replica_queue_len_cache:
-        #     # Populate available queue lens from the cache.
-        #     for r in candidates:
-        #         queue_len = self._replica_queue_len_cache.get(r.replica_id)
-        #         # Include replicas whose queues are full as not in the cache so we will
-        #         # actively probe them. Otherwise we may end up in "deadlock" until their
-        #         # cache entries expire.
-        #         if queue_len is None or queue_len >= r.max_ongoing_requests:
-        #             not_in_cache.append(r)
-        #         elif queue_len < lowest_queue_len:
-        #             lowest_queue_len = queue_len
-        #             chosen_replica_id = r.replica_id
-        # else:
-        #     not_in_cache = candidates
-
-        # # If there is a valid replica to schedule based on the information in the
-        # # cache, schedule it. Else fall back to actively probing.
-        # if chosen_replica_id is None:
-        #     for r, queue_len in await self._probe_queue_lens(
-        #         not_in_cache,
-        #         backoff_index,
-        #     ):
-        #         if queue_len is None:
-        #             # None is returned if we failed to get the queue len.
-        #             continue
-
-        #         if queue_len < r.max_ongoing_requests and queue_len < lowest_queue_len:
-        #             lowest_queue_len = queue_len
-        #             chosen_replica_id = r.replica_id
-        # elif len(not_in_cache) > 0:
-        #     # If there are replicas without a valid cache entry, probe them in the
-        #     # background to populate the cache.
-        #     self._event_loop.create_task(
-        #         self._probe_queue_lens(not_in_cache, backoff_index)
-        #     )
-
-        # # `self._replicas` may have been updated since the candidates were chosen.
-        # # In that case, return `None` so a new one is selected.
-        # return self._replicas.get(chosen_replica_id, None)
+        print(f"[round_robin_scheduler.py: select_from_candidate_replicas] No replicas in set, falling back to random candidate: {random.choice(candidates).replica_id}")
+        return random.choice(candidates)
 
     def _get_pending_request_matching_metadata(
         self,
