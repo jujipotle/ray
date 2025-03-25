@@ -521,7 +521,7 @@ class AsyncioRouter:
     async def schedule_and_send_request(
         self, pr: PendingRequest
     ) -> Tuple[ReplicaResult, ReplicaID]:
-        print(f"[router.py] Scheduling and sending request for {pr}")
+        # print(f"[router.py] Scheduling and sending request for {pr}")
         """Choose a replica for the request and send it.
 
         This will block indefinitely if no replicas are available to handle the
