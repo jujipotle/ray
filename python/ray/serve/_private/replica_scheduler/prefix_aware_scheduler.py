@@ -655,20 +655,24 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         """
         # print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Pending request: {pending_request}")
         print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Candidates: {[c.replica_id.unique_id for c in candidates]}")
-        input_text = self._get_input_text(pending_request)
-        chosen_replica = None
-        async for matched_text, tenant_id_unique_id in self._tree_deployment.options(stream=True).prefix_match_generator.remote(input_text):
-            print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Checking tenant: {tenant_id_unique_id} with matched text: {matched_text}")
-            # Find the candidate replica that matches the prefix-matched tenant
-            for replica in candidates:
-                if tenant_id_unique_id == replica.replica_id.unique_id:
-                    chosen_replica = replica
-                    break
-        if chosen_replica is None:
+        if pending_request is None:
+            print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Pending request is None, choosing first replica")
             chosen_replica = candidates[0]
-            print(f"[prefix_aware_scheduler.py: choose_replica_for_request] No matches for input_text {input_text}; choosing candidates[0]: {chosen_replica.replica_id.unique_id}")
-        print(f"[prefix_aware_scheduler.py: choose_replica_for_request] Updating tree with input_text {input_text} and tenant {chosen_replica.replica_id.unique_id}")
-        self._tree_deployment.insert.remote(input_text, chosen_replica.replica_id.unique_id)
+        else:
+            input_text = self._get_input_text(pending_request)
+            chosen_replica = None
+            async for matched_text, tenant_id_unique_id in self._tree_deployment.options(stream=True).prefix_match_generator.remote(input_text):
+                print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Checking tenant: {tenant_id_unique_id} with matched text: {matched_text}")
+                # Find the candidate replica that matches the prefix-matched tenant
+                for replica in candidates:
+                    if tenant_id_unique_id == replica.replica_id.unique_id:
+                        chosen_replica = replica
+                        break
+            if chosen_replica is None:
+                chosen_replica = candidates[0]
+            #     print(f"[prefix_aware_scheduler.py: choose_replica_for_request] No matches for input_text {input_text}; choosing candidates[0]: {chosen_replica.replica_id.unique_id}")
+            # print(f"[prefix_aware_scheduler.py: choose_replica_for_request] Updating tree with input_text {input_text} and tenant {chosen_replica.replica_id.unique_id}")
+            self._tree_deployment.insert.remote(input_text, chosen_replica.replica_id.unique_id)
         return chosen_replica
 
     def _get_pending_request_matching_metadata(
@@ -741,7 +745,12 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
             while len(self._scheduling_tasks) <= self.target_num_scheduling_tasks:
                 start_time = time.time()
                 backoff_index = 0
-                request_metadata, pending_request = self._get_next_pending_request_metadata_to_schedule()
+                result = self._get_next_pending_request_metadata_to_schedule()
+                if result is None:
+                    request_metadata = None
+                    pending_request = None
+                else:
+                    request_metadata, pending_request = result
                 print(f"[prefix_aware_scheduler.py: fulfill_pending_requests] Request metadata: {request_metadata}")
                 # print(f"[prefix_aware_scheduler.py: fulfill_pending_requests] Pending request: {pending_request}")
                 async for candidates in self.choose_two_replicas_with_backoff(

@@ -105,6 +105,9 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
         ] = None,
         scheduler_params: Optional[Dict[str, Any]] = None,
     ):
+        self._replica_ids_list = []
+        self._round_robin_counter = 0
+
         self._deployment_id = deployment_id
         self._handle_source = handle_source
         self._prefer_local_node_routing = prefer_local_node_routing
