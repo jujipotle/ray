@@ -269,7 +269,8 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
             
             while True:
                 await asyncio.sleep(0.1)
-                self._probe_queue_lens(self._replicas.values(), 0)
+                result = await self._probe_queue_lens(self._replicas.values(), 0)
+                result_dict = {r.replica_id: q for r, q in result}
                 current_time = time.time()
                 
                 # Get current load for all replicas
@@ -277,7 +278,7 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
                 current_load = {}
                 
                 for replica_id, replica in self._replicas.items():
-                    queue_len = self._replica_queue_len_cache.get(replica_id) or 0
+                    queue_len = result_dict[replica_id] or 0
                     current_load[replica_id.unique_id] = queue_len
                     total_load += queue_len
 
@@ -700,20 +701,21 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
         lowest_queue_len = math.inf
         chosen_replica_id: Optional[str] = None
         not_in_cache: List[RunningReplica] = []
-        if self._use_replica_queue_len_cache:
-            # Populate available queue lens from the cache.
-            for r in candidates:
-                queue_len = self._replica_queue_len_cache.get(r.replica_id)
-                # Include replicas whose queues are full as not in the cache so we will
-                # actively probe them. Otherwise we may end up in "deadlock" until their
-                # cache entries expire.
-                if queue_len is None or queue_len >= r.max_ongoing_requests:
-                    not_in_cache.append(r)
-                elif queue_len < lowest_queue_len:
-                    lowest_queue_len = queue_len
-                    chosen_replica_id = r.replica_id
-        else:
-            not_in_cache = candidates
+        # if self._use_replica_queue_len_cache:
+        #     # Populate available queue lens from the cache.
+        #     for r in candidates:
+        #         queue_len = self._replica_queue_len_cache.get(r.replica_id)
+        #         # Include replicas whose queues are full as not in the cache so we will
+        #         # actively probe them. Otherwise we may end up in "deadlock" until their
+        #         # cache entries expire.
+        #         if queue_len is None or queue_len >= r.max_ongoing_requests:
+        #             not_in_cache.append(r)
+        #         elif queue_len < lowest_queue_len:
+        #             lowest_queue_len = queue_len
+        #             chosen_replica_id = r.replica_id
+        # else:
+        #     not_in_cache = candidates
+        not_in_cache = candidates
 
         # If there is a valid replica to schedule based on the information in the
         # cache, schedule it. Else fall back to actively probing.

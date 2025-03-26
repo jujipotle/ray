@@ -270,7 +270,8 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
             
             while True:
                 await asyncio.sleep(0.1)
-                self._probe_queue_lens(self._replicas.values(), 0)
+                result = await self._probe_queue_lens(self._replicas.values(), 0)
+                result_dict = {r.replica_id: q for r, q in result}
                 current_time = time.time()
                 
                 # Get current load for all replicas
@@ -278,7 +279,7 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
                 current_load = {}
                 
                 for replica_id, replica in self._replicas.items():
-                    queue_len = self._replica_queue_len_cache.get(replica_id) or 0
+                    queue_len = result_dict[replica_id] or 0
                     current_load[replica_id.unique_id] = queue_len
                     total_load += queue_len
 

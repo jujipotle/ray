@@ -28,10 +28,10 @@ DEFAULT_CONFIG = {
     "router_port": 8000,
     # "worker_ports": "8001",
     "scheduler_strategies_dict": {
-        # "random": "ray.serve._private.replica_scheduler.random_scheduler.RandomReplicaScheduler",
-        "round_robin": "ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler",
-        "pow_of_2": "ray.serve._private.replica_scheduler.llm_pow_2_scheduler.LLMPowerOfTwoChoicesReplicaScheduler",
-        "prefix_aware": "ray.serve._private.replica_scheduler.prefix_aware_scheduler.PrefixAwareReplicaScheduler",
+        "random": "ray.serve._private.replica_scheduler.random_scheduler.RandomReplicaScheduler",
+        # "round_robin": "ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler",
+        # "pow_of_2": "ray.serve._private.replica_scheduler.llm_pow_2_scheduler.LLMPowerOfTwoChoicesReplicaScheduler",
+        # "prefix_aware": "ray.serve._private.replica_scheduler.prefix_aware_scheduler.PrefixAwareReplicaScheduler",
     },
 
     # Model Info
@@ -182,8 +182,10 @@ def restart_server_with_strategy(strategy, args):
     
     server_process = subprocess.Popen(
         cmd,
-        stdout=stdout_log,
-        stderr=stderr_log
+        # stdout=stdout_log,
+        # stderr=stderr_log
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
     )
     
     # Wait for server to start - give it more time and retry health checks
@@ -366,8 +368,8 @@ def main():
             except Exception as e:
                 print(f"Error running benchmark with strategy {strategy}: {e}")        
             finally:
-                print("Sleeping for 5 seconds (to allow load distribution to be written to file)...")
-                time.sleep(5)
+                print("Sleeping for 10 seconds (to allow load distribution to be written to file)...")
+                time.sleep(10)
                 # Close log files
                 stdout_log.close()
                 stderr_log.close()

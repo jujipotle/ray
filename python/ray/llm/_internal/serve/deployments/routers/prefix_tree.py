@@ -181,7 +181,8 @@ class PrefixTree:
             key=lambda x: x[1],
             reverse=True
         )
-        
+        if not sorted_matches:
+            yield ("", "empty")
         # Yield results in order
         for tenant, _, match_text in sorted_matches:
             yield (match_text, tenant)
