@@ -302,7 +302,7 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
                     if self._zero_load_count >= 10:
                         print("Benchmark ended, writing load distribution to file")
                         # Write results to file
-                        results_dir = "/home/ray/default/work/ray/_prefix_aware_playground/benchmarking/results/load_distributions"
+                        results_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/load_distributions"
                         os.makedirs(results_dir, exist_ok=True)
                         filename = os.path.join(
                             results_dir, 
@@ -720,6 +720,11 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         Among replicas that respond within the deadline and don't have full queues, the
         one with the lowest queue length is chosen.
         """
+        if pending_request is None:
+            chosen_replica = random.choice(candidates)
+            return chosen_replica
+
+        # # Self-defined running_queue
         # # Compute current load statistics from the running queue
         # if self.running_queue:
         #     max_load = max(self.running_queue.values())
@@ -771,97 +776,67 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         #     self.running_queue[selected_url] = 1
 
         # # Insert the text into the tree for future matching.
-        # if pending_request is not None:
-        #     print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Inserting text into tree: {text}, Selected URL: {selected_url}")
-        #     self._tree_deployment.insert.remote(text, selected_url)
+        # print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Inserting text into tree: {text}, Selected URL: {selected_url}")
+        # self._tree_deployment.insert.remote(text, selected_url)
         
         # return selected_url
         
-        # result = await self._probe_queue_lens(candidates, 0)
-        # result_dict = {r.replica_id: q for r, q in result}
 
-        # # print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Pending request: {pending_request}")
-        # # print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Candidates: {[c.replica_id.unique_id for c in candidates]}")
-        # # Filter out None values and provide a default if all are None
-        # valid_values = [v for v in result_dict.values() if v is not None]
-        # if valid_values:
-        #     max_load = max(valid_values)
-        #     min_load = min(valid_values)
-        # else:
-        #     max_load = 0
-        #     min_load = 0
-        # # Determine if the load is imbalanced.
-        # print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] result_dict: {result_dict}")
-        # print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] max_load: {max_load}, min_load: {min_load}")
-        # is_imbalanced = max_load - min_load > 10
-        # if is_imbalanced:
-        #     chosen_replica = min(candidates, key=lambda x: result_dict[x.replica_id])
-        # else:
-        #     # Use tree-based prefix matching
-        #     input_text = self._get_input_text(pending_request)
-        #     chosen_replica = None
-            
-        #     # Try to find a prefix match in the tree
-        #     async for matched_text, tenant_id_unique_id in self._tree_deployment.options(stream=True).prefix_match_generator.remote(input_text):
-        #         # Calculate match rate
-        #         match_rate = len(matched_text) / len(input_text) if input_text else 0
-                    
-        #         # Find the candidate replica that matches the prefix-matched tenant
-        #         for replica in candidates:
-        #             if tenant_id_unique_id == replica.replica_id.unique_id:
-        #                 # If match rate is good enough and queue isn't too full, use this replica
-        #                 if match_rate > 0.5:
-        #                     chosen_replica = replica
-        #                 else:
-        #                     chosen_replica = self._tree_deployment.get_smallest_tenant.remote()
-        #         break
-            
-        #     # If no good match was found or match rate was too low
-        #     if chosen_replica is None:
-        #         # Get replicas with reasonable queue lengths
-        #         candidates_with_low_queue_len = [
-        #             replica for replica in candidates 
-        #             if result_dict[replica.replica_id] <= 10
-        #         ]
-                
-        #         # Choose from replicas with low queue length, or any replica if all are busy
-        #         if candidates_with_low_queue_len:
-        #             chosen_replica = random.choice(candidates_with_low_queue_len)
-        #         else:
-        #             chosen_replica = min(candidates, key=lambda x: result_dict[x.replica_id])
-            
-        #     # Update the tree with this input text and the chosen replica
-        #     self._tree_deployment.insert.remote(input_text, chosen_replica)
-        # return chosen_replica
-        
         result = await self._probe_queue_lens(candidates, 0)
         result_dict = {r.replica_id: q for r, q in result}
-        if pending_request is None:
-            chosen_replica = random.choice(candidates)
+        valid_dict = {k: v for k, v in result_dict.items() if v is not None}
+        if valid_dict:
+            max_load = max(valid_dict.values())
+            min_load = min(valid_dict.values())
         else:
+            max_load = 0
+            min_load = 0
+        # Determine if the load is imbalanced.
+        chosen_replica = None
+        is_imbalanced = max_load - min_load >=0
+        if is_imbalanced:
+            chosen_replica = min(candidates, key=lambda x: valid_dict[x.replica_id])
+        else:
+            # Use tree-based prefix matching
             input_text = self._get_input_text(pending_request)
-            chosen_replica = None
+            
+            # # Try to find a prefix match in the tree
             # async for matched_text, tenant_id_unique_id in self._tree_deployment.options(stream=True).prefix_match_generator.remote(input_text):
-            #     # print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Checking tenant: {tenant_id_unique_id} with matched text: {matched_text}")
-            #     # Find the candidate replica that matches the prefix-matched tenant
-            #     for replica in candidates:
-            #         if tenant_id_unique_id == replica.replica_id.unique_id:
-            #             if result_dict[replica.replica_id] <= 10:
-            #                 chosen_replica = replica
-            #                 break
-            if chosen_replica is None:
-                candidates_with_low_queue_len = []
-                # for replica in candidates:
-                #     if result_dict[replica.replica_id] <= 10:
-                #         candidates_with_low_queue_len.append(replica)
-                if len(candidates_with_low_queue_len) > 0:
-                    chosen_replica = random.choice(candidates_with_low_queue_len)
-                else:
-                    chosen_replica = random.choice(candidates)
-            #     print(f"[prefix_aware_scheduler.py: choose_replica_for_request] No matches for input_text {input_text}; choosing random replica: {chosen_replica.replica_id.unique_id}")
-            # print(f"[prefix_aware_scheduler.py: choose_replica_for_request] Updating tree with input_text {input_text} and tenant {chosen_replica.replica_id.unique_id}")
-            self._tree_deployment.insert.remote(input_text, chosen_replica.replica_id.unique_id)
+            matched_text, tenant_id_unique_id = await self._tree_deployment.prefix_match.remote(input_text)
+            # Calculate match rate
+            match_rate = len(matched_text) / len(input_text) if input_text else 0
+            if match_rate < 0.5:
+                # chosen_replica = self._tree_deployment.get_smallest_tenant.remote()
+                pass
+            else:
+                # Find the candidate replica that matches the prefix-matched tenant
+                for replica in candidates:
+                    if tenant_id_unique_id == replica.replica_id.unique_id:
+                        chosen_replica = replica
+            
+            
+            # If no good match was found or match rate was too low
+            if chosen_replica is None or chosen_replica == "empty":
+                chosen_replica = min(candidates, key=lambda x: valid_dict[x.replica_id])
+            
+        # Update the tree with this input text and the chosen replica
+        input_text = self._get_input_text(pending_request)
+        self._tree_deployment.insert.remote(input_text, chosen_replica.replica_id.unique_id)
         return chosen_replica
+
+        # # Cap at 10        
+        # result = await self._probe_queue_lens(candidates, 0)
+        # result_dict = {r.replica_id: q for r, q in result}
+        # chosen_replica = None
+        # candidates_with_low_queue_len = []
+        # for replica in candidates:
+        #     if result_dict[replica.replica_id] <= 10:
+        #         candidates_with_low_queue_len.append(replica)
+        # if len(candidates_with_low_queue_len) > 0:
+        #     chosen_replica = random.choice(candidates_with_low_queue_len)
+        # else:
+        #     chosen_replica = random.choice(candidates)
+        # return chosen_replica
 
 
     def _get_pending_request_matching_metadata(

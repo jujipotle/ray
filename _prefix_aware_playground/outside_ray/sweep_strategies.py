@@ -1,11 +1,7 @@
-"""
-python sweep_strategies.py
-For each routing strategy, will call "serve run config.yaml"
-"""
-
 #!/usr/bin/env python3
 """
 Script to run a benchmark sweep for sharegpt with different routing strategies.
+This script runs a series of benchmarks with different routing strategies.
 """
 
 import argparse
@@ -19,33 +15,26 @@ from datetime import datetime
 from typing import List, Tuple, Dict, Any
 import numpy as np
 import pandas as pd
-import tempfile
-import yaml
 
 DEFAULT_CONFIG = {
     # Server Info
     "host": "127.0.0.1",
     "router_port": 8000,
-    # "worker_ports": "8001",
-    "scheduler_strategies_dict": {
-        "random": "ray.serve._private.replica_scheduler.random_scheduler.RandomReplicaScheduler",
-        # "round_robin": "ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler",
-        # "pow_of_2": "ray.serve._private.replica_scheduler.llm_pow_2_scheduler.LLMPowerOfTwoChoicesReplicaScheduler",
-        # "prefix_aware": "ray.serve._private.replica_scheduler.prefix_aware_scheduler.PrefixAwareReplicaScheduler",
-    },
+    "worker_ports": "8001",
+    "router_strategies": ["prefix_aware", "round_robin", "random"],
 
     # Model Info
     "model_name": "Qwen/Qwen2.5-1.5B-Instruct",
     "gpu_type": "L4",
-    "num_servers": 4,
+    "num_servers": 1,
     "is_prefix_cached": True,
 
     # Benchmark Info
-    "benchmark_label": "serve-long-conversations_4-gpu_40-concurrency",
+    "benchmark_label": "1-gpu_1-concurrency_with-warmup",
     "dataset_name": "sharegpt",
-    "max_concurrency": 40,  # Max concurrency (total)
+    "max_concurrency": 1,  # Max concurrency (total)
     "output_len": 32,
-    "with_warmup": "False",
+    "with_warmup": "True",
 
     # Generate Shared Prefix Info
     "gen-num-groups": 1,
@@ -54,9 +43,9 @@ DEFAULT_CONFIG = {
     "gen-question-len": 512,
 
     # ShareGPT Info
-    "num_prompts": 1000,  # Number of prompts to sample from ShareGPT
-    "max_conversations": 10000,  # Max conversations to include from ShareGPT; num_unique_prefixes is approximately max_conversations / 10. To aim for num_unique_prefixes = num_prompts / 10, set max_conversations = num_prompts.
-    "dataset_path": "/home/ray/default/work/ray/_prefix_aware_playground/benchmarking/sharegpt.json",  # Path to ShareGPT dataset
+    "num_prompts": 100,  # Number of prompts to sample from ShareGPT
+    "max_conversations": 100,  # Max conversations to include from ShareGPT; num_unique_prefixes is approximately max_conversations / 10. To aim for num_unique_prefixes = num_prompts / 10, set max_conversations = num_prompts.
+    "dataset_path": "/home/ray/default/work/ray/prefix_aware_playground/current_work/sharegpt.json",  # Path to ShareGPT dataset
 }
 
 
@@ -68,9 +57,9 @@ def parse_arguments():
     # Server info
     parser.add_argument("--host", type=str, default=DEFAULT_CONFIG["host"], help="Host")
     parser.add_argument("--router-port", type=int, default=DEFAULT_CONFIG["router_port"], help="Router port")
-    # parser.add_argument("--worker-ports", type=str, default=DEFAULT_CONFIG["worker_ports"], help="Comma-separated list of worker ports")
-    parser.add_argument("--scheduler-strategies-dict", type=str, nargs="+", default=DEFAULT_CONFIG["scheduler_strategies_dict"], 
-                        help="List of scheduler strategies paths to benchmark")
+    parser.add_argument("--worker-ports", type=str, default=DEFAULT_CONFIG["worker_ports"], help="Comma-separated list of worker ports")
+    parser.add_argument("--router-strategies", type=str, nargs="+", default=DEFAULT_CONFIG["router_strategies"], 
+                        help="List of router strategies to benchmark")
 
     # Model info
     parser.add_argument("--model-name", type=str, default=DEFAULT_CONFIG["model_name"], help="Model name")
@@ -109,103 +98,67 @@ def parse_arguments():
     
     return parser.parse_args()
 
-# def reset_prefix_caches(host, worker_ports):
-#     """Reset prefix caches for all workers"""
-#     print("Resetting prefix caches for all workers...")
+def reset_prefix_caches(host, worker_ports):
+    """Reset prefix caches for all workers"""
+    print("Resetting prefix caches for all workers...")
 
-#     # Reset worker caches
-#     for port in worker_ports.split(","):
-#         try:
-#             response = requests.post(f"http://{host}:{port.strip()}/reset_prefix_cache")
-#             print(f"Worker cache reset on port {port}: {response.status_code}")
-#         except Exception as e:
-#             print(f"Failed to reset worker cache on port {port}: {e}")
+    # Reset worker caches
+    for port in worker_ports.split(","):
+        try:
+            response = requests.post(f"http://{host}:{port.strip()}/reset_prefix_cache")
+            print(f"Worker cache reset on port {port}: {response.status_code}")
+        except Exception as e:
+            print(f"Failed to reset worker cache on port {port}: {e}")
 
-def restart_server_with_strategy(strategy, args):
+def restart_server_with_strategy(host, router_port, worker_ports, strategy):
     """Restart the server with a specific routing strategy."""
     print(f"\nRestarting server with routing strategy: {strategy}")
     
-    # # Kill existing server process if running
-    # print(f"Shutting down existing server...")
-    # try:
-    #     # Shut down the Ray Serve instance
-    #     subprocess.run(["serve", "shutdown"], check=False)
-    #     time.sleep(2)  # Give it time to shut down
-    # except Exception as e:
-    #     print(f"Error stopping server: {e}")
+    # Kill existing server process if running
+    try:
+        subprocess.run(["pkill", "-f", f"uvicorn.*{router_port}"], check=False)
+        time.sleep(2)  # Give it time to shut down
+    except Exception as e:
+        print(f"Error stopping server: {e}")
 
-    # Create a temporary JSON config for passing arguments
-    config = {
-        "applications": [
-            {
-                "args": {
-                    "llm_configs": [
-                        {
-                            "model_loading_config": {
-                                "model_id": args.model_name,
-                                "model_source": args.model_name
-                            },
-                            "accelerator_type": args.gpu_type,
-                            "engine_kwargs": {
-                                "enable_prefix_caching": args.is_prefix_cached,
-                                "disable_log_requests": True
-                            },
-                            "deployment_config": {
-                                "autoscaling_config": {
-                                    "min_replicas": args.num_servers,
-                                    "max_replicas": args.num_servers,
-                                    "initial_replicas": args.num_servers
-                                }
-                            },
-                            "replica_scheduler_cls": args.scheduler_strategies_dict[strategy]
-                        }
-                    ]
-                },
-                "import_path": "ray.serve.llm:build_openai_app",
-                "name": "llm_app",
-                "route_prefix": "/"
-            }
-        ]
-    }
-    # Write to a temporary JSON file
-    temp_path = "temp_config.yaml"
-    with open(temp_path, 'w') as f:
-        yaml.dump(config, f)
+    original_dir = os.getcwd()
+
+    # Change to new_backend directory
+    os.chdir("old_backend")
+    # Start server with the specified strategy
+    cmd = [
+        "python", "-m", "server",
+        "--host", host,
+        "--port", str(router_port),
+        "--worker-ports", worker_ports,
+        "--policy", strategy
+    ]
+    print("Starting server with command:", " ".join(cmd))
+    # Start server in background
+    server_process = subprocess.Popen(cmd)
     
-    print(f"Starting server with strategy '{strategy}': {args.scheduler_strategies_dict[strategy]}")
-    cmd = ["serve", "run", temp_path]
-    print(f"Executing: {' '.join(cmd)}")
-    
-    # Open log files for writing (will overwrite if they exist)
-    stdout_log = open(f"logs/{strategy}_stdout.log", "w")
-    stderr_log = open(f"logs/{strategy}_stderr.log", "w")
-    
-    server_process = subprocess.Popen(
-        cmd,
-        # stdout=stdout_log,
-        # stderr=stderr_log
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL
-    )
+    # Change back to original directory
+    os.chdir(original_dir)
     
     # Wait for server to start - give it more time and retry health checks
     print("Waiting for server to start...")
-    max_retries = 20
-    retry_interval = 5  # seconds
+    max_retries = 10
+    retry_interval = 3  # seconds
+    
     for i in range(max_retries):
         time.sleep(retry_interval)
         try:
-            response = requests.get(f"http://{args.host}:{args.router_port}/v1/models")
+            response = requests.get(f"http://{host}:{router_port}/health")
             if response.status_code == 200:
-                print(f"Health check attempt {i+1}/{max_retries}: Server started successfully with strategy {strategy}")
-                return server_process, stdout_log, stderr_log
+                print(f"Server started successfully with strategy {strategy}")
+                return server_process
             else:
                 print(f"Health check attempt {i+1}/{max_retries}: Status code {response.status_code}")
         except Exception as e:
             print(f"Health check attempt {i+1}/{max_retries}: {e}")
     
     print(f"Failed to start server with strategy {strategy} after {max_retries} attempts")
-    return None, None, None
+    return None
 
 def run_single_benchmark(strategy, args):
     """Run a single benchmark with the given routing strategy and return the result."""
@@ -215,9 +168,9 @@ def run_single_benchmark(strategy, args):
     output_file = f"sharegpt_{strategy}_{now}.jsonl"
     
     # Reset prefix caches before the benchmark
-    # print(f"Resetting prefix caches before benchmark ...")
-    # reset_prefix_caches(args.host, args.worker_ports)
-    # time.sleep(5)
+    print(f"Resetting prefix caches before benchmark ...")
+    reset_prefix_caches(args.host, args.worker_ports)
+    time.sleep(5)
 
     if args.dataset_name == "generate-shared-prefix":
         cmd = [
@@ -271,7 +224,7 @@ def run_single_benchmark(strategy, args):
         "num_servers": args.num_servers,
         "is_prefix_cached": args.is_prefix_cached,
         "benchmark_label": args.benchmark_label,
-        "scheduler_strategy": strategy,
+        "router_strategy": strategy,
         "output_len": args.output_len,
         "max_concurrency": args.max_concurrency,
         "with_warmup": args.with_warmup,
@@ -291,10 +244,10 @@ def run_single_benchmark(strategy, args):
         
     return result
 
-def save_results_to_csv(results, args):
+def save_results_to_csv(sweep_results, args):
     """Save the benchmark results to a CSV file."""
     # Define CSV column order
-    shared_params = ["gpu_type", "model_name", "num_servers", "is_prefix_cached", "benchmark_label", "scheduler_strategy", "output_len", "max_concurrency", "with_warmup"]
+    shared_params = ["gpu_type", "model_name", "num_servers", "is_prefix_cached", "benchmark_label", "router_strategy", "output_len", "max_concurrency", "with_warmup"]
     if args.dataset_name == "generate-shared-prefix":
         dataset_params = ["num_groups", "prompts_per_group", "system_prompt_len", "question_len"]
     elif args.dataset_name == "sharegpt":
@@ -322,7 +275,7 @@ def save_results_to_csv(results, args):
     ]
 
     ordered_columns = shared_params + dataset_params + result_keys
-    df = pd.DataFrame(results)
+    df = pd.DataFrame(sweep_results)
     df = df[[col for col in ordered_columns if col in df.columns]]
     
     # Round numeric values to 4 decimal places
@@ -339,8 +292,7 @@ def main():
     
     # Define sweep configurations
     sweeps_configs = [
-        {}
-        # {"num_servers": 4, "benchmark_label": "custom-prefix-router_long-conversations_4-gpu_40-concurrency", "max_concurrency": 40, "with_warmup": "False", "num_prompts": 1000, "max_conversations": 10000},
+        {"worker_ports": "8001,8002,8003,8004", "num_servers": 4, "benchmark_label": "custom-prefix-router_long-conversations_4-gpu_40-concurrency", "max_concurrency": 40, "with_warmup": "False", "num_prompts": 1000, "max_conversations": 10000},
         # {"worker_ports": "8001,8002,8003,8004", "num_servers": 4, "benchmark_label": "custom-prefix-router_long-conversations_4-gpu_40-concurrency_with-warmup", "max_concurrency": 40, "with_warmup": "True", "num_prompts": 1000, "max_conversations": 10000},
     ]
     
@@ -355,31 +307,56 @@ def main():
         for key, value in sweep_config.items():
             setattr(args, key, value)
         
-        # try:
-        for strategy in args.scheduler_strategies_dict.keys():
-            # Store the returned log file handles
-            server_process, stdout_log, stderr_log = restart_server_with_strategy(strategy, args)
-            
-            # Run benchmark with this strategy
-            try:
-                result = run_single_benchmark(strategy, args)
-                # Save result immediately after each strategy run
-                save_results_to_csv([result], args)
-            except Exception as e:
-                print(f"Error running benchmark with strategy {strategy}: {e}")        
-            finally:
-                print("Sleeping for 10 seconds (to allow load distribution to be written to file)...")
-                time.sleep(10)
-                # Close log files
-                stdout_log.close()
-                stderr_log.close()
-                
-                # Clean up: stop server if still running
-                subprocess.run(["serve", "shutdown", "--yes"], check=False)
-                print("Sleeping for 5 seconds (to allow server to shut down)...")
-                time.sleep(5)  # Give it time to shut down
+        # Store results for all strategies in this configuration
+        sweep_results = []
+        server_process = None
         
-
+        try:
+            for strategy in args.router_strategies:
+                # Stop previous server if running
+                if server_process:
+                    print(f"Stopping previous server process...")
+                    server_process.terminate()
+                    try:
+                        server_process.wait(timeout=5)
+                    except subprocess.TimeoutExpired:
+                        print("Server didn't terminate gracefully, killing it...")
+                        server_process.kill()
+                    time.sleep(2)
+                
+                # Start server with the current strategy
+                server_process = restart_server_with_strategy(
+                    args.host, args.router_port, args.worker_ports, strategy
+                )
+                
+                if not server_process:
+                    print(f"Failed to start server with strategy {strategy}, skipping...")
+                    continue
+                
+                # Run benchmark with this strategy
+                try:
+                    result = run_single_benchmark(strategy, args)
+                    sweep_results.append(result)
+                except Exception as e:
+                    print(f"Error running benchmark with strategy {strategy}: {e}")
+        
+        finally:
+            # Clean up: stop server if still running
+            if server_process:
+                print("Stopping server...")
+                try:
+                    server_process.terminate()
+                    server_process.wait(timeout=5)
+                except:
+                    print("Forcing server shutdown...")
+                    server_process.kill()
+        
+        # Save results for this configuration to CSV
+        if sweep_results:
+            save_results_to_csv(sweep_results, args)
+        else:
+            print(f"No benchmark results were collected for configuration {config_idx+1}. Check for errors above.")
+    
 if __name__ == "__main__":
     try:
         exit_code = main()
