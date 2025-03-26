@@ -701,27 +701,28 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
         lowest_queue_len = math.inf
         chosen_replica_id: Optional[str] = None
         not_in_cache: List[RunningReplica] = []
-        # if self._use_replica_queue_len_cache:
-        #     # Populate available queue lens from the cache.
-        #     for r in candidates:
-        #         queue_len = self._replica_queue_len_cache.get(r.replica_id)
-        #         # Include replicas whose queues are full as not in the cache so we will
-        #         # actively probe them. Otherwise we may end up in "deadlock" until their
-        #         # cache entries expire.
-        #         if queue_len is None or queue_len >= r.max_ongoing_requests:
-        #             not_in_cache.append(r)
-        #         elif queue_len < lowest_queue_len:
-        #             lowest_queue_len = queue_len
-        #             chosen_replica_id = r.replica_id
-        # else:
-        #     not_in_cache = candidates
-        result = await self._probe_queue_lens(candidates, 0)
-        result_dict = {r.replica_id: q for r, q in result}
-        valid_dict = {k: v for k, v in result_dict.items() if v is not None}
-        chosen_replica = min(candidates, key=lambda x: valid_dict[x.replica_id])
-        return chosen_replica
+        if self._use_replica_queue_len_cache:
+            # Populate available queue lens from the cache.
+            for r in candidates:
+                queue_len = self._replica_queue_len_cache.get(r.replica_id)
+                # Include replicas whose queues are full as not in the cache so we will
+                # actively probe them. Otherwise we may end up in "deadlock" until their
+                # cache entries expire.
+                if queue_len is None or queue_len >= r.max_ongoing_requests:
+                    not_in_cache.append(r)
+                elif queue_len < lowest_queue_len:
+                    lowest_queue_len = queue_len
+                    chosen_replica_id = r.replica_id
+        else:
+            not_in_cache = candidates
+
+        # If there is a valid replica to schedule based on the information in the
+        # cache, schedule it. Else fall back to actively probing.
         if chosen_replica_id is None:
-            for r, queue_len in await self._probe_queue_lens(candidates, backoff_index):
+            for r, queue_len in await self._probe_queue_lens(
+                not_in_cache,
+                backoff_index,
+            ):
                 if queue_len is None:
                     # None is returned if we failed to get the queue len.
                     continue
@@ -729,7 +730,17 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
                 if queue_len < r.max_ongoing_requests and queue_len < lowest_queue_len:
                     lowest_queue_len = queue_len
                     chosen_replica_id = r.replica_id
+        elif len(not_in_cache) > 0:
+            # If there are replicas without a valid cache entry, probe them in the
+            # background to populate the cache.
+            self._event_loop.create_task(
+                self._probe_queue_lens(not_in_cache, backoff_index)
+            )
+
+        # `self._replicas` may have been updated since the candidates were chosen.
+        # In that case, return `None` so a new one is selected.
         return self._replicas.get(chosen_replica_id, None)
+
 
     def _get_pending_request_matching_metadata(
         self,

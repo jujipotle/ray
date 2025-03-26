@@ -28,9 +28,9 @@ DEFAULT_CONFIG = {
     "router_port": 8000,
     # "worker_ports": "8001",
     "scheduler_strategies_dict": {
-        # "random": "ray.serve._private.replica_scheduler.random_scheduler.RandomReplicaScheduler",
-        # "round_robin": "ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler",
-        # "pow_of_2": "ray.serve._private.replica_scheduler.llm_pow_2_scheduler.LLMPowerOfTwoChoicesReplicaScheduler",
+        "random": "ray.serve._private.replica_scheduler.random_scheduler.RandomReplicaScheduler",
+        "round_robin": "ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler",
+        "pow_of_2": "ray.serve._private.replica_scheduler.llm_pow_2_scheduler.LLMPowerOfTwoChoicesReplicaScheduler",
         "prefix_aware": "ray.serve._private.replica_scheduler.prefix_aware_scheduler.PrefixAwareReplicaScheduler",
     },
 
@@ -182,10 +182,10 @@ def restart_server_with_strategy(strategy, args):
     
     server_process = subprocess.Popen(
         cmd,
-        stdout=stdout_log,
-        stderr=stderr_log
-        # stdout=subprocess.DEVNULL,
-        # stderr=subprocess.DEVNULL
+        # stdout=stdout_log,
+        # stderr=stderr_log
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
     )
     
     # Wait for server to start - give it more time and retry health checks
@@ -339,7 +339,9 @@ def main():
     
     # Define sweep configurations
     sweeps_configs = [
-        {}
+        {},
+        # {},
+        # {},
         # {"num_servers": 4, "benchmark_label": "custom-prefix-router_long-conversations_4-gpu_40-concurrency", "max_concurrency": 40, "with_warmup": "False", "num_prompts": 1000, "max_conversations": 10000},
         # {"worker_ports": "8001,8002,8003,8004", "num_servers": 4, "benchmark_label": "custom-prefix-router_long-conversations_4-gpu_40-concurrency_with-warmup", "max_concurrency": 40, "with_warmup": "True", "num_prompts": 1000, "max_conversations": 10000},
     ]
