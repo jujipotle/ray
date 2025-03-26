@@ -131,126 +131,126 @@ class PrefixTree:
                         curr_node = matched_node
                         i += shared_count
 
-    # NOTE: This is AI generated. Need to verify that it works (I don't really like the recursive approach).
-    def prefix_match_generator(self, text):
-        """
-        Match text against tree and return a generator of (matched_text, matched_tenant), 
-        in order from most matched to least matched.
-        If a tenant has multiple matches, only return the best match with text.
-        So should yield at most T matches, where T is the number of tenants.
-        """
-        # Dictionary to track best match for each tenant
-        best_matches = {}  # tenant -> (match_length, matched_text)
-        
-        # Start from the root
-        def traverse(node, current_text="", matched_text=""):
-            # Check if this node belongs to any tenants
-            for tenant in node.tenant_last_access_time:
-                current_match_length = len(matched_text)
-                
-                # If we've found a better match for this tenant, update it
-                if tenant not in best_matches or current_match_length > best_matches[tenant][0]:
-                    best_matches[tenant] = (current_match_length, matched_text)
-            
-            # If we've processed the entire input text, stop
-            if not current_text:
-                return
-            
-            # Get the first character of remaining text
-            first_char = current_text[0]
-            
-            # Check if there's a matching child
-            if first_char in node.children:
-                child = node.children[first_char]
-                
-                # Find how much of the child's text matches the current text
-                shared_count = self.shared_prefix_count(child.text, current_text)
-                
-                # If we have a partial or full match, continue traversal
-                if shared_count > 0:
-                    next_matched = matched_text + current_text[:shared_count]
-                    next_text = current_text[shared_count:]
-                    traverse(child, next_text, next_matched)
-        
-        # Start traversal from root
-        traverse(self.root, text, "")
-        
-        # Sort matches by length (most matched chars first)
-        sorted_matches = sorted(
-            [(tenant, match_len, match_text) for tenant, (match_len, match_text) in best_matches.items()],
-            key=lambda x: x[1],
-            reverse=True
-        )
-        if not sorted_matches:
-            yield ("", "empty")
-        # Yield results in order
-        for tenant, _, match_text in sorted_matches:
-            yield (match_text, tenant)
-
+    # # NOTE: This is AI generated. Need to verify that it works (I don't really like the recursive approach).
     # def prefix_match_generator(self, text):
     #     """
-    #     Generator-based version of prefix_match.
-    #     Yields (matched_text, matched_tenant) at each step.
-    #     If the tree changes, it will adjust dynamically.
+    #     Match text against tree and return a generator of (matched_text, matched_tenant), 
+    #     in order from most matched to least matched.
+    #     If a tenant has multiple matches, only return the best match with text.
+    #     So should yield at most T matches, where T is the number of tenants.
     #     """
-    #     num_retries = 0
-    #     while num_retries < len(self.tenant_char_count):  # Keep retrying with updated tree state
-    #         num_retries += 1
-    #         curr = self.root
-    #         curr_idx = 0
-    #         prev = self.root
-    #         text_len = len(text)
-
-    #         while curr_idx < text_len:
-    #             first_char = text[curr_idx]
-    #             curr_text = text[curr_idx:]
-    #             curr = prev  # Always start from the previous best match
-
-    #             with curr.lock:
-    #                 if first_char in curr.children:
-    #                     matched_node = curr.children[first_char]
-                        
-    #                     with matched_node.lock:
-    #                         shared_count = self.shared_prefix_count(matched_node.text, curr_text)
-    #                         matched_node_text_len = len(matched_node.text)
-
-    #                         if shared_count == matched_node_text_len:
-    #                             # Full match with current node's text, continue to next node
-    #                             curr_idx += shared_count
-    #                             prev = matched_node
-    #                         else:
-    #                             # Partial match, stop here
-    #                             curr_idx += shared_count
-    #                             prev = matched_node
-    #                             break
-    #                 else:
-    #                     # No match found, stop here
-    #                     break
-
-    #         curr = prev  # Final matched node
-
-    #         # Select the first tenant
-    #         with curr.lock:
-    #             if curr.tenant_last_access_time:
-    #                 tenant = next(iter(curr.tenant_last_access_time))
-    #             else:
-    #                 tenant = "empty"
-
-    #         # Update timestamp for all nodes from match point to root
-    #         if tenant != "empty":
-    #             timestamp_ms = int(time.time() * 1000)
-    #             current_node = curr
-    #             while current_node is not None:
-    #                 with current_node.lock:
-    #                     current_node.tenant_last_access_time[tenant] = timestamp_ms
-    #                 current_node = current_node.parent
+    #     # Dictionary to track best match for each tenant
+    #     best_matches = {}  # tenant -> (match_length, matched_text)
+        
+    #     # Start from the root
+    #     def traverse(node, current_text="", matched_text=""):
+    #         # Check if this node belongs to any tenants
+    #         for tenant in node.tenant_last_access_time:
+    #             current_match_length = len(matched_text)
+                
+    #             # If we've found a better match for this tenant, update it
+    #             if tenant not in best_matches or current_match_length > best_matches[tenant][0]:
+    #                 best_matches[tenant] = (current_match_length, matched_text)
             
-    #         ret_text = text[:curr_idx]
+    #         # If we've processed the entire input text, stop
+    #         if not current_text:
+    #             return
+            
+    #         # Get the first character of remaining text
+    #         first_char = current_text[0]
+            
+    #         # Check if there's a matching child
+    #         if first_char in node.children:
+    #             child = node.children[first_char]
+                
+    #             # Find how much of the child's text matches the current text
+    #             shared_count = self.shared_prefix_count(child.text, current_text)
+                
+    #             # If we have a partial or full match, continue traversal
+    #             if shared_count > 0:
+    #                 next_matched = matched_text + current_text[:shared_count]
+    #                 next_text = current_text[shared_count:]
+    #                 traverse(child, next_text, next_matched)
+        
+    #     # Start traversal from root
+    #     traverse(self.root, text, "")
+        
+    #     # Sort matches by length (most matched chars first)
+    #     sorted_matches = sorted(
+    #         [(tenant, match_len, match_text) for tenant, (match_len, match_text) in best_matches.items()],
+    #         key=lambda x: x[1],
+    #         reverse=True
+    #     )
+    #     if not sorted_matches:
+    #         yield ("", "empty")
+    #     # Yield results in order
+    #     for tenant, _, match_text in sorted_matches:
+    #         yield (match_text, tenant)
 
-    #         # Yield current best match and tenant
-    #         yield ret_text, tenant
+    def prefix_match_generator(self, text):
+        """
+        Generator-based version of prefix_match.
+        Yields (matched_text, matched_tenant) at each step.
+        If the tree changes, it will adjust dynamically.
+        """
+        num_retries = 0
+        while num_retries < len(self.tenant_char_count):  # Keep retrying with updated tree state
+            num_retries += 1
+            curr = self.root
+            curr_idx = 0
+            prev = self.root
+            text_len = len(text)
 
-    #         # If resumed, **recompute traversal** in case tree structure has changed
+            while curr_idx < text_len:
+                first_char = text[curr_idx]
+                curr_text = text[curr_idx:]
+                curr = prev  # Always start from the previous best match
+
+                with curr.lock:
+                    if first_char in curr.children:
+                        matched_node = curr.children[first_char]
+                        
+                        with matched_node.lock:
+                            shared_count = self.shared_prefix_count(matched_node.text, curr_text)
+                            matched_node_text_len = len(matched_node.text)
+
+                            if shared_count == matched_node_text_len:
+                                # Full match with current node's text, continue to next node
+                                curr_idx += shared_count
+                                prev = matched_node
+                            else:
+                                # Partial match, stop here
+                                curr_idx += shared_count
+                                prev = matched_node
+                                break
+                    else:
+                        # No match found, stop here
+                        break
+
+            curr = prev  # Final matched node
+
+            # Select the first tenant
+            with curr.lock:
+                if curr.tenant_last_access_time:
+                    tenant = next(iter(curr.tenant_last_access_time))
+                else:
+                    tenant = "empty"
+
+            # Update timestamp for all nodes from match point to root
+            if tenant != "empty":
+                timestamp_ms = int(time.time() * 1000)
+                current_node = curr
+                while current_node is not None:
+                    with current_node.lock:
+                        current_node.tenant_last_access_time[tenant] = timestamp_ms
+                    current_node = current_node.parent
+            
+            ret_text = text[:curr_idx]
+
+            # Yield current best match and tenant
+            yield ret_text, tenant
+
+            # If resumed, **recompute traversal** in case tree structure has changed
 
 
     def prefix_match(self, text):

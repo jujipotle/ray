@@ -292,7 +292,7 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
                     if self._zero_load_count >= 10:
                         print("Benchmark ended, writing load distribution to file")
                         # Write results to file
-                        results_dir = "/home/ray/default/work/ray/_prefix_aware_playground/benchmarking/results/load_distributions"
+                        results_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/load_distributions"
                         os.makedirs(results_dir, exist_ok=True)
                         filename = os.path.join(
                             results_dir, 
@@ -550,8 +550,8 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
                 if candidate_replica_ids:
                     chosen_ids = random.sample(
                         list(candidate_replica_ids),
-                        k=min(2, len(candidate_replica_ids)),
-                        # k=len(candidate_replica_ids)
+                        # k=min(2, len(candidate_replica_ids)),
+                        k=len(candidate_replica_ids)
                     )
                     yield [self._replicas[chosen_id] for chosen_id in chosen_ids]
 
@@ -715,15 +715,13 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
         #             chosen_replica_id = r.replica_id
         # else:
         #     not_in_cache = candidates
-        not_in_cache = candidates
-
-        # If there is a valid replica to schedule based on the information in the
-        # cache, schedule it. Else fall back to actively probing.
+        result = await self._probe_queue_lens(candidates, 0)
+        result_dict = {r.replica_id: q for r, q in result}
+        valid_dict = {k: v for k, v in result_dict.items() if v is not None}
+        chosen_replica = min(candidates, key=lambda x: valid_dict[x.replica_id])
+        return chosen_replica
         if chosen_replica_id is None:
-            for r, queue_len in await self._probe_queue_lens(
-                not_in_cache,
-                backoff_index,
-            ):
+            for r, queue_len in await self._probe_queue_lens(candidates, backoff_index):
                 if queue_len is None:
                     # None is returned if we failed to get the queue len.
                     continue
@@ -731,15 +729,6 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
                 if queue_len < r.max_ongoing_requests and queue_len < lowest_queue_len:
                     lowest_queue_len = queue_len
                     chosen_replica_id = r.replica_id
-        elif len(not_in_cache) > 0:
-            # If there are replicas without a valid cache entry, probe them in the
-            # background to populate the cache.
-            self._event_loop.create_task(
-                self._probe_queue_lens(not_in_cache, backoff_index)
-            )
-
-        # `self._replicas` may have been updated since the candidates were chosen.
-        # In that case, return `None` so a new one is selected.
         return self._replicas.get(chosen_replica_id, None)
 
     def _get_pending_request_matching_metadata(

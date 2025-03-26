@@ -293,7 +293,7 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
                     if self._zero_load_count >= 10:
                         print("Benchmark ended, writing load distribution to file")
                         # Write results to file
-                        results_dir = "/home/ray/default/work/ray/_prefix_aware_playground/benchmarking/results/load_distributions"
+                        results_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/load_distributions"
                         os.makedirs(results_dir, exist_ok=True)
                         filename = os.path.join(
                             results_dir, 
