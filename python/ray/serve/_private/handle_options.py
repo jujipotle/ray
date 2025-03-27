@@ -5,7 +5,7 @@ import ray
 from ray.serve._private.common import DeploymentHandleSource
 from ray.serve._private.utils import DEFAULT
 from typing import Any, Optional
-
+from ray.serve._private.replica_scheduler.pow_2_scheduler import PowerOfTwoChoicesReplicaScheduler
 @dataclass(frozen=True)
 class InitHandleOptionsBase(ABC):
     """Init options for each ServeHandle instance.
@@ -13,7 +13,7 @@ class InitHandleOptionsBase(ABC):
     These fields can be set by calling `.init()` on a handle before
     sending the first request.
     """
-
+    # replica_scheduler_cls: Any = PowerOfTwoChoicesReplicaScheduler
     _prefer_local_routing: bool = False
     _source: DeploymentHandleSource = DeploymentHandleSource.UNKNOWN
     @classmethod
@@ -51,9 +51,7 @@ class DynamicHandleOptionsBase(ABC):
     method_name: str = "__call__"
     multiplexed_model_id: str = ""
     stream: bool = False
-    # tree_deployment: Any = None
-    replica_scheduler_cls: Any = None
-    # scheduler_params: Any = None
+    replica_scheduler_cls: Any = DEFAULT.VALUE
     @abstractmethod
     def copy_and_update(self, **kwargs) -> "DynamicHandleOptionsBase":
         pass

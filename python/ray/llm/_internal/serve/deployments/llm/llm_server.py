@@ -441,6 +441,7 @@ class LLMServer(_LLMServerBase):
                 Defaults to be initialized with `LoraModelLoader`.
         """
         await super().__init__(llm_config)
+        self.replica_scheduler_cls_path = llm_config.replica_scheduler_cls_path
 
         self._engine_cls = engine_cls or self._default_engine_cls
         self.engine = self._get_engine_class(self._llm_config)

@@ -1,3 +1,5 @@
+from ray._common.utils import import_attr
+
 from ray.llm._internal.serve.deployments.routers.prefix_tree import PrefixTree
 
 from typing import List, Optional, Sequence
@@ -31,6 +33,11 @@ def build_llm_deployment(
         name_prefix="LLMDeployment:",
     )
 
+    # if llm_config.replica_scheduler_cls_path:
+    #     replica_scheduler_cls = import_attr(llm_config.replica_scheduler_cls_path)
+    #     deployment_options["replica_scheduler_cls"] = replica_scheduler_cls
+
+    print(f"[application_builders.py: build_llm_deployment] binding llm_config: {llm_config}")
     return LLMDeployment.options(**deployment_options).bind(
         llm_config=llm_config, **deployment_kwargs
     )

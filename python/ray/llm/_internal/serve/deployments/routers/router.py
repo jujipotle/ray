@@ -213,7 +213,10 @@ class LLMRouter:
         self, llm_deployments: List[DeploymentHandle]
     ):
         for handle in llm_deployments:
+            print(f"[llm router.py] Setting up handle and config maps for handle: {handle}")
+            print(f"[llm router.py] Handle options: {handle.handle_options}")
             llm_config = await handle.llm_config.remote()
+            print(f"[llm router.py] LLM config: {llm_config}")
             self._default_serve_handles[llm_config.model_id] = handle
             print(f"[llm router.py] Default serve handles: {self._default_serve_handles}")
             self._llm_configs[llm_config.model_id] = llm_config
@@ -269,7 +272,6 @@ class LLMRouter:
                     configured_handle = default_handle.options(
                         stream=True,
                         replica_scheduler_cls=replica_scheduler_cls,
-                        # scheduler_params={"tree_deployment": self.tree_deployment},
                     )
                     print(f"[llm router.py] Configured handle .handle_options: {configured_handle.handle_options}")
                     self._configured_serve_handles[model_id] = configured_handle

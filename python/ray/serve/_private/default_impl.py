@@ -169,9 +169,8 @@ def create_router(
     deployment_id: DeploymentID,
     handle_options: InitHandleOptions,
     replica_scheduler_cls: Any = PowerOfTwoChoicesReplicaScheduler,
-    # scheduler_params: Any = None,
 ) -> Router:
-    print(f"[default_impl.py: create_router] replica_scheduler_cls: {replica_scheduler_cls}")
+    print(f"[default_impl.py: create_router] handle_options: {handle_options}")
     # NOTE(edoakes): this is lazy due to a nasty circular import that should be fixed.
     from ray.serve.context import _get_global_client
 

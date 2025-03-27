@@ -66,7 +66,6 @@ class _DeploymentHandleBase:
         self.request_counter = _request_counter or self._create_request_counter(
             app_name, deployment_name, self.handle_id
         )
-        self.switched_router = False
         self._router: Optional[Router] = _router
         if _create_router is None:
             self._create_router = create_router
@@ -127,6 +126,7 @@ class _DeploymentHandleBase:
         to initialize a handle with custom init options, you must do it
         before calling `.options()` or `.remote()`.
         """
+        print(f"[handle.py: _init] kwargs: {kwargs}")
         if self._router is not None:
             raise RuntimeError(
                 "Handle has already been initialized. Note that a handle is implicitly "
@@ -139,11 +139,13 @@ class _DeploymentHandleBase:
 
         # We create the initial router using PowOf2, because _init is called before _options.
         init_options = create_init_handle_options(**kwargs)
+        print(f"[handle.py: _init] init_options: {init_options}")
 
         self._router = self._create_router(
             handle_id=self.handle_id,
             deployment_id=self.deployment_id,
             handle_options=init_options,
+            # replica_scheduler_cls=init_options.replica_scheduler_cls
         )
         self.init_options = init_options
 
@@ -160,6 +162,7 @@ class _DeploymentHandleBase:
             ServeUsageTag.DEPLOYMENT_HANDLE_API_USED.record("1")
 
     def _options(self, _prefer_local_routing=DEFAULT.VALUE, **kwargs):
+        print(f"[handle.py: _options] kwargs: {kwargs}")
         if kwargs.get("stream") is True and inside_ray_client_context():
             raise RuntimeError(
                 "Streaming DeploymentHandles are not currently supported when "
@@ -169,23 +172,27 @@ class _DeploymentHandleBase:
 
         # TODO(zcin): remove when _prefer_local_routing is removed from options() path
         if _prefer_local_routing != DEFAULT.VALUE:
+            print(f"[handle.py: _options] Initializing handle with _prefer_local_routing: {_prefer_local_routing}")
+            # self._init(_prefer_local_routing=_prefer_local_routing, replica_scheduler_cls=new_handle_options.replica_scheduler_cls)
             self._init(_prefer_local_routing=_prefer_local_routing)
-
         if not self.is_initialized:
+            print(f"[handle.py: _options] Initializing handle with no kwargs")
+            print(f"[handle.py: _options] new_handle_options: {new_handle_options}")
+            # self._init(replica_scheduler_cls=new_handle_options.replica_scheduler_cls)
             self._init()
         
         print(f"[handle.py: _options] new_handle_options: {new_handle_options}, self.handle_options: {self.handle_options}")
         # If replica_scheduler_cls is specified, we swap out self._router with a new router that uses the new scheduler.
         # We pass scheduler_params to the new router.
-        if self.switched_router == False and new_handle_options.replica_scheduler_cls is not None:
+        # if self.switched_router == False and new_handle_options.replica_scheduler_cls is not None:
+        new_replica_scheduler_cls = kwargs.get("replica_scheduler_cls")
+        if new_replica_scheduler_cls is not DEFAULT.VALUE and new_replica_scheduler_cls is not None:
             self._router = self._create_router(
                 handle_id=self.handle_id,
                 deployment_id=self.deployment_id,
                 handle_options=self.init_options,
-                replica_scheduler_cls=new_handle_options.replica_scheduler_cls,
-                # scheduler_params=new_handle_options.scheduler_params,
+                replica_scheduler_cls=new_replica_scheduler_cls,
             )
-            self.switched_router = True
 
         return DeploymentHandle(
             self.deployment_name,
@@ -204,6 +211,7 @@ class _DeploymentHandleBase:
         kwargs: Dict[str, Any],
     ) -> Tuple[concurrent.futures.Future, RequestMetadata]:
         if not self.is_initialized:
+            print(f"[handle.py: _remote] Initializing handle")
             self._init()
         print(f"[handle.py: _remote] self.handle_options: {self.handle_options}")
         # This sets metadata.tree_deployment
@@ -226,6 +234,10 @@ class _DeploymentHandleBase:
         return replica_result, metadata
 
     def __getattr__(self, name):
+        print(f"[handle.py: __getattr__] Getting attribute: {name}")
+        print(f"[handle.py: __getattr__] self.handle_options: {self.handle_options}")
+        print(f"[handle.py: __getattr__] self.init_options: {self.init_options}")
+        print(f"[handle.py: __getattr__] self.deployment_id: {self.deployment_id}")
         return self.options(method_name=name)
 
     def shutdown(self):
