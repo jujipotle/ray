@@ -423,7 +423,6 @@ class LLMServer(_LLMServerBase):
         engine_cls: Optional[Type[VLLMEngine]] = None,
         image_retriever_cls: Optional[Type[ImageRetriever]] = None,
         model_downloader: Optional[LoraModelLoader] = None,
-        replica_scheduler_cls: Optional[Any] = None,
     ):
         """Constructor of LLMServer.
 
@@ -453,7 +452,6 @@ class LLMServer(_LLMServerBase):
             else self._default_image_retriever_cls()
         )
 
-        self.replica_scheduler_cls = replica_scheduler_cls
 
         multiplex_config = self._llm_config.multiplex_config()
         if model_downloader:

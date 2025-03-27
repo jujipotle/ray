@@ -28,9 +28,9 @@ DEFAULT_CONFIG = {
     "router_port": 8000,
     # "worker_ports": "8001",
     "scheduler_strategies_dict": {
-        "random": "ray.serve._private.replica_scheduler.random_scheduler.RandomReplicaScheduler",
-        "round_robin": "ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler",
-        "pow_of_2": "ray.serve._private.replica_scheduler.llm_pow_2_scheduler.LLMPowerOfTwoChoicesReplicaScheduler",
+        # "random": "ray.serve._private.replica_scheduler.random_scheduler.RandomReplicaScheduler",
+        # "round_robin": "ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler",
+        # "pow_of_2": "ray.serve._private.replica_scheduler.llm_pow_2_scheduler.LLMPowerOfTwoChoicesReplicaScheduler",
         "prefix_aware": "ray.serve._private.replica_scheduler.prefix_aware_scheduler.PrefixAwareReplicaScheduler",
     },
 
@@ -157,7 +157,7 @@ def restart_server_with_strategy(strategy, args):
                                     "initial_replicas": args.num_servers
                                 }
                             },
-                            "replica_scheduler_cls": args.scheduler_strategies_dict[strategy]
+                            "replica_scheduler_cls_path": args.scheduler_strategies_dict[strategy]
                         }
                     ]
                 },

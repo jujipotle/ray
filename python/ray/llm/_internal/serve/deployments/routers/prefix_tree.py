@@ -21,7 +21,7 @@ class Node:
     def __str__(self):
         return f"Node(text='{self.text}', tenants={list(self.tenant_last_access_time.keys())})"
 
-@serve.deployment
+@serve.deployment(name="deploymentTest")
 class PrefixTree:
     """
     Thread-safe multi-tenant prefix tree (approximate radix tree).

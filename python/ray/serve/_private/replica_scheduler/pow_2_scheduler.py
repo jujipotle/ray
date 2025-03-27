@@ -103,7 +103,7 @@ class PowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
         create_replica_wrapper_func: Optional[
             Callable[[RunningReplicaInfo], RunningReplica]
         ] = None,
-        scheduler_params = None
+        # scheduler_params = None
     ):
         self._deployment_id = deployment_id
         self._handle_source = handle_source

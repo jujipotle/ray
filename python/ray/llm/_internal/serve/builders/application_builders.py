@@ -51,7 +51,7 @@ def _get_llm_deployments(
 
     return llm_deployments
 
-
+from ray import serve
 def build_openai_app(llm_serving_args: LLMServingArgs) -> Application:
     print(f"[application_builders.py: build_openai_app] llm_serving_args: {llm_serving_args}")
     rayllm_args = LLMServingArgs.model_validate(llm_serving_args).parse_args()
@@ -65,10 +65,12 @@ def build_openai_app(llm_serving_args: LLMServingArgs) -> Application:
         logger.error(
             "List of models is empty. Maybe some parameters cannot be parsed into the LLMConfig config."
         )
-
+    tree_deployment = PrefixTree.bind()
+    # serve.run(tree_deployment)
+    # print(f"[application_builders.py: build_openai_app] tree_deployment: {tree_deployment}")
     llm_deployments = _get_llm_deployments(llm_configs)
     print(f"[application_builders.py: build_openai_app] llm_deployments: {llm_deployments}")
     return LLMRouter.as_deployment(llm_configs=llm_configs).options(autoscaling_config=dict(min_replicas=1, max_replicas=1, initial_replicas=1)).bind(
         llm_deployments=llm_deployments, 
-        tree_deployment=PrefixTree.bind()
+        tree_deployment=tree_deployment
     )

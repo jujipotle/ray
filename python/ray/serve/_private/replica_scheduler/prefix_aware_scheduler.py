@@ -1,3 +1,4 @@
+from ray import serve
 
 import os
 import json
@@ -107,7 +108,7 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         create_replica_wrapper_func: Optional[
             Callable[[RunningReplicaInfo], RunningReplica]
         ] = None,
-        scheduler_params: Optional[Dict[str, Any]] = None,
+        # scheduler_params: Optional[Dict[str, Any]] = None,
     ):
         # Dictionary to track load distribution over time
         self._load_distribution: Dict[float, Dict[str, int]] = {}
@@ -118,7 +119,9 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
 
         # print(f"[prefix_aware_scheduler.py: __init__] Initializing Prefix Aware Replica Scheduler")
         # Extracting tree_deployment from scheduler_params
-        self._tree_deployment = scheduler_params.get("tree_deployment", None)
+        # self._tree_deployment = scheduler_params.get("tree_deployment", None)
+        self._tree_deployment = serve.get_deployment_handle("deploymentTest", app_name="llm_app")
+        print(f"[prefix_aware_scheduler.py: __init__] self._tree_deployment: {self._tree_deployment}")
         if self._tree_deployment is None:
             raise ValueError("tree_deployment must be provided in scheduler_params")
         self.running_queue = {}
@@ -292,7 +295,6 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
                     current_load[replica_id.unique_id] = queue_len
                     total_load += queue_len
 
-                print(f"Current time: {current_time}, total load: {total_load}")
 
                 elapsed_since_start = round(current_time - self._benchmark_start_time, 2) # Round to hundredth of a second
                 self._load_distribution[elapsed_since_start] = current_load
@@ -764,6 +766,7 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
             )
 
         if pending_request is None:
+            print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] pending_request is None")
             return self._replicas.get(least_busy_replica_id, None)
         
         # Determine if the load is imbalanced.
@@ -771,14 +774,17 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         input_text = self._get_input_text(pending_request)
         is_imbalanced = max_load - min_load > 20
         if is_imbalanced:
+            print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] is_imbalanced: {is_imbalanced}")
             chosen_replica_id = least_busy_replica_id
         else:
             # Use tree-based prefix matching
             # async for matched_text, tenant_id_unique_id in self._tree_deployment.options(stream=True).prefix_match_generator.remote(input_text):
             matched_text, tenant_id = await self._tree_deployment.prefix_match.remote(input_text)
+            print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] matched_text: {matched_text}, tenant_id: {tenant_id}")
             # Calculate match rate
             match_rate = len(matched_text) / len(input_text) if input_text else 0
-            if match_rate < 0.5:
+            print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] match_rate: {match_rate}")
+            if match_rate < 0:
                 # chosen_replica = self._tree_deployment.get_smallest_tenant.remote()
                 pass
             else:
@@ -793,6 +799,7 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
                 chosen_replica_id = least_busy_replica_id
             
         # Update the tree with this input text and the chosen replica
+        print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Updating tree with input_text: {input_text} and chosen_replica_id: {chosen_replica_id}")
         self._tree_deployment.insert.remote(input_text, chosen_replica_id)
         return self._replicas.get(chosen_replica_id, None)
 

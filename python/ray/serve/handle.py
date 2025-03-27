@@ -183,7 +183,7 @@ class _DeploymentHandleBase:
                 deployment_id=self.deployment_id,
                 handle_options=self.init_options,
                 replica_scheduler_cls=new_handle_options.replica_scheduler_cls,
-                scheduler_params=new_handle_options.scheduler_params,
+                # scheduler_params=new_handle_options.scheduler_params,
             )
             self.switched_router = True
 
@@ -688,7 +688,7 @@ class DeploymentHandle(_DeploymentHandleBase):
         use_new_handle_api: Union[bool, DEFAULT] = DEFAULT.VALUE,
         _prefer_local_routing: Union[bool, DEFAULT] = DEFAULT.VALUE,
         # tree_deployment: Any = DEFAULT.VALUE, # NOTE: This MUST be DEFAULT.VALUE, setting to None, False, anything else prevents the tree_deployment from propogating to RequestMetadata.
-        scheduler_params: Any = DEFAULT.VALUE,
+        # scheduler_params: Any = DEFAULT.VALUE,
         replica_scheduler_cls: Any = DEFAULT.VALUE,
     ) -> "DeploymentHandle":
         """Set options for this handle and return an updated copy of it.
@@ -713,7 +713,7 @@ class DeploymentHandle(_DeploymentHandleBase):
                 "Modifying `_prefer_local_routing` with `options()` is "
                 "deprecated. Please use `init()` instead."
             )
-        print(f"[handle.py: DeploymentHandle.options] returning ._options with scheduler_params={scheduler_params}, replica_scheduler_cls={replica_scheduler_cls}")
+        print(f"[handle.py: DeploymentHandle.options] returning ._options with replica_scheduler_cls={replica_scheduler_cls}")
         return self._options(
             method_name=method_name,
             multiplexed_model_id=multiplexed_model_id,
@@ -721,7 +721,7 @@ class DeploymentHandle(_DeploymentHandleBase):
             _prefer_local_routing=_prefer_local_routing,
             # tree_deployment=tree_deployment,
             replica_scheduler_cls=replica_scheduler_cls,
-            scheduler_params=scheduler_params,
+            # scheduler_params=scheduler_params,
             # scheduling_generator=scheduling_generator,
             # update_tree=update_tree,
         )

@@ -139,22 +139,11 @@ def _get_node_id_and_az() -> Tuple[str, Optional[str]]:
 CreateRouterCallable = Callable[[str, DeploymentID, InitHandleOptions], Router]
 
 from typing import Any
-def create_router(
-    handle_id: str,
-    deployment_id: DeploymentID,
-    handle_options: InitHandleOptions,
-    replica_scheduler_cls: Any = PowerOfTwoChoicesReplicaScheduler,
-    scheduler_params: Any = None,
-) -> Router:
-    print(f"[default_impl.py: create_router] replica_scheduler_cls: {replica_scheduler_cls}")
-    # NOTE(edoakes): this is lazy due to a nasty circular import that should be fixed.
-    from ray.serve.context import _get_global_client
-
-    actor_id = get_current_actor_id()
+def create_scheduler(replica_scheduler_cls, deployment_id, handle_options):
     node_id, availability_zone = _get_node_id_and_az()
-    controller_handle = _get_global_client()._controller
+    actor_id = get_current_actor_id()
     is_inside_ray_client_context = inside_ray_client_context()
-    print(f"[default_impl.py: create_router] init_handle_options: {handle_options}")
+
     replica_scheduler = replica_scheduler_cls(
         deployment_id,
         handle_options._source,
@@ -171,8 +160,26 @@ def create_router(
             not is_inside_ray_client_context and RAY_SERVE_ENABLE_QUEUE_LENGTH_CACHE
         ),
         create_replica_wrapper_func=lambda r: RunningReplica(r),
-        scheduler_params=scheduler_params,
+        # scheduler_params=scheduler_params,
     )
+    return replica_scheduler
+    
+def create_router(
+    handle_id: str,
+    deployment_id: DeploymentID,
+    handle_options: InitHandleOptions,
+    replica_scheduler_cls: Any = PowerOfTwoChoicesReplicaScheduler,
+    # scheduler_params: Any = None,
+) -> Router:
+    print(f"[default_impl.py: create_router] replica_scheduler_cls: {replica_scheduler_cls}")
+    # NOTE(edoakes): this is lazy due to a nasty circular import that should be fixed.
+    from ray.serve.context import _get_global_client
+
+    actor_id = get_current_actor_id()
+    controller_handle = _get_global_client()._controller
+    is_inside_ray_client_context = inside_ray_client_context()
+    print(f"[default_impl.py: create_router] init_handle_options: {handle_options}")
+    replica_scheduler = create_scheduler(replica_scheduler_cls, deployment_id, handle_options)
 
     return SingletonThreadRouter(
         controller_handle=controller_handle,

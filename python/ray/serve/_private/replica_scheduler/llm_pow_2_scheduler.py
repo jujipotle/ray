@@ -105,7 +105,7 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
         create_replica_wrapper_func: Optional[
             Callable[[RunningReplicaInfo], RunningReplica]
         ] = None,
-        scheduler_params: Optional[Dict[str, Any]] = None,
+        # scheduler_params: Optional[Dict[str, Any]] = None,
     ):
         
         # Dictionary to track load distribution over time
@@ -282,7 +282,6 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
                     current_load[replica_id.unique_id] = queue_len
                     total_load += queue_len
 
-                print(f"Current time: {current_time}, total load: {total_load}")
 
                 elapsed_since_start = round(current_time - self._benchmark_start_time, 2) # Round to hundredth of a second
                 self._load_distribution[elapsed_since_start] = current_load
