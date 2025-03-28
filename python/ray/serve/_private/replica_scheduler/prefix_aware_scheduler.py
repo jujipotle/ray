@@ -117,6 +117,9 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         self._load_tracking_task = None
         self._seen_first_request = False
 
+        # Variables to track prefix match rates / replica
+        self._prefix_match_rates: Dict[str, List[float]] = {}
+        
         # print(f"[prefix_aware_scheduler.py: __init__] Initializing Prefix Aware Replica Scheduler")
         # Extracting tree_deployment from scheduler_params
         # self._tree_deployment = scheduler_params.get("tree_deployment", None)
@@ -306,12 +309,24 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
                         # Write results to file
                         results_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/load_distributions"
                         os.makedirs(results_dir, exist_ok=True)
-                        filename = os.path.join(
+                        
+                        # Save load distribution
+                        load_filename = os.path.join(
                             results_dir, 
                             f"prefix_aware_{int(time.time())}.json"
                         )
-                        with open(filename, "w") as f:
+                        with open(load_filename, "w") as f:
                             json.dump(self._load_distribution, f, indent=2)
+                            
+                        # Save prefix match rates
+                        prefix_match_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/prefix_match_rates"
+                        os.makedirs(prefix_match_dir, exist_ok=True)
+                        prefix_match_filename = os.path.join(
+                            prefix_match_dir,
+                            f"prefix_aware_{int(time.time())}.json"
+                        )
+                        with open(prefix_match_filename, "w") as f:
+                            json.dump(self._prefix_match_rates, f, indent=2)
                         break
                 elif total_load > 4:
                     self._zero_load_count = 0
@@ -797,7 +812,15 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
             # If no good match was found or match rate was too low
             if chosen_replica_id is None or chosen_replica_id == "empty":
                 chosen_replica_id = least_busy_replica_id
-            
+        
+        matched_text, tenant_id = await self._tree_deployment.prefix_match.remote(input_text)
+        if chosen_replica_id.unique_id not in self._prefix_match_rates:
+            self._prefix_match_rates[chosen_replica_id.unique_id] = []
+        if matched_text is not None:
+            self._prefix_match_rates[chosen_replica_id.unique_id].append(len(matched_text) / len(input_text))
+        else:
+            self._prefix_match_rates[chosen_replica_id.unique_id].append(0.0)
+
         # Update the tree with this input text and the chosen replica
         print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Updating tree with input_text: {input_text} and chosen_replica_id: {chosen_replica_id}")
         self._tree_deployment.insert.remote(input_text, chosen_replica_id)

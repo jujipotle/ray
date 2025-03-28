@@ -1,3 +1,4 @@
+from ray import serve
 import asyncio
 import enum
 import json
@@ -115,6 +116,9 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
         self._load_tracking_task = None
         self._seen_first_request = False
 
+        # Variables to track prefix match rates / replica
+        self._prefix_match_rates: Dict[str, List[float]] = {}
+        self._tree_deployment = serve.get_deployment_handle("deploymentTest", app_name="llm_app")
 
         self._deployment_id = deployment_id
         self._handle_source = handle_source
@@ -293,12 +297,24 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
                         # Write results to file
                         results_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/load_distributions"
                         os.makedirs(results_dir, exist_ok=True)
-                        filename = os.path.join(
+                        
+                        # Save load distribution
+                        load_filename = os.path.join(
                             results_dir, 
                             f"pow_of_2_{int(time.time())}.json"
                         )
-                        with open(filename, "w") as f:
+                        with open(load_filename, "w") as f:
                             json.dump(self._load_distribution, f, indent=2)
+                            
+                        # Save prefix match rates
+                        prefix_match_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/prefix_match_rates"
+                        os.makedirs(prefix_match_dir, exist_ok=True)
+                        prefix_match_filename = os.path.join(
+                            prefix_match_dir,
+                            f"pow_of_2_{int(time.time())}.json"
+                        )
+                        with open(prefix_match_filename, "w") as f:
+                            json.dump(self._prefix_match_rates, f, indent=2)
                         break
                 elif total_load > 4:
                     self._zero_load_count = 0
@@ -682,10 +698,22 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
         assert len(result) == len(replicas)
         return result
 
+    def _get_input_text(self, pending_request: PendingRequest) -> str:
+        chat_completion_request = pending_request.args[0]
+        # print(f"[prefix_aware_scheduler.py: _get_input_text] Chat completion request: {chat_completion_request}")
+        if hasattr(chat_completion_request, "messages"):
+            messages = chat_completion_request.messages
+            return "".join(msg.get("content", "") for msg in messages if "content" in msg)
+        elif hasattr(chat_completion_request, "prompt"):
+            return chat_completion_request.prompt
+        else:
+            raise ValueError("Invalid chat completion request")
+
     async def select_from_candidate_replicas(
         self,
         candidates: List[RunningReplica],
         backoff_index: int,
+        pending_request: PendingRequest,
     ) -> Optional[RunningReplica]:
         """Chooses the best replica from the list of candidates.
 
@@ -735,6 +763,16 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
             self._event_loop.create_task(
                 self._probe_queue_lens(not_in_cache, backoff_index)
             )
+
+        input_text = self._get_input_text(pending_request)
+        matched_text = await self._tree_deployment.prefix_match_tenant.remote(input_text, chosen_replica_id)
+        if chosen_replica_id.unique_id not in self._prefix_match_rates:
+            self._prefix_match_rates[chosen_replica_id.unique_id] = []
+        if matched_text is not None:
+            self._prefix_match_rates[chosen_replica_id.unique_id].append(len(matched_text) / len(input_text))
+        else:
+            self._prefix_match_rates[chosen_replica_id.unique_id].append(0.0)
+        self._tree_deployment.insert.remote(input_text, chosen_replica_id)
 
         # `self._replicas` may have been updated since the candidates were chosen.
         # In that case, return `None` so a new one is selected.
@@ -792,7 +830,7 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
         while len(self._pending_requests_to_schedule) > 0:
             pr = self._pending_requests_to_schedule.popleft()
             if not pr.future.done():
-                return pr.metadata
+                return pr.metadata, pr
 
         return None
 
@@ -809,7 +847,12 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
             while len(self._scheduling_tasks) <= self.target_num_scheduling_tasks:
                 start_time = time.time()
                 backoff_index = 0
-                request_metadata = self._get_next_pending_request_metadata_to_schedule()
+                result = self._get_next_pending_request_metadata_to_schedule()
+                if result is None:
+                    request_metadata = None
+                    pending_request = None
+                else:
+                    request_metadata, pending_request = result
                 async for candidates in self.choose_two_replicas_with_backoff(
                     request_metadata
                 ):
@@ -826,7 +869,7 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
                         break
 
                     replica = await self.select_from_candidate_replicas(
-                        candidates, backoff_index
+                        candidates, backoff_index, pending_request
                     )
                     if replica is not None:
                         self.fulfill_next_pending_request(replica, request_metadata)

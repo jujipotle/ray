@@ -1,3 +1,4 @@
+from ray import serve
 import os
 import json
 import asyncio
@@ -114,6 +115,11 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
         self._load_tracking_task = None
         self._seen_first_request = False
 
+        # Variables to track prefix match rates / replica
+        self._prefix_match_rates: Dict[str, List[float]] = {}
+        self._tree_deployment = serve.get_deployment_handle("deploymentTest", app_name="llm_app")
+
+        # Variables for round robin
         self._replica_ids_list = []
         self._round_robin_counter = 0
 
@@ -294,12 +300,24 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
                         # Write results to file
                         results_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/load_distributions"
                         os.makedirs(results_dir, exist_ok=True)
-                        filename = os.path.join(
+                        
+                        # Save load distribution
+                        load_filename = os.path.join(
                             results_dir, 
                             f"round_robin_{int(time.time())}.json"
                         )
-                        with open(filename, "w") as f:
+                        with open(load_filename, "w") as f:
                             json.dump(self._load_distribution, f, indent=2)
+                            
+                        # Save prefix match rates
+                        prefix_match_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/prefix_match_rates"
+                        os.makedirs(prefix_match_dir, exist_ok=True)
+                        prefix_match_filename = os.path.join(
+                            prefix_match_dir,
+                            f"round_robin_{int(time.time())}.json"
+                        )
+                        with open(prefix_match_filename, "w") as f:
+                            json.dump(self._prefix_match_rates, f, indent=2)
                         break
                 elif total_load > 4:
                     self._zero_load_count = 0
@@ -684,10 +702,22 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
         assert len(result) == len(replicas)
         return result
 
+    def _get_input_text(self, pending_request: PendingRequest) -> str:
+        chat_completion_request = pending_request.args[0]
+        # print(f"[prefix_aware_scheduler.py: _get_input_text] Chat completion request: {chat_completion_request}")
+        if hasattr(chat_completion_request, "messages"):
+            messages = chat_completion_request.messages
+            return "".join(msg.get("content", "") for msg in messages if "content" in msg)
+        elif hasattr(chat_completion_request, "prompt"):
+            return chat_completion_request.prompt
+        else:
+            raise ValueError("Invalid chat completion request")
+
     async def select_from_candidate_replicas(
         self,
         candidates: List[RunningReplica],
         backoff_index: int,
+        pending_request: Optional[PendingRequest],
     ) -> Optional[RunningReplica]:
         """Chooses the best replica from the list of candidates.
 
@@ -702,7 +732,7 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
         if not candidates:
             print(f"[round_robin_scheduler.py: select_from_candidate_replicas] No candidates available")
             return None
-
+        chosen_replica_id = None
         # Simple round robin selection
         if len(self._replica_id_set) > 0:
             if self._replica_ids_list == []:
@@ -715,20 +745,29 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
             print(f"[round_robin_scheduler.py: select_from_candidate_replicas] Calculated index: {index}")
             
             # Return the selected replica
-            selected_replica_id = self._replica_ids_list[index]
-            print(f"[round_robin_scheduler.py: select_from_candidate_replicas] Selected replica ID: {selected_replica_id}")
-            selected_replica = self._replicas[selected_replica_id]
-            print(f"[round_robin_scheduler.py: select_from_candidate_replicas] Selected replica object: {selected_replica}")
+            chosen_replica_id = self._replica_ids_list[index]
+            print(f"[round_robin_scheduler.py: select_from_candidate_replicas] Selected replica ID: {chosen_replica_id}")
             
             # Increment the counter for next time
             self._round_robin_counter += 1
             print(f"[round_robin_scheduler.py: select_from_candidate_replicas] Updated counter: {self._round_robin_counter}")
-
-            return selected_replica
         
         # Fallback to first candidate if no replicas in set
-        print(f"[round_robin_scheduler.py: select_from_candidate_replicas] No replicas in set, falling back to random candidate: {random.choice(candidates).replica_id}")
-        return random.choice(candidates)
+        if chosen_replica_id is None:
+            print(f"[round_robin_scheduler.py: select_from_candidate_replicas] No replicas in set, falling back to random candidate: {random.choice(candidates).replica_id}")
+            chosen_replica_id = random.choice(candidates).replica_id
+
+        input_text = self._get_input_text(pending_request)
+        matched_text = await self._tree_deployment.prefix_match_tenant.remote(input_text, chosen_replica_id)
+        if chosen_replica_id.unique_id not in self._prefix_match_rates:
+            self._prefix_match_rates[chosen_replica_id.unique_id] = []
+        if matched_text is not None:
+            self._prefix_match_rates[chosen_replica_id.unique_id].append(len(matched_text) / len(input_text))
+        else:
+            self._prefix_match_rates[chosen_replica_id.unique_id].append(0.0)
+        self._tree_deployment.insert.remote(input_text, chosen_replica_id)
+
+        return self._replicas[chosen_replica_id]
 
     def _get_pending_request_matching_metadata(
         self,
@@ -781,7 +820,7 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
         while len(self._pending_requests_to_schedule) > 0:
             pr = self._pending_requests_to_schedule.popleft()
             if not pr.future.done():
-                return pr.metadata
+                return pr.metadata, pr
 
         return None
 
@@ -798,7 +837,12 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
             while len(self._scheduling_tasks) <= self.target_num_scheduling_tasks:
                 start_time = time.time()
                 backoff_index = 0
-                request_metadata = self._get_next_pending_request_metadata_to_schedule()
+                result = self._get_next_pending_request_metadata_to_schedule()
+                if result is None:
+                    request_metadata = None
+                    pending_request = None
+                else:
+                    request_metadata, pending_request = result
                 async for candidates in self.choose_two_replicas_with_backoff(
                     request_metadata
                 ):
@@ -815,7 +859,7 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
                         break
 
                     replica = await self.select_from_candidate_replicas(
-                        candidates, backoff_index
+                        candidates, backoff_index, pending_request
                     )
                     if replica is not None:
                         self.fulfill_next_pending_request(replica, request_metadata)

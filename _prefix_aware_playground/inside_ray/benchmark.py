@@ -464,8 +464,8 @@ class BenchmarkMetrics:
     median_e2e_latency_ms: float
 
 
-SHAREGPT_URL = "https://huggingface.co/datasets/anon8231489123/ShareGPT_Vicuna_unfiltered/resolve/main/ShareGPT_V3_unfiltered_cleaned_split.json"
-
+# SHAREGPT_URL = "https://huggingface.co/datasets/anon8231489123/ShareGPT_Vicuna_unfiltered/resolve/main/ShareGPT_V3_unfiltered_cleaned_split.json"
+SHAREGPT_URL = "https://huggingface.co/datasets/samos123/share-gpt-long-convos/resolve/main/sharegpt_16_messages_or_more.json"
 
 def download_and_cache_file(url: str, filename: Optional[str] = None):
     """Read and cache a file from a url."""
@@ -507,9 +507,11 @@ def sample_sharegpt_requests(
     dataset_path: str,
     num_requests: int,
     tokenizer: PreTrainedTokenizerBase,
+    min_output_len: int,
+    max_output_len: int,
     fixed_output_len: Optional[int] = None,
     max_conversations: Optional[int] = None,
-    prefix_length: int = 50,  # Length of prefix to consider for grouping
+    prefix_length: int = 100,  # Length of prefix to consider for grouping
 ) -> List[Tuple[str, int, int, int]]:
 
     # Load the dataset
@@ -579,15 +581,18 @@ def sample_sharegpt_requests(
             completion = all_conversations[i][1]
             completion_token_ids = tokenizer(completion).input_ids
             prompt_len = len(prompt_token_ids)
-            output_len = (
-                len(completion_token_ids)
-                if fixed_output_len is None
-                else fixed_output_len
-            )
+            output_len = random.randint(min_output_len, max_output_len)
+            # output_len = (
+            #     len(completion_token_ids)
+            #     if fixed_output_len is None
+            #     else fixed_output_len
+            # )
+            # print(f"Prompt length: {prompt_len}, output length: {output_len}")
             if prompt_len < 1500 or (fixed_output_len is None and output_len < 4):
                 # Prune too short sequences
+            # if prompt_len < 1500:
+            # if prompt_len < 4 or (fixed_output_len is None and output_len < 4):
                 continue
-            # print(f"Prompt length: {prompt_len}, length of filtered dataset: {len(filtered_dataset)}")
             if prompt_len > 8192:
                 print(f"Prompt length: {prompt_len}")
                 # Prune too long sequences
@@ -1083,19 +1088,21 @@ def run_benchmark(args_: argparse.Namespace):
             dataset_path=args.dataset_path,
             num_requests=args.num_prompts,
             tokenizer=tokenizer,
+            min_output_len=args.min_output_len,
+            max_output_len=args.max_output_len,
             fixed_output_len=args.output_len,
             max_conversations=args.max_conversations,
             prefix_length=args.prefix_length,
         )
-    elif args.dataset_name == "generated-shared-prefix":
-        input_requests = sample_generated_shared_prefix_requests(
-            num_groups=args.gen_num_groups,
-            prompts_per_group=args.gen_prompts_per_group,
-            system_prompt_len=args.gen_system_prompt_len,
-            question_len=args.gen_question_len,
-            output_len=args.output_len,
-            tokenizer=tokenizer,
-        )
+    # elif args.dataset_name == "generated-shared-prefix":
+    #     input_requests = sample_generated_shared_prefix_requests(
+    #         num_groups=args.gen_num_groups,
+    #         prompts_per_group=args.gen_prompts_per_group,
+    #         system_prompt_len=args.gen_system_prompt_len,
+    #         question_len=args.gen_question_len,
+    #         output_len=args.output_len,
+    #         tokenizer=tokenizer,
+    #     )
     else:
         raise ValueError(f"Unknown dataset: {args.dataset_name}")
 
@@ -1249,8 +1256,9 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--disable-ignore-eos",
-        action="store_true",
-        help="Disable ignoring EOS.",
+        type=str,
+        default="False",
+        help="Disable ignoring EOS. Default is False.",
     )
     parser.add_argument(
         "--extra-request-body",
@@ -1300,13 +1308,25 @@ if __name__ == "__main__":
     group.add_argument(
         "--output-len",
         type=int,
-        default=256,
+        default=None,
         help="Target length in tokens for outputs in generated-shared-prefix dataset",
+    )
+    group.add_argument(
+        "--min-output-len",
+        type=int,
+        default=256,
+        help="Minimum target length in tokens for outputs in generated-shared-prefix dataset",
+    )
+    group.add_argument(
+        "--max-output-len",
+        type=int,
+        default=256,
+        help="Maximum target length in tokens for outputs in generated-shared-prefix dataset",
     )
     parser.add_argument(
         "--prefix-length",
         type=int,
-        default=50,
+        default=100,
         help="Length of prefix to consider for grouping",
     )
 

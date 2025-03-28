@@ -540,6 +540,7 @@ class AsyncioRouter:
             result = None
             try:
                 result, queue_info = await r.send_request(pr, with_rejection=True)
+                # do something after sending request
                 self._replica_scheduler.on_new_queue_len_info(r.replica_id, queue_info)
                 if queue_info.accepted:
                     return result, r.replica_id

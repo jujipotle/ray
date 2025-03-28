@@ -93,7 +93,7 @@ class Router:
             print("Beginning to track load distribution immediately")
             
             while True:
-                await asyncio.sleep(0.01)
+                await asyncio.sleep(0.1)
                 current_time = time.time()
                 
                 # Get current load for all replicas

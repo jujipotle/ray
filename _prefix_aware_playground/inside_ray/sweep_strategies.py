@@ -26,27 +26,30 @@ DEFAULT_CONFIG = {
     # Server Info
     "host": "127.0.0.1",
     "router_port": 8000,
-    # "worker_ports": "8001",
+    # "worker_ports": "8001,8002,8003,8004",
     "scheduler_strategies_dict": {
-        "fake": "ray.serve._private.replica_scheduler.fake_replica_scheduler.FakeReplicaScheduler",
+        # "fake": "ray.serve._private.replica_scheduler.fake_replica_scheduler.FakeReplicaScheduler",
         # "random": "ray.serve._private.replica_scheduler.random_scheduler.RandomReplicaScheduler",
         # "round_robin": "ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler",
-        # "pow_of_2": "ray.serve._private.replica_scheduler.llm_pow_2_scheduler.LLMPowerOfTwoChoicesReplicaScheduler",
-        # "prefix_aware": "ray.serve._private.replica_scheduler.prefix_aware_scheduler.PrefixAwareReplicaScheduler",
+        "pow_of_2": "ray.serve._private.replica_scheduler.llm_pow_2_scheduler.LLMPowerOfTwoChoicesReplicaScheduler",
+        "prefix_aware": "ray.serve._private.replica_scheduler.prefix_aware_scheduler.PrefixAwareReplicaScheduler",
     },
 
     # Model Info
     "model_name": "Qwen/Qwen2.5-1.5B-Instruct",
     "gpu_type": "L4",
-    "num_servers": 1,
+    "num_servers": 4,
     "is_prefix_cached": True,
 
     # Benchmark Info
-    "benchmark_label": "serve-long-conversations_4-gpu_40-concurrency",
+    "benchmark_label": "normal-conversations_4-gpu_40-concurrency_completion-output-lengths",
     "dataset_name": "sharegpt",
-    "max_concurrency": 20,  # Max concurrency (total)
-    "output_len": 32,
-    "with_warmup": "False",
+    "max_concurrency": 40,  # Max concurrency (total)
+    "min_output_len": 20,
+    "max_output_len": 200,
+    "with_warmup": False,
+    "disable_ignore_eos": False, # If false, will ignore EOS token and generate output_len tokens. If True, will stop at EOS token. Use false for more control.
+    "request_rate": 10000,
 
     # Generate Shared Prefix Info
     "gen-num-groups": 1,
@@ -55,9 +58,10 @@ DEFAULT_CONFIG = {
     "gen-question-len": 512,
 
     # ShareGPT Info
-    "num_prompts": 200,  # Number of prompts to sample from ShareGPT
+    "num_prompts": 1000,  # Number of prompts to sample from ShareGPT
     "max_conversations": 10000,  # Max conversations to include from ShareGPT; num_unique_prefixes is approximately max_conversations / 10. To aim for num_unique_prefixes = num_prompts / 10, set max_conversations = num_prompts.
     "dataset_path": "/home/ray/default/work/ray/_prefix_aware_playground/shared/sharegpt.json",  # Path to ShareGPT dataset
+    # "dataset_path": ""
 }
 
 
@@ -85,10 +89,16 @@ def parse_arguments():
     parser.add_argument("--dataset-name", type=str, default=DEFAULT_CONFIG["dataset_name"], help="Dataset name")
     parser.add_argument("--max-concurrency", type=int, default=DEFAULT_CONFIG["max_concurrency"], 
                         help="Maximum concurrency (total)")
-    parser.add_argument("--output-len", type=int, default=DEFAULT_CONFIG["output_len"], 
-                        help="Output length")
-    parser.add_argument("--with-warmup", type=str, default=DEFAULT_CONFIG["with_warmup"], 
+    parser.add_argument("--request-rate", type=int, default=DEFAULT_CONFIG["request_rate"], 
+                        help="Request rate")
+    parser.add_argument("--min-output-len", type=int, default=DEFAULT_CONFIG["min_output_len"], 
+                        help="Minimum output length")
+    parser.add_argument("--max-output-len", type=int, default=DEFAULT_CONFIG["max_output_len"], 
+                        help="Maximum output length")
+    parser.add_argument("--with-warmup", type=bool, default=DEFAULT_CONFIG["with_warmup"], 
                         help="Whether to run warmup")
+    parser.add_argument("--disable-ignore-eos", type=bool, default=DEFAULT_CONFIG["disable_ignore_eos"], 
+                        help="Whether to disable ignoring EOS")
 
     # Generate Shared Prefix info
     parser.add_argument("--gen-num-groups", type=int, default=DEFAULT_CONFIG["gen-num-groups"],
@@ -156,7 +166,8 @@ def restart_server_with_strategy(strategy, args):
                                     "min_replicas": args.num_servers,
                                     "max_replicas": args.num_servers,
                                     "initial_replicas": args.num_servers
-                                }
+                                },
+                                # "max_ongoing_requests": 1000
                             },
                             "replica_scheduler_cls_path": args.scheduler_strategies_dict[strategy]
                         }
@@ -183,10 +194,10 @@ def restart_server_with_strategy(strategy, args):
     
     server_process = subprocess.Popen(
         cmd,
-        stdout=stdout_log,
-        stderr=stderr_log
-        # stdout=subprocess.DEVNULL,
-        # stderr=subprocess.DEVNULL
+        # stdout=stdout_log,
+        # stderr=stderr_log
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
     )
     
     # Wait for server to start - give it more time and retry health checks
@@ -220,26 +231,27 @@ def run_single_benchmark(strategy, args):
     # reset_prefix_caches(args.host, args.worker_ports)
     # time.sleep(5)
 
-    if args.dataset_name == "generate-shared-prefix":
-        cmd = [
-            "python", "-m", "benchmark",
-            "--backend", "vllm",
-            "--model", args.model_name,
-            "--host", str(args.host),
-            "--port", str(args.router_port),
-            "--dataset-name", "generated-shared-prefix",
-            "--output-file", str(output_file),
-            "--output-len", str(args.output_len),
-            "--max-concurrency", str(args.max_concurrency),
-            "--with-warmup", str(args.with_warmup),
+    # if args.dataset_name == "generate-shared-prefix":
+    #     cmd = [
+    #         "python", "-m", "benchmark",
+    #         "--backend", "vllm",
+    #         "--model", args.model_name,
+    #         "--host", str(args.host),
+    #         "--port", str(args.router_port),
+    #         "--dataset-name", "generated-shared-prefix",
+    #         "--output-file", str(output_file),
+    #         "--output-len", str(args.output_len),
+    #         "--max-concurrency", str(args.max_concurrency),
+    #         "--with-warmup", str(args.with_warmup),
+    #         "--disable-ignore-eos", str(args.disable_ignore_eos),
 
-            # Parameters specific to dataset
-            "--gen-num-groups", str(args.gen_num_groups),
-            "--gen-prompts-per-group", str(args.gen_prompts_per_group),
-            "--gen-system-prompt-len", str(args.gen_system_prompt_len),
-            "--gen-question-len", str(args.gen_question_len),
-        ]
-    elif args.dataset_name == "sharegpt":
+    #         # Parameters specific to dataset
+    #         "--gen-num-groups", str(args.gen_num_groups),
+    #         "--gen-prompts-per-group", str(args.gen_prompts_per_group),
+    #         "--gen-system-prompt-len", str(args.gen_system_prompt_len),
+    #         "--gen-question-len", str(args.gen_question_len),
+    #     ]
+    if args.dataset_name == "sharegpt":
         cmd = [
             "python", "-m", "benchmark",
             "--backend", "vllm",
@@ -249,10 +261,12 @@ def run_single_benchmark(strategy, args):
             "--dataset-name", "sharegpt",
             "--dataset-path", args.dataset_path,
             "--output-file", str(output_file),
-            "--output-len", str(args.output_len),
+            "--min-output-len", str(args.min_output_len),
+            "--max-output-len", str(args.max_output_len),
             "--max-concurrency", str(args.max_concurrency),
+            # "--request-rate", str(args.request_rate),
             "--with-warmup", str(args.with_warmup),
-            "--request-rate", "7",
+            "--disable-ignore-eos", str(args.disable_ignore_eos),
 
             # Parameters specific to dataset
             "--max-conversations", str(args.max_conversations),
@@ -274,9 +288,12 @@ def run_single_benchmark(strategy, args):
         "is_prefix_cached": args.is_prefix_cached,
         "benchmark_label": args.benchmark_label,
         "scheduler_strategy": strategy,
-        "output_len": args.output_len,
+        "min_output_len": args.min_output_len,
+        "max_output_len": args.max_output_len,
         "max_concurrency": args.max_concurrency,
+        "request_rate": args.request_rate,
         "with_warmup": args.with_warmup,
+        "disable_ignore_eos": args.disable_ignore_eos,
     })
     if args.dataset_name == "generate-shared-prefix":
         result.update({
@@ -296,7 +313,7 @@ def run_single_benchmark(strategy, args):
 def save_results_to_csv(results, args):
     """Save the benchmark results to a CSV file."""
     # Define CSV column order
-    shared_params = ["gpu_type", "model_name", "num_servers", "is_prefix_cached", "benchmark_label", "scheduler_strategy", "output_len", "max_concurrency", "with_warmup"]
+    shared_params = ["gpu_type", "model_name", "num_servers", "is_prefix_cached", "benchmark_label", "scheduler_strategy", "min_output_len", "max_output_len", "max_concurrency", "request_rate", "with_warmup", "disable_ignore_eos"]
     if args.dataset_name == "generate-shared-prefix":
         dataset_params = ["num_groups", "prompts_per_group", "system_prompt_len", "question_len"]
     elif args.dataset_name == "sharegpt":
@@ -342,10 +359,6 @@ def main():
     # Define sweep configurations
     sweeps_configs = [
         {},
-        # {},
-        # {},
-        # {"num_servers": 4, "benchmark_label": "custom-prefix-router_long-conversations_4-gpu_40-concurrency", "max_concurrency": 40, "with_warmup": "False", "num_prompts": 1000, "max_conversations": 10000},
-        # {"worker_ports": "8001,8002,8003,8004", "num_servers": 4, "benchmark_label": "custom-prefix-router_long-conversations_4-gpu_40-concurrency_with-warmup", "max_concurrency": 40, "with_warmup": "True", "num_prompts": 1000, "max_conversations": 10000},
     ]
     
     # Loop through each sweep configuration
