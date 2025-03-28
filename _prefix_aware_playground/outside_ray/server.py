@@ -65,7 +65,8 @@ def start_server(
         policy_type = PolicyType.RANDOM
     elif policy.lower() == "prefix_aware":
         policy_type = PolicyType.PREFIX_AWARE
-    
+    elif policy.lower() == "pow_of_2":
+        policy_type = PolicyType.POWER_OF_TWO
     # Initialize router
     router_instance = Router(
         worker_urls=worker_urls,
@@ -82,7 +83,7 @@ def main():
     parser.add_argument("--worker-ports", type=str, default="8001,8002,8003,8004", 
                         help="Comma-separated list of worker ports")
     parser.add_argument("--policy", type=str, default="round_robin", 
-                        choices=["random", "round_robin", "prefix_aware"],
+                        choices=["random", "round_robin", "prefix_aware", "pow_of_2"],
                         help="Routing policy to use")
     parser.add_argument("--timeout", type=int, default=60, 
                         help="Timeout in seconds for requests to workers")

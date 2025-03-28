@@ -160,7 +160,8 @@ async def async_request_openai_completions(
             "best_of": 1,
             "max_tokens": request_func_input.output_len,
             "stream": not args.disable_stream,
-            "ignore_eos": not args.disable_ignore_eos,
+            # "ignore_eos": not args.disable_ignore_eos,
+            "ignore_eos": False,
             **request_func_input.extra_request_body,
         }
 

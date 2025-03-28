@@ -5,7 +5,9 @@ Fast Router Implementation for vLLM Workers
 This router implements a simple round-robin policy for distributing requests
 across multiple vLLM worker instances.
 """
-
+import time
+import os
+import asyncio
 import json
 import random
 import threading
@@ -23,6 +25,7 @@ class PolicyType(Enum):
     RANDOM = "random"
     ROUND_ROBIN = "round_robin"
     PREFIX_AWARE = "prefix_aware"
+    POWER_OF_TWO = "pow_of_2"
 
 class Router:
     """
@@ -58,15 +61,76 @@ class Router:
         if policy == PolicyType.PREFIX_AWARE:
             self.tree = Tree()
             self.tree.tenant_char_count = {url: 0 for url in worker_urls}
-            self.running_queue = {url: 0 for url in worker_urls}
-            self.processed_queue = {url: 0 for url in worker_urls}
             self.cache_threshold = 0.50
             self.balance_abs_threshold = 32
             self.balance_rel_threshold = 1.0001
-            self.queue_lock = threading.Lock()
         
+        self._load_tracking_task = None
+        self._lazily_fetched_loop = None
+        self._load_distribution: Dict[float, Dict[str, int]] = {}
+        self._benchmark_start_time = 0.0
+        self._zero_load_count = 0
+        self._load_tracking_task = None
+        self._seen_first_request = False
+        self.running_queue = {url: 0 for url in worker_urls}
+        self.processed_queue = {url: 0 for url in worker_urls}
+        self.queue_lock = threading.Lock()
+
         print(f"Initialized Router with policy: {policy.value}, worker URLs: {self.worker_urls}")
-    
+
+    @property
+    def _event_loop(self) -> asyncio.AbstractEventLoop:
+        if self._lazily_fetched_loop is None:
+            self._lazily_fetched_loop = asyncio.get_running_loop()
+
+        return self._lazily_fetched_loop
+
+    async def _track_load_distribution(self):
+        """Periodically track the load distribution across replicas."""
+        try:
+            # Start tracking immediately
+            self._benchmark_start_time = time.time()
+            print("Beginning to track load distribution immediately")
+            
+            while True:
+                await asyncio.sleep(0.01)
+                current_time = time.time()
+                
+                # Get current load for all replicas
+                total_load = 0
+                current_load = {}
+                
+                for worker_url in self.worker_urls:
+                    queue_len = self.running_queue[worker_url] or 0
+                    current_load[worker_url] = queue_len
+                    total_load += queue_len
+
+
+                elapsed_since_start = round(current_time - self._benchmark_start_time, 3) # Round to hundredth of a second
+                self._load_distribution[elapsed_since_start] = current_load
+                # print(f"current_load: {current_load}, zero_load_count: {self._zero_load_count}, seen_first_request: {self._seen_first_request}")
+                if self._seen_first_request and total_load == 0:
+                    self._zero_load_count += 1
+                    if self._zero_load_count >= 100:
+                        print("Benchmark ended, writing load distribution to file")
+                        # Write results to file
+                        results_dir = "/home/ray/default/work/ray/_prefix_aware_playground/outside_ray/results/load_distributions"
+                        os.makedirs(results_dir, exist_ok=True)
+                        filename = os.path.join(
+                            results_dir, 
+                            f"{self.policy.value}_{int(time.time())}.json"
+                        )
+                        with open(filename, "w") as f:
+                            json.dump(self._load_distribution, f, indent=2)
+                        break
+                elif total_load > 4:
+                    self._zero_load_count = 0
+                    self._seen_first_request = True
+        except Exception as e:
+            print(f"Error in load distribution tracking: {e}")
+        finally:
+            self._load_tracking_task = None
+
     def _select_worker(self, text: str = "", prefix_id: str = "-1") -> str:
         """
         Select a worker based on the current policy.
@@ -78,14 +142,14 @@ class Router:
         Returns:
             Selected worker URL
         """
+        selected_url = ""
         if self.policy == PolicyType.RANDOM:
-            return random.choice(self.worker_urls)
+            selected_url = random.choice(self.worker_urls)
         
         elif self.policy == PolicyType.ROUND_ROBIN:
             with self.round_robin_lock:
                 selected_url = self.worker_urls[self.counter % len(self.worker_urls)]
                 self.counter += 1
-                return selected_url
         
         elif self.policy == PolicyType.PREFIX_AWARE:
             with self.queue_lock:
@@ -124,23 +188,25 @@ class Router:
                     # Fallback to the first worker if necessary.
                     if selected_url == "empty" or selected_url not in self.worker_urls:
                         selected_url = self.worker_urls[0]
-                # Update running queue (and processed queue if applicable)
-                if selected_url in self.running_queue:
-                    self.running_queue[selected_url] += 1
-                else:
-                    self.running_queue[selected_url] = 1
-
-                if hasattr(self, "processed_queue"):
-                    if selected_url in self.processed_queue:
-                        self.processed_queue[selected_url] += 1
-                    else:
-                        self.processed_queue[selected_url] = 1
-
                 # Insert the text into the tree for future matching.
                 if text:
                     self.tree.insert(text, selected_url)
-                
-                return selected_url
+        elif self.policy == PolicyType.POWER_OF_TWO:
+            selected_url = min(self.running_queue.items(), key=lambda kv: kv[1])[0]
+
+        # Update running queue (and processed queue if applicable)
+        if selected_url in self.running_queue:
+            self.running_queue[selected_url] += 1
+        else:
+            self.running_queue[selected_url] = 1
+
+        if hasattr(self, "processed_queue"):
+            if selected_url in self.processed_queue:
+                self.processed_queue[selected_url] += 1
+            else:
+                self.processed_queue[selected_url] = 1
+
+        return selected_url
             # with self.queue_lock:
             #     # If we have a valid prefix_id, use it for routing
             #     if prefix_id != "-1":
@@ -212,6 +278,9 @@ class Router:
     
     async def forward_request(self, request: Request, endpoint: str):
         """Forward a regular request to one of the GPU workers."""
+        if self._load_tracking_task is None and len(self.worker_urls) > 0:
+            self._load_tracking_task = self._event_loop.create_task(self._track_load_distribution())
+
         try:
             # Extract request body
             request_body = await request.json() if await request.body() else None
@@ -229,10 +298,8 @@ class Router:
                 else:
                     response = await client.get(f"{worker_url}{endpoint}", timeout=self.timeout)
 
-                # Decrease queue count for PREFIX_AWARE
-                if self.policy == PolicyType.PREFIX_AWARE:
-                    with self.queue_lock:
-                        self.running_queue[worker_url] = max(0, self.running_queue[worker_url] - 1)
+                with self.queue_lock:
+                    self.running_queue[worker_url] = max(0, self.running_queue[worker_url] - 1)
 
                 return Response(
                     content=response.content,
@@ -243,7 +310,7 @@ class Router:
                 
         except Exception as e:
             # Decrease queue count for PREFIX_AWARE if there was an error
-            if self.policy == PolicyType.PREFIX_AWARE and 'worker_url' in locals():
+            if 'worker_url' in locals():
                 with self.queue_lock:
                     self.running_queue[worker_url] = max(0, self.running_queue[worker_url] - 1)
             
@@ -254,6 +321,9 @@ class Router:
             )
 
     async def forward_streaming_request(self, request: Request, endpoint: str):
+        if self._load_tracking_task is None and len(self.worker_urls) > 0:
+            self._load_tracking_task = self._event_loop.create_task(self._track_load_distribution())
+
         """Forward a streaming request to one of the GPU workers."""
             # Get prefix_id from headers if available
         prefix_id = request.headers.get("x-prefix-id", "-1")
@@ -282,9 +352,8 @@ class Router:
                                 yield chunk
                 finally:
                     # Decrease queue count for PREFIX_AWARE when streaming is done
-                    if self.policy == PolicyType.PREFIX_AWARE:
-                        with self.queue_lock:
-                            self.running_queue[worker_url] = max(0, self.running_queue[worker_url] - 1)
+                    with self.queue_lock:
+                        self.running_queue[worker_url] = max(0, self.running_queue[worker_url] - 1)
             
             return StreamingResponse(
                 stream_generator(),
@@ -293,7 +362,7 @@ class Router:
                 
         except Exception as e:
             # Decrease queue count for PREFIX_AWARE if there was an error
-            if self.policy == PolicyType.PREFIX_AWARE and 'worker_url' in locals():
+            if 'worker_url' in locals():
                 with self.queue_lock:
                     self.running_queue[worker_url] = max(0, self.running_queue[worker_url] - 1)
             
@@ -345,7 +414,6 @@ class Router:
         if self.policy == PolicyType.PREFIX_AWARE:
             self.tree = Tree()
             self.tree.tenant_char_count = {url: 0 for url in self.worker_urls}
-        
         return {
             "status": "completed",
             "results": results

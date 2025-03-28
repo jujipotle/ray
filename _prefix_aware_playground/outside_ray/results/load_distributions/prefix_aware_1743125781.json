@@ -1,0 +1,1910 @@
+{
+  "0.1": {
+    "http://localhost:8001": 1,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "0.2": {
+    "http://localhost:8001": 1,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "0.3": {
+    "http://localhost:8001": 1,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "0.4": {
+    "http://localhost:8001": 1,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "0.5": {
+    "http://localhost:8001": 1,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "0.6": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "0.7": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "0.8": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "0.9": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "1.0": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "1.1": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "1.2": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "1.3": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "1.4": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "1.5": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "1.6": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "1.7": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "1.8": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "1.9": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "2.0": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "2.1": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "2.41": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 10
+  },
+  "2.51": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 10
+  },
+  "2.61": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 10
+  },
+  "2.71": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 10
+  },
+  "2.81": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 10
+  },
+  "2.91": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 10
+  },
+  "3.01": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 10
+  },
+  "3.11": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 11
+  },
+  "3.21": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 11
+  },
+  "3.31": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 11
+  },
+  "3.41": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 11
+  },
+  "3.51": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 11
+  },
+  "3.61": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 11
+  },
+  "3.71": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 11
+  },
+  "3.81": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 11
+  },
+  "3.91": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 11
+  },
+  "4.01": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 11
+  },
+  "4.11": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 12
+  },
+  "4.21": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 12
+  },
+  "4.31": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 11
+  },
+  "4.41": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 11
+  },
+  "4.51": {
+    "http://localhost:8001": 3,
+    "http://localhost:8002": 3,
+    "http://localhost:8003": 12,
+    "http://localhost:8004": 13
+  },
+  "4.61": {
+    "http://localhost:8001": 6,
+    "http://localhost:8002": 5,
+    "http://localhost:8003": 14,
+    "http://localhost:8004": 15
+  },
+  "4.71": {
+    "http://localhost:8001": 6,
+    "http://localhost:8002": 5,
+    "http://localhost:8003": 14,
+    "http://localhost:8004": 15
+  },
+  "4.81": {
+    "http://localhost:8001": 6,
+    "http://localhost:8002": 5,
+    "http://localhost:8003": 14,
+    "http://localhost:8004": 15
+  },
+  "4.91": {
+    "http://localhost:8001": 6,
+    "http://localhost:8002": 5,
+    "http://localhost:8003": 14,
+    "http://localhost:8004": 15
+  },
+  "5.01": {
+    "http://localhost:8001": 6,
+    "http://localhost:8002": 5,
+    "http://localhost:8003": 14,
+    "http://localhost:8004": 15
+  },
+  "5.11": {
+    "http://localhost:8001": 6,
+    "http://localhost:8002": 5,
+    "http://localhost:8003": 14,
+    "http://localhost:8004": 15
+  },
+  "5.21": {
+    "http://localhost:8001": 8,
+    "http://localhost:8002": 6,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 17
+  },
+  "5.31": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 6,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 17
+  },
+  "5.41": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 6,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 17
+  },
+  "5.51": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 6,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 17
+  },
+  "5.62": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 10
+  },
+  "5.72": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 10
+  },
+  "5.82": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 10
+  },
+  "5.92": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 10
+  },
+  "6.02": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 10
+  },
+  "6.12": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 10
+  },
+  "6.22": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 10
+  },
+  "6.38": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 12,
+    "http://localhost:8004": 9
+  },
+  "6.48": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 12,
+    "http://localhost:8004": 9
+  },
+  "6.58": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 12,
+    "http://localhost:8004": 9
+  },
+  "6.68": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 12,
+    "http://localhost:8004": 9
+  },
+  "6.78": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 12,
+    "http://localhost:8004": 9
+  },
+  "6.88": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 12,
+    "http://localhost:8004": 8
+  },
+  "7.02": {
+    "http://localhost:8001": 8,
+    "http://localhost:8002": 12,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 10
+  },
+  "7.12": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 11
+  },
+  "7.22": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 11
+  },
+  "7.32": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 11
+  },
+  "7.42": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 11
+  },
+  "7.52": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 12,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 8
+  },
+  "7.62": {
+    "http://localhost:8001": 13,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 8
+  },
+  "7.74": {
+    "http://localhost:8001": 14,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 6,
+    "http://localhost:8004": 9
+  },
+  "7.84": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 14,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 8
+  },
+  "7.94": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 14,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 8
+  },
+  "8.06": {
+    "http://localhost:8001": 14,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 8
+  },
+  "8.16": {
+    "http://localhost:8001": 14,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 8
+  },
+  "8.26": {
+    "http://localhost:8001": 14,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 8
+  },
+  "8.37": {
+    "http://localhost:8001": 18,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 6
+  },
+  "8.47": {
+    "http://localhost:8001": 18,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 6
+  },
+  "8.57": {
+    "http://localhost:8001": 18,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 6
+  },
+  "8.8": {
+    "http://localhost:8001": 13,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 8
+  },
+  "8.91": {
+    "http://localhost:8001": 14,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 7
+  },
+  "9.01": {
+    "http://localhost:8001": 14,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 7
+  },
+  "9.11": {
+    "http://localhost:8001": 15,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 8
+  },
+  "9.21": {
+    "http://localhost:8001": 15,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 8
+  },
+  "9.31": {
+    "http://localhost:8001": 15,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 8
+  },
+  "9.41": {
+    "http://localhost:8001": 15,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 8
+  },
+  "9.51": {
+    "http://localhost:8001": 14,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 8
+  },
+  "9.62": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 12,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 8
+  },
+  "9.72": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 12,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 8
+  },
+  "9.82": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 9
+  },
+  "9.92": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 9
+  },
+  "10.02": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 9
+  },
+  "10.12": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 10
+  },
+  "10.22": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 12,
+    "http://localhost:8003": 4,
+    "http://localhost:8004": 8
+  },
+  "10.33": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 13
+  },
+  "10.43": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 6,
+    "http://localhost:8004": 13
+  },
+  "10.53": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 6,
+    "http://localhost:8004": 13
+  },
+  "10.63": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 6,
+    "http://localhost:8004": 13
+  },
+  "10.73": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 6,
+    "http://localhost:8004": 13
+  },
+  "10.83": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 5,
+    "http://localhost:8004": 14
+  },
+  "10.93": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 12,
+    "http://localhost:8003": 6,
+    "http://localhost:8004": 13
+  },
+  "11.03": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 12,
+    "http://localhost:8003": 6,
+    "http://localhost:8004": 13
+  },
+  "11.13": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 14
+  },
+  "11.23": {
+    "http://localhost:8001": 7,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 14
+  },
+  "11.33": {
+    "http://localhost:8001": 7,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 14
+  },
+  "11.43": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 11
+  },
+  "11.53": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 11
+  },
+  "11.63": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 11
+  },
+  "11.73": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 13,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 5
+  },
+  "11.83": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 13,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 5
+  },
+  "11.93": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 13,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 5
+  },
+  "12.03": {
+    "http://localhost:8001": 8,
+    "http://localhost:8002": 14,
+    "http://localhost:8003": 12,
+    "http://localhost:8004": 6
+  },
+  "12.17": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 13,
+    "http://localhost:8004": 8
+  },
+  "12.27": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 9
+  },
+  "12.37": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 12,
+    "http://localhost:8004": 8
+  },
+  "12.47": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 8
+  },
+  "12.58": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 9
+  },
+  "12.68": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 10
+  },
+  "12.78": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 10
+  },
+  "12.89": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 6,
+    "http://localhost:8004": 12
+  },
+  "13.0": {
+    "http://localhost:8001": 13,
+    "http://localhost:8002": 7,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 12
+  },
+  "13.1": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 12
+  },
+  "13.21": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 12
+  },
+  "13.31": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 11
+  },
+  "13.41": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 11
+  },
+  "13.51": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 12
+  },
+  "13.61": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 11
+  },
+  "13.71": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 11
+  },
+  "13.81": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 11
+  },
+  "13.91": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 13,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 10
+  },
+  "14.03": {
+    "http://localhost:8001": 7,
+    "http://localhost:8002": 14,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 10
+  },
+  "14.13": {
+    "http://localhost:8001": 7,
+    "http://localhost:8002": 13,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 11
+  },
+  "14.23": {
+    "http://localhost:8001": 8,
+    "http://localhost:8002": 14,
+    "http://localhost:8003": 6,
+    "http://localhost:8004": 12
+  },
+  "14.33": {
+    "http://localhost:8001": 8,
+    "http://localhost:8002": 14,
+    "http://localhost:8003": 6,
+    "http://localhost:8004": 12
+  },
+  "14.45": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 13,
+    "http://localhost:8003": 6,
+    "http://localhost:8004": 9
+  },
+  "14.56": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 12,
+    "http://localhost:8003": 6,
+    "http://localhost:8004": 10
+  },
+  "14.67": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 12,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 9
+  },
+  "14.77": {
+    "http://localhost:8001": 13,
+    "http://localhost:8002": 12,
+    "http://localhost:8003": 6,
+    "http://localhost:8004": 9
+  },
+  "14.87": {
+    "http://localhost:8001": 13,
+    "http://localhost:8002": 12,
+    "http://localhost:8003": 6,
+    "http://localhost:8004": 9
+  },
+  "14.97": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 12,
+    "http://localhost:8003": 6,
+    "http://localhost:8004": 10
+  },
+  "15.07": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 12,
+    "http://localhost:8003": 6,
+    "http://localhost:8004": 10
+  },
+  "15.17": {
+    "http://localhost:8001": 15,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 5,
+    "http://localhost:8004": 12
+  },
+  "15.27": {
+    "http://localhost:8001": 15,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 5,
+    "http://localhost:8004": 11
+  },
+  "15.37": {
+    "http://localhost:8001": 15,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 5,
+    "http://localhost:8004": 11
+  },
+  "15.48": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 5,
+    "http://localhost:8004": 13
+  },
+  "15.58": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 5,
+    "http://localhost:8004": 13
+  },
+  "15.68": {
+    "http://localhost:8001": 13,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 5,
+    "http://localhost:8004": 12
+  },
+  "15.78": {
+    "http://localhost:8001": 14,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 5,
+    "http://localhost:8004": 10
+  },
+  "15.88": {
+    "http://localhost:8001": 15,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 6,
+    "http://localhost:8004": 10
+  },
+  "15.98": {
+    "http://localhost:8001": 13,
+    "http://localhost:8002": 12,
+    "http://localhost:8003": 6,
+    "http://localhost:8004": 9
+  },
+  "16.08": {
+    "http://localhost:8001": 13,
+    "http://localhost:8002": 12,
+    "http://localhost:8003": 6,
+    "http://localhost:8004": 9
+  },
+  "16.18": {
+    "http://localhost:8001": 13,
+    "http://localhost:8002": 14,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 6
+  },
+  "16.31": {
+    "http://localhost:8001": 8,
+    "http://localhost:8002": 17,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 6
+  },
+  "16.41": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 17,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 5
+  },
+  "16.51": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 17,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 3
+  },
+  "16.63": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 14,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 4
+  },
+  "16.73": {
+    "http://localhost:8001": 13,
+    "http://localhost:8002": 13,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 3
+  },
+  "16.85": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 14,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 4
+  },
+  "16.95": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 14,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 4
+  },
+  "17.07": {
+    "http://localhost:8001": 14,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 13,
+    "http://localhost:8004": 5
+  },
+  "17.17": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 16,
+    "http://localhost:8004": 5
+  },
+  "17.27": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 16,
+    "http://localhost:8004": 4
+  },
+  "17.37": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 5,
+    "http://localhost:8003": 18,
+    "http://localhost:8004": 7
+  },
+  "17.47": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 6,
+    "http://localhost:8003": 14,
+    "http://localhost:8004": 9
+  },
+  "17.57": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 6,
+    "http://localhost:8003": 14,
+    "http://localhost:8004": 9
+  },
+  "17.67": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 6,
+    "http://localhost:8003": 14,
+    "http://localhost:8004": 11
+  },
+  "17.77": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 6,
+    "http://localhost:8003": 14,
+    "http://localhost:8004": 9
+  },
+  "17.87": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 6,
+    "http://localhost:8003": 14,
+    "http://localhost:8004": 9
+  },
+  "17.99": {
+    "http://localhost:8001": 8,
+    "http://localhost:8002": 7,
+    "http://localhost:8003": 13,
+    "http://localhost:8004": 12
+  },
+  "18.09": {
+    "http://localhost:8001": 6,
+    "http://localhost:8002": 7,
+    "http://localhost:8003": 14,
+    "http://localhost:8004": 13
+  },
+  "18.19": {
+    "http://localhost:8001": 7,
+    "http://localhost:8002": 5,
+    "http://localhost:8003": 14,
+    "http://localhost:8004": 14
+  },
+  "18.29": {
+    "http://localhost:8001": 8,
+    "http://localhost:8002": 6,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 15
+  },
+  "18.39": {
+    "http://localhost:8001": 5,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 17
+  },
+  "18.49": {
+    "http://localhost:8001": 5,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 17
+  },
+  "18.59": {
+    "http://localhost:8001": 3,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 12,
+    "http://localhost:8004": 17
+  },
+  "18.69": {
+    "http://localhost:8001": 4,
+    "http://localhost:8002": 7,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 18
+  },
+  "18.79": {
+    "http://localhost:8001": 6,
+    "http://localhost:8002": 7,
+    "http://localhost:8003": 13,
+    "http://localhost:8004": 14
+  },
+  "18.89": {
+    "http://localhost:8001": 6,
+    "http://localhost:8002": 7,
+    "http://localhost:8003": 12,
+    "http://localhost:8004": 15
+  },
+  "18.99": {
+    "http://localhost:8001": 8,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 12,
+    "http://localhost:8004": 12
+  },
+  "19.09": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 12
+  },
+  "19.19": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 10
+  },
+  "19.29": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 13,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 7
+  },
+  "19.39": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 6
+  },
+  "19.5": {
+    "http://localhost:8001": 14,
+    "http://localhost:8002": 12,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 7
+  },
+  "19.6": {
+    "http://localhost:8001": 14,
+    "http://localhost:8002": 12,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 7
+  },
+  "19.7": {
+    "http://localhost:8001": 17,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 4
+  },
+  "19.8": {
+    "http://localhost:8001": 17,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 6,
+    "http://localhost:8004": 6
+  },
+  "19.9": {
+    "http://localhost:8001": 14,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 7
+  },
+  "20.0": {
+    "http://localhost:8001": 15,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 6
+  },
+  "20.1": {
+    "http://localhost:8001": 14,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 7
+  },
+  "20.21": {
+    "http://localhost:8001": 15,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 5
+  },
+  "20.31": {
+    "http://localhost:8001": 16,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 5
+  },
+  "20.41": {
+    "http://localhost:8001": 16,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 5
+  },
+  "20.51": {
+    "http://localhost:8001": 16,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 7
+  },
+  "20.61": {
+    "http://localhost:8001": 16,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 6
+  },
+  "20.72": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 12,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 9
+  },
+  "20.82": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 12,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 9
+  },
+  "20.92": {
+    "http://localhost:8001": 13,
+    "http://localhost:8002": 12,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 8
+  },
+  "21.51": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 8
+  },
+  "21.78": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 10
+  },
+  "21.88": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 10
+  },
+  "21.98": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 10
+  },
+  "22.08": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 10
+  },
+  "22.18": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 10
+  },
+  "22.28": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 10
+  },
+  "22.41": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 13
+  },
+  "22.51": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 13
+  },
+  "22.61": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 6,
+    "http://localhost:8004": 14
+  },
+  "22.71": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 14
+  },
+  "22.81": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 13
+  },
+  "22.91": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 13
+  },
+  "23.01": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 13
+  },
+  "23.17": {
+    "http://localhost:8001": 3,
+    "http://localhost:8002": 15,
+    "http://localhost:8003": 5,
+    "http://localhost:8004": 16
+  },
+  "23.27": {
+    "http://localhost:8001": 3,
+    "http://localhost:8002": 15,
+    "http://localhost:8003": 5,
+    "http://localhost:8004": 17
+  },
+  "23.37": {
+    "http://localhost:8001": 4,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 6,
+    "http://localhost:8004": 21
+  },
+  "23.54": {
+    "http://localhost:8001": 8,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 10
+  },
+  "23.64": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 9
+  },
+  "23.74": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 9
+  },
+  "23.84": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 9
+  },
+  "23.94": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 9
+  },
+  "24.04": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 12,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 7
+  },
+  "24.14": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 14,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 8
+  },
+  "24.24": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 13,
+    "http://localhost:8003": 6,
+    "http://localhost:8004": 10
+  },
+  "24.34": {
+    "http://localhost:8001": 15,
+    "http://localhost:8002": 14,
+    "http://localhost:8003": 5,
+    "http://localhost:8004": 6
+  },
+  "24.44": {
+    "http://localhost:8001": 15,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 6,
+    "http://localhost:8004": 9
+  },
+  "24.55": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 10
+  },
+  "24.66": {
+    "http://localhost:8001": 14,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 11
+  },
+  "24.76": {
+    "http://localhost:8001": 15,
+    "http://localhost:8002": 7,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 11
+  },
+  "24.86": {
+    "http://localhost:8001": 15,
+    "http://localhost:8002": 7,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 11
+  },
+  "24.96": {
+    "http://localhost:8001": 15,
+    "http://localhost:8002": 6,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 11
+  },
+  "25.07": {
+    "http://localhost:8001": 14,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 6,
+    "http://localhost:8004": 8
+  },
+  "25.17": {
+    "http://localhost:8001": 15,
+    "http://localhost:8002": 4,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 11
+  },
+  "25.27": {
+    "http://localhost:8001": 16,
+    "http://localhost:8002": 7,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 7
+  },
+  "25.37": {
+    "http://localhost:8001": 16,
+    "http://localhost:8002": 7,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 6
+  },
+  "25.47": {
+    "http://localhost:8001": 16,
+    "http://localhost:8002": 7,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 6
+  },
+  "25.58": {
+    "http://localhost:8001": 13,
+    "http://localhost:8002": 7,
+    "http://localhost:8003": 12,
+    "http://localhost:8004": 8
+  },
+  "25.69": {
+    "http://localhost:8001": 14,
+    "http://localhost:8002": 4,
+    "http://localhost:8003": 13,
+    "http://localhost:8004": 9
+  },
+  "25.8": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 6,
+    "http://localhost:8003": 13,
+    "http://localhost:8004": 9
+  },
+  "25.9": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 6,
+    "http://localhost:8003": 13,
+    "http://localhost:8004": 12
+  },
+  "26.0": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 6,
+    "http://localhost:8003": 12,
+    "http://localhost:8004": 13
+  },
+  "26.11": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 3,
+    "http://localhost:8003": 13,
+    "http://localhost:8004": 14
+  },
+  "26.21": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 4,
+    "http://localhost:8003": 12,
+    "http://localhost:8004": 13
+  },
+  "26.31": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 4,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 14
+  },
+  "26.42": {
+    "http://localhost:8001": 7,
+    "http://localhost:8002": 4,
+    "http://localhost:8003": 13,
+    "http://localhost:8004": 16
+  },
+  "26.52": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 6,
+    "http://localhost:8003": 4,
+    "http://localhost:8004": 19
+  },
+  "26.62": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 3,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 19
+  },
+  "26.72": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 3,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 19
+  },
+  "26.82": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 3,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 19
+  },
+  "26.92": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 3,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 19
+  },
+  "27.03": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 3,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 19
+  },
+  "27.13": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 4,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 19
+  },
+  "27.24": {
+    "http://localhost:8001": 8,
+    "http://localhost:8002": 4,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 20
+  },
+  "27.35": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 4,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 19
+  },
+  "27.45": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 4,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 19
+  },
+  "27.57": {
+    "http://localhost:8001": 6,
+    "http://localhost:8002": 6,
+    "http://localhost:8003": 5,
+    "http://localhost:8004": 23
+  },
+  "27.67": {
+    "http://localhost:8001": 6,
+    "http://localhost:8002": 6,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 21
+  },
+  "27.77": {
+    "http://localhost:8001": 7,
+    "http://localhost:8002": 6,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 20
+  },
+  "27.88": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 14
+  },
+  "27.98": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 14
+  },
+  "28.08": {
+    "http://localhost:8001": 8,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 15
+  },
+  "28.18": {
+    "http://localhost:8001": 7,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 16
+  },
+  "28.28": {
+    "http://localhost:8001": 8,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 14
+  },
+  "28.38": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 5,
+    "http://localhost:8004": 11
+  },
+  "28.49": {
+    "http://localhost:8001": 14,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 8
+  },
+  "28.59": {
+    "http://localhost:8001": 14,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 6
+  },
+  "28.69": {
+    "http://localhost:8001": 16,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 6
+  },
+  "28.79": {
+    "http://localhost:8001": 16,
+    "http://localhost:8002": 6,
+    "http://localhost:8003": 12,
+    "http://localhost:8004": 6
+  },
+  "28.89": {
+    "http://localhost:8001": 14,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 13,
+    "http://localhost:8004": 5
+  },
+  "28.99": {
+    "http://localhost:8001": 13,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 13,
+    "http://localhost:8004": 5
+  },
+  "29.09": {
+    "http://localhost:8001": 15,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 4
+  },
+  "29.19": {
+    "http://localhost:8001": 15,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 5
+  },
+  "29.29": {
+    "http://localhost:8001": 16,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 5
+  },
+  "29.41": {
+    "http://localhost:8001": 17,
+    "http://localhost:8002": 6,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 8
+  },
+  "29.52": {
+    "http://localhost:8001": 15,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 9
+  },
+  "29.62": {
+    "http://localhost:8001": 15,
+    "http://localhost:8002": 7,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 10
+  },
+  "29.72": {
+    "http://localhost:8001": 17,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 5,
+    "http://localhost:8004": 9
+  },
+  "29.82": {
+    "http://localhost:8001": 15,
+    "http://localhost:8002": 7,
+    "http://localhost:8003": 6,
+    "http://localhost:8004": 9
+  },
+  "29.92": {
+    "http://localhost:8001": 13,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 11
+  },
+  "30.02": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 12
+  },
+  "30.12": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 11
+  },
+  "30.23": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 10,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 11
+  },
+  "30.33": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 8
+  },
+  "30.43": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 7,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 7
+  },
+  "30.53": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 12,
+    "http://localhost:8003": 12,
+    "http://localhost:8004": 5
+  },
+  "30.64": {
+    "http://localhost:8001": 13,
+    "http://localhost:8002": 12,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 6
+  },
+  "30.75": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 13,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 5
+  },
+  "30.85": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 15,
+    "http://localhost:8003": 11,
+    "http://localhost:8004": 4
+  },
+  "30.95": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 15,
+    "http://localhost:8003": 10,
+    "http://localhost:8004": 5
+  },
+  "31.05": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 15,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 6
+  },
+  "31.15": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 14,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 6
+  },
+  "31.49": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 14,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 7
+  },
+  "31.6": {
+    "http://localhost:8001": 6,
+    "http://localhost:8002": 4,
+    "http://localhost:8003": 5,
+    "http://localhost:8004": 5
+  },
+  "31.71": {
+    "http://localhost:8001": 9,
+    "http://localhost:8002": 8,
+    "http://localhost:8003": 7,
+    "http://localhost:8004": 5
+  },
+  "31.82": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 8
+  },
+  "31.92": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 8
+  },
+  "32.02": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 8
+  },
+  "32.12": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 11,
+    "http://localhost:8003": 9,
+    "http://localhost:8004": 8
+  },
+  "32.22": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 12,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 8
+  },
+  "32.32": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 12,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 8
+  },
+  "32.42": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 12,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 8
+  },
+  "32.52": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 9,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 8
+  },
+  "32.62": {
+    "http://localhost:8001": 12,
+    "http://localhost:8002": 6,
+    "http://localhost:8003": 8,
+    "http://localhost:8004": 5
+  },
+  "32.72": {
+    "http://localhost:8001": 11,
+    "http://localhost:8002": 4,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 1
+  },
+  "32.82": {
+    "http://localhost:8001": 10,
+    "http://localhost:8002": 1,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 1
+  },
+  "32.92": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 1
+  },
+  "33.02": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "33.12": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "33.22": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "33.32": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "33.42": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "33.52": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "33.62": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "33.72": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "33.82": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  },
+  "33.92": {
+    "http://localhost:8001": 0,
+    "http://localhost:8002": 0,
+    "http://localhost:8003": 0,
+    "http://localhost:8004": 0
+  }
+}

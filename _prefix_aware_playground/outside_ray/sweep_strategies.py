@@ -21,7 +21,12 @@ DEFAULT_CONFIG = {
     "host": "127.0.0.1",
     "router_port": 8000,
     "worker_ports": "8001",
-    "router_strategies": ["prefix_aware", "round_robin", "random"],
+    "router_strategies": [
+        "random",
+        # "round_robin",
+        # "prefix_aware",
+        # "pow_of_2",
+    ],
 
     # Model Info
     "model_name": "Qwen/Qwen2.5-1.5B-Instruct",
@@ -30,11 +35,11 @@ DEFAULT_CONFIG = {
     "is_prefix_cached": True,
 
     # Benchmark Info
-    "benchmark_label": "1-gpu_1-concurrency_with-warmup",
+    "benchmark_label": "1-gpu_10-concurrency",
     "dataset_name": "sharegpt",
-    "max_concurrency": 1,  # Max concurrency (total)
-    "output_len": 32,
-    "with_warmup": "True",
+    "max_concurrency": 10,  # Max concurrency (total)
+    "output_len": 1000,
+    "with_warmup": "False",
 
     # Generate Shared Prefix Info
     "gen-num-groups": 1,
@@ -44,8 +49,8 @@ DEFAULT_CONFIG = {
 
     # ShareGPT Info
     "num_prompts": 100,  # Number of prompts to sample from ShareGPT
-    "max_conversations": 100,  # Max conversations to include from ShareGPT; num_unique_prefixes is approximately max_conversations / 10. To aim for num_unique_prefixes = num_prompts / 10, set max_conversations = num_prompts.
-    "dataset_path": "/home/ray/default/work/ray/prefix_aware_playground/current_work/sharegpt.json",  # Path to ShareGPT dataset
+    "max_conversations": 10000,  # Max conversations to include from ShareGPT; num_unique_prefixes is approximately max_conversations / 10. To aim for num_unique_prefixes = num_prompts / 10, set max_conversations = num_prompts.
+    "dataset_path": "/home/ray/default/work/ray/_prefix_aware_playground/shared/sharegpt.json",  # Path to ShareGPT dataset
 }
 
 
@@ -124,7 +129,6 @@ def restart_server_with_strategy(host, router_port, worker_ports, strategy):
     original_dir = os.getcwd()
 
     # Change to new_backend directory
-    os.chdir("old_backend")
     # Start server with the specified strategy
     cmd = [
         "python", "-m", "server",
@@ -292,7 +296,8 @@ def main():
     
     # Define sweep configurations
     sweeps_configs = [
-        {"worker_ports": "8001,8002,8003,8004", "num_servers": 4, "benchmark_label": "custom-prefix-router_long-conversations_4-gpu_40-concurrency", "max_concurrency": 40, "with_warmup": "False", "num_prompts": 1000, "max_conversations": 10000},
+        {}
+        # {"worker_ports": "8001,8002,8003,8004", "num_servers": 4, "benchmark_label": "custom-prefix-router_long-conversations_4-gpu_40-concurrency", "max_concurrency": 40, "with_warmup": "False", "num_prompts": 1000, "max_conversations": 10000},
         # {"worker_ports": "8001,8002,8003,8004", "num_servers": 4, "benchmark_label": "custom-prefix-router_long-conversations_4-gpu_40-concurrency_with-warmup", "max_concurrency": 40, "with_warmup": "True", "num_prompts": 1000, "max_conversations": 10000},
     ]
     
@@ -336,7 +341,9 @@ def main():
                 # Run benchmark with this strategy
                 try:
                     result = run_single_benchmark(strategy, args)
-                    sweep_results.append(result)
+                    save_results_to_csv([result], args)
+                    time.sleep(5)
+                    print(f"Sleeping for 5 seconds for load distribution to be written to file...")
                 except Exception as e:
                     print(f"Error running benchmark with strategy {strategy}: {e}")
         
@@ -350,12 +357,6 @@ def main():
                 except:
                     print("Forcing server shutdown...")
                     server_process.kill()
-        
-        # Save results for this configuration to CSV
-        if sweep_results:
-            save_results_to_csv(sweep_results, args)
-        else:
-            print(f"No benchmark results were collected for configuration {config_idx+1}. Check for errors above.")
     
 if __name__ == "__main__":
     try:

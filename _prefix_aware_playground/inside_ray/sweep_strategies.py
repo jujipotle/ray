@@ -28,22 +28,23 @@ DEFAULT_CONFIG = {
     "router_port": 8000,
     # "worker_ports": "8001",
     "scheduler_strategies_dict": {
+        "fake": "ray.serve._private.replica_scheduler.fake_replica_scheduler.FakeReplicaScheduler",
         # "random": "ray.serve._private.replica_scheduler.random_scheduler.RandomReplicaScheduler",
         # "round_robin": "ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler",
         # "pow_of_2": "ray.serve._private.replica_scheduler.llm_pow_2_scheduler.LLMPowerOfTwoChoicesReplicaScheduler",
-        "prefix_aware": "ray.serve._private.replica_scheduler.prefix_aware_scheduler.PrefixAwareReplicaScheduler",
+        # "prefix_aware": "ray.serve._private.replica_scheduler.prefix_aware_scheduler.PrefixAwareReplicaScheduler",
     },
 
     # Model Info
     "model_name": "Qwen/Qwen2.5-1.5B-Instruct",
     "gpu_type": "L4",
-    "num_servers": 4,
+    "num_servers": 1,
     "is_prefix_cached": True,
 
     # Benchmark Info
     "benchmark_label": "serve-long-conversations_4-gpu_40-concurrency",
     "dataset_name": "sharegpt",
-    "max_concurrency": 40,  # Max concurrency (total)
+    "max_concurrency": 20,  # Max concurrency (total)
     "output_len": 32,
     "with_warmup": "False",
 
@@ -54,7 +55,7 @@ DEFAULT_CONFIG = {
     "gen-question-len": 512,
 
     # ShareGPT Info
-    "num_prompts": 1000,  # Number of prompts to sample from ShareGPT
+    "num_prompts": 200,  # Number of prompts to sample from ShareGPT
     "max_conversations": 10000,  # Max conversations to include from ShareGPT; num_unique_prefixes is approximately max_conversations / 10. To aim for num_unique_prefixes = num_prompts / 10, set max_conversations = num_prompts.
     "dataset_path": "/home/ray/default/work/ray/_prefix_aware_playground/shared/sharegpt.json",  # Path to ShareGPT dataset
 }
@@ -182,10 +183,10 @@ def restart_server_with_strategy(strategy, args):
     
     server_process = subprocess.Popen(
         cmd,
-        # stdout=stdout_log,
-        # stderr=stderr_log
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL
+        stdout=stdout_log,
+        stderr=stderr_log
+        # stdout=subprocess.DEVNULL,
+        # stderr=subprocess.DEVNULL
     )
     
     # Wait for server to start - give it more time and retry health checks
@@ -251,6 +252,7 @@ def run_single_benchmark(strategy, args):
             "--output-len", str(args.output_len),
             "--max-concurrency", str(args.max_concurrency),
             "--with-warmup", str(args.with_warmup),
+            "--request-rate", "7",
 
             # Parameters specific to dataset
             "--max-conversations", str(args.max_conversations),
