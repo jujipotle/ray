@@ -524,6 +524,7 @@ def sample_sharegpt_requests(
     # Collect all conversations
     all_conversations = []
     for data in dataset:
+        # if len(data["conversations"]) < 2:
         if len(data["conversations"]) < 5:
             continue
 
@@ -534,6 +535,7 @@ def sample_sharegpt_requests(
         num_messages = len(conversation)
 
         # Create requests with 1, 3, 5... messages
+        # for i in range(1, num_messages + 1, 2):
         for i in range(1, num_messages + 1, 1):
             if i > num_messages:
                 break
@@ -581,16 +583,16 @@ def sample_sharegpt_requests(
             completion = all_conversations[i][1]
             completion_token_ids = tokenizer(completion).input_ids
             prompt_len = len(prompt_token_ids)
-            output_len = random.randint(min_output_len, max_output_len)
-            # output_len = (
-            #     len(completion_token_ids)
-            #     if fixed_output_len is None
-            #     else fixed_output_len
-            # )
+            output_len = (
+                # len(completion_token_ids)
+                random.randint(min_output_len, max_output_len)
+                if fixed_output_len is -1
+                else fixed_output_len
+            )
             # print(f"Prompt length: {prompt_len}, output length: {output_len}")
+
+            # Prune too short sequences
             if prompt_len < 1500 or (fixed_output_len is None and output_len < 4):
-                # Prune too short sequences
-            # if prompt_len < 1500:
             # if prompt_len < 4 or (fixed_output_len is None and output_len < 4):
                 continue
             if prompt_len > 8192:
@@ -700,13 +702,13 @@ def sample_generated_shared_prefix_requests(
 
 async def get_request(
     input_requests: List[Tuple[str, int, int]],
-    request_rate: float,
+    request_rate: Any,
 ) -> AsyncGenerator[Tuple[str, int, int], None]:
     input_requests = iter(input_requests)
     for request in input_requests:
         yield request
 
-        if request_rate == float("inf"):
+        if request_rate == float("inf") or request_rate == -1:
             # If the request rate is infinity, then we don't need to wait.
             continue
 
@@ -1090,7 +1092,7 @@ def run_benchmark(args_: argparse.Namespace):
             tokenizer=tokenizer,
             min_output_len=args.min_output_len,
             max_output_len=args.max_output_len,
-            fixed_output_len=args.output_len,
+            fixed_output_len=args.fixed_output_len,
             max_conversations=args.max_conversations,
             prefix_length=args.prefix_length,
         )
@@ -1226,7 +1228,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--request-rate",
-        type=float,
+        type=int,
         default=float("inf"),
         help="Number of requests per second. If this is inf, then all the requests are sent at time 0. "
         "Otherwise, we use Poisson process to synthesize the request arrival times. Default is inf.",
@@ -1306,16 +1308,16 @@ if __name__ == "__main__":
         help="Target length in tokens for questions in generated-shared-prefix dataset",
     )
     group.add_argument(
-        "--output-len",
-        type=int,
-        default=None,
-        help="Target length in tokens for outputs in generated-shared-prefix dataset",
-    )
-    group.add_argument(
         "--min-output-len",
         type=int,
         default=256,
         help="Minimum target length in tokens for outputs in generated-shared-prefix dataset",
+    )
+    group.add_argument(
+        "--fixed-output-len",
+        type=int,
+        default=-1,
+        help="Fixed target length in tokens for outputs in generated-shared-prefix dataset",
     )
     group.add_argument(
         "--max-output-len",
