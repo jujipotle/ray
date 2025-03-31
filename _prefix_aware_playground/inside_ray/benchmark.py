@@ -509,7 +509,7 @@ def sample_sharegpt_requests(
     tokenizer: PreTrainedTokenizerBase,
     min_output_len: int,
     max_output_len: int,
-    fixed_output_len: Optional[int] = None,
+    fixed_output_len: int = -1,
     max_conversations: Optional[int] = None,
     prefix_length: int = 100,  # Length of prefix to consider for grouping
 ) -> List[Tuple[str, int, int, int]]:
@@ -586,13 +586,14 @@ def sample_sharegpt_requests(
             output_len = (
                 # len(completion_token_ids)
                 random.randint(min_output_len, max_output_len)
-                if fixed_output_len is -1
+                if fixed_output_len == -1
                 else fixed_output_len
             )
             # print(f"Prompt length: {prompt_len}, output length: {output_len}")
 
             # Prune too short sequences
-            if prompt_len < 1500 or (fixed_output_len is None and output_len < 4):
+            # if prompt_len < 1500 or (fixed_output_len is None and output_len < 4):
+            if prompt_len < 1500:
             # if prompt_len < 4 or (fixed_output_len is None and output_len < 4):
                 continue
             if prompt_len > 8192:
@@ -856,12 +857,9 @@ async def benchmark(
             )
         )
     outputs: List[RequestFuncOutput] = await asyncio.gather(*tasks)
-
     if pbar is not None:
         pbar.close()
-
     benchmark_duration = time.perf_counter() - benchmark_start_time
-
     metrics, output_lens = calculate_metrics(
         input_requests=input_requests,
         outputs=outputs,

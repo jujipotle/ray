@@ -115,7 +115,7 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         self._benchmark_start_time = 0.0
         self._zero_load_count = 0
         self._load_tracking_task = None
-        self._seen_first_request = False
+        self._num_requests_seen = 0
 
         # Variables to track prefix match rates / replica
         self._prefix_match_rates: Dict[str, List[float]] = {}
@@ -302,7 +302,7 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
                 elapsed_since_start = round(current_time - self._benchmark_start_time, 2) # Round to hundredth of a second
                 self._load_distribution[elapsed_since_start] = current_load
                 
-                if self._seen_first_request and total_load == 0:
+                if self._num_requests_seen > 10 and total_load == 0:
                     self._zero_load_count += 1
                     if self._zero_load_count >= 10:
                         print("Benchmark ended, writing load distribution to file")
@@ -328,9 +328,8 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
                         with open(prefix_match_filename, "w") as f:
                             json.dump(self._prefix_match_rates, f, indent=2)
                         break
-                elif total_load > 4:
+                else:
                     self._zero_load_count = 0
-                    self._seen_first_request = True
         except Exception as e:
             print(f"Error in load distribution tracking: {e}")
         finally:
@@ -787,7 +786,7 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         # Determine if the load is imbalanced.
         chosen_replica_id = None
         input_text = self._get_input_text(pending_request)
-        is_imbalanced = max_load - min_load > 20
+        is_imbalanced = max_load - min_load > 10
         if is_imbalanced:
             print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] is_imbalanced: {is_imbalanced}")
             chosen_replica_id = least_busy_replica_id
@@ -824,6 +823,7 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         # Update the tree with this input text and the chosen replica
         print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] Updating tree with input_text: {input_text} and chosen_replica_id: {chosen_replica_id}")
         self._tree_deployment.insert.remote(input_text, chosen_replica_id)
+        self._num_requests_seen += 1
         return self._replicas.get(chosen_replica_id, None)
 
     def _get_pending_request_matching_metadata(

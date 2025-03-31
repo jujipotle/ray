@@ -29,9 +29,9 @@ DEFAULT_CONFIG = {
     # "worker_ports": "8001,8002,8003,8004",
     "scheduler_strategies_dict": {
         # "fake": "ray.serve._private.replica_scheduler.fake_replica_scheduler.FakeReplicaScheduler",
-        # "random": "ray.serve._private.replica_scheduler.random_scheduler.RandomReplicaScheduler",
-        # "round_robin": "ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler",
-        # "pow_of_2": "ray.serve._private.replica_scheduler.llm_pow_2_scheduler.LLMPowerOfTwoChoicesReplicaScheduler",
+        "random": "ray.serve._private.replica_scheduler.random_scheduler.RandomReplicaScheduler",
+        "round_robin": "ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler",
+        "pow_of_2": "ray.serve._private.replica_scheduler.llm_pow_2_scheduler.LLMPowerOfTwoChoicesReplicaScheduler",
         "prefix_aware": "ray.serve._private.replica_scheduler.prefix_aware_scheduler.PrefixAwareReplicaScheduler",
     },
 
@@ -42,12 +42,12 @@ DEFAULT_CONFIG = {
     "is_prefix_cached": True,
 
     # Benchmark Info
-    "benchmark_label": "long-conversations_4-gpu_40-concurrency",
+    "benchmark_label": "long-conversations_short-outputs_4-gpu_40-concurrency",
     "dataset_name": "sharegpt",
     "max_concurrency": 40,  # Max concurrency (total)
-    "min_output_len": 20,
-    "max_output_len": 200,
-    "fixed_output_len": -1,
+    "min_output_len": 32,
+    "max_output_len": 32,
+    "fixed_output_len": 10,
     "with_warmup": False,
     "disable_ignore_eos": False, # If false, will ignore EOS token and generate output_len tokens. If True, will stop at EOS token. Use false for more control.
     "request_rate": -1,
@@ -96,7 +96,7 @@ def parse_arguments():
                         help="Minimum output length")
     parser.add_argument("--max-output-len", type=int, default=DEFAULT_CONFIG["max_output_len"], 
                         help="Maximum output length")
-    parser.add_argument("--fixed-output-len", type=Any, default=DEFAULT_CONFIG["fixed_output_len"], 
+    parser.add_argument("--fixed-output-len", type=int, default=DEFAULT_CONFIG["fixed_output_len"], 
                         help="Fixed output length")
     parser.add_argument("--with-warmup", type=bool, default=DEFAULT_CONFIG["with_warmup"], 
                         help="Whether to run warmup")

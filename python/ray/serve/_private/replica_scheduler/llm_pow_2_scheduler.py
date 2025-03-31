@@ -114,7 +114,7 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
         self._benchmark_start_time = 0.0
         self._zero_load_count = 0
         self._load_tracking_task = None
-        self._seen_first_request = False
+        self._num_requests_seen = 0
 
         # Variables to track prefix match rates / replica
         self._prefix_match_rates: Dict[str, List[float]] = {}
@@ -290,7 +290,7 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
                 elapsed_since_start = round(current_time - self._benchmark_start_time, 2) # Round to hundredth of a second
                 self._load_distribution[elapsed_since_start] = current_load
                 
-                if self._seen_first_request and total_load == 0:
+                if self._num_requests_seen > 10 and total_load == 0:
                     self._zero_load_count += 1
                     if self._zero_load_count >= 10:
                         print("Benchmark ended, writing load distribution to file")
@@ -316,9 +316,8 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
                         with open(prefix_match_filename, "w") as f:
                             json.dump(self._prefix_match_rates, f, indent=2)
                         break
-                elif total_load > 4:
+                else:
                     self._zero_load_count = 0
-                    self._seen_first_request = True
         except Exception as e:
             print(f"Error in load distribution tracking: {e}")
         finally:
@@ -773,7 +772,7 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
         else:
             self._prefix_match_rates[chosen_replica_id.unique_id].append(0.0)
         self._tree_deployment.insert.remote(input_text, chosen_replica_id)
-
+        self._num_requests_seen += 1
         # `self._replicas` may have been updated since the candidates were chosen.
         # In that case, return `None` so a new one is selected.
         return self._replicas.get(chosen_replica_id, None)
