@@ -728,111 +728,74 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
         Among replicas that respond within the deadline and don't have full queues, the
         one with the lowest queue length is chosen.
         """
-        # # BEGIN POW 2 LOGIC
-        # min_load = math.inf
-        # max_load = 0
-        # not_in_cache: List[RunningReplica] = []
+        # BEGIN POW 2 LOGIC
+        lowest_queue_len = math.inf
+        highest_queue_len = 0
+        chosen_replica_id: Optional[str] = None
+        not_in_cache: List[RunningReplica] = []
+        if self._use_replica_queue_len_cache:
+            # Populate available queue lens from the cache.
+            for r in candidates:
+                queue_len = self._replica_queue_len_cache.get(r.replica_id)
+                # Include replicas whose queues are full as not in the cache so we will
+                # actively probe them. Otherwise we may end up in "deadlock" until their
+                # cache entries expire.
+                if queue_len is None or queue_len >= r.max_ongoing_requests:
+                    not_in_cache.append(r)
+                else:
+                    highest_queue_len = max(highest_queue_len, queue_len)
+                    if queue_len < lowest_queue_len:
+                        lowest_queue_len = queue_len
+                        chosen_replica_id = r.replica_id
+        else:
+            not_in_cache = candidates
 
-        # least_busy_replica_id: Optional[str] = None
-        # if self._use_replica_queue_len_cache:
-        #     # Populate available queue lens from the cache.
-        #     for r in candidates:
-        #         queue_len = self._replica_queue_len_cache.get(r.replica_id)
-        #         # Include replicas whose queues are full as not in the cache so we will
-        #         # actively probe them. Otherwise we may end up in "deadlock" until their
-        #         # cache entries expire.
-        #         if queue_len is None or queue_len >= r.max_ongoing_requests:
-        #             not_in_cache.append(r)
-        #         else:
-        #             max_load = max(max_load, queue_len)
-        #             if queue_len < min_load:
-        #                 min_load = queue_len
-        #                 least_busy_replica_id = r.replica_id
-        # else:
-        #     not_in_cache = candidates
+        # If there is a valid replica to schedule based on the information in the
+        # cache, schedule it. Else fall back to actively probing.
+        if chosen_replica_id is None:
+            for r, queue_len in await self._probe_queue_lens(
+                not_in_cache,
+                backoff_index,
+            ):
+                if queue_len is None:
+                    # None is returned if we failed to get the queue len.
+                    continue
+                highest_queue_len = max(highest_queue_len, queue_len)
+                if queue_len < r.max_ongoing_requests and queue_len < lowest_queue_len:
+                    lowest_queue_len = queue_len
+                    chosen_replica_id = r.replica_id
+        elif len(not_in_cache) > 0:
+            # If there are replicas without a valid cache entry, probe them in the
+            # background to populate the cache.
+            self._event_loop.create_task(
+                self._probe_queue_lens(not_in_cache, backoff_index)
+            )
+        # END POW 2 LOGIC
 
-        # # If there is a valid replica to schedule based on the information in the
-        # # cache, schedule it. Else fall back to actively probing.
-        # if least_busy_replica_id is None:
-        #     for r, queue_len in await self._probe_queue_lens(
-        #         not_in_cache,
-        #         backoff_index,
-        #     ):
-        #         if queue_len is None:
-        #             # None is returned if we failed to get the queue len.
-        #             continue
-        #         max_load = max(max_load, queue_len)
-        #         if queue_len < r.max_ongoing_requests and queue_len < min_load:
-        #             min_load = queue_len
-        #             least_busy_replica_id = r.replica_id
-        # elif len(not_in_cache) > 0:
-        #     # If there are replicas without a valid cache entry, probe them in the
-        #     # background to populate the cache.
-        #     self._event_loop.create_task(
-        #         self._probe_queue_lens(not_in_cache, backoff_index)
-        #     )
-        # # END POW 2 LOGIC
-
-        # # BEGIN PREFIX AWARE LOGIC
-        # # Determine if the load is imbalanced.
-        # chosen_replica_id = least_busy_replica_id
+        # BEGIN DUMMY TREE CALL
+        hello = await self._tree_deployment.hello.remote()
+        hello = await self._tree_deployment.hello.remote()
+        # END DUMMY TREE CALL
+        
+        # # BEGIN PREFIX AWARE LOGIC (don't forget update tree)
         # if pending_request is not None:
         #     input_text = self._get_input_text(pending_request)
-        #     is_imbalanced = max_load - min_load > 10
-        #     if is_imbalanced:
-        #         print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] is_imbalanced: {is_imbalanced}")
-        #         chosen_replica_id = least_busy_replica_id
-        #     else:
-        #         # Use tree-based prefix matching
-        #         # async for matched_text, tenant_id_unique_id in self._tree_deployment.options(stream=True).prefix_match_generator.remote(input_text):
-        #         matched_text, tenant_id = await self._tree_deployment.prefix_match.remote(input_text)
-        #         await self._tree_deployment.hello.remote()
-        #         print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] matched_text: {matched_text}, tenant_id: {tenant_id}")
-        #         # Calculate match rate
-        #         match_rate = len(matched_text) / len(input_text) if input_text else 0
-        #         print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] match_rate: {match_rate}")
-        #         if match_rate < 0.1:
-        #             # chosen_replica = self._tree_deployment.get_smallest_tenant.remote()
-        #             pass
-        #         else:
-        #             # Find the candidate replica that matches the prefix-matched tenant
-        #             for replica in candidates:
-        #                 if tenant_id == replica.replica_id:
-        #                     chosen_replica_id = replica.replica_id
-                
-                
-        #         # If no good match was found or match rate was too low
-        #         if chosen_replica_id is None or chosen_replica_id == "empty":
-        #             chosen_replica_id = least_busy_replica_id
+        #     matched_text, tenant_id = await self._tree_deployment.prefix_match.remote(input_text)
         # # END PREFIX AWARE LOGIC
 
         # BEGIN ROUND ROBIN LOGIC
         if not candidates:
-            print(f"[round_robin_scheduler.py: select_from_candidate_replicas] No candidates available")
             return None
         chosen_replica_id = None
-        # Simple round robin selection
         if len(self._replica_id_set) > 0:
             if self._replica_ids_list == []:
                 self._replica_ids_list = list(self._replica_id_set)
-            print(f"[round_robin_scheduler.py: select_from_candidate_replicas] Replica IDs list: {self._replica_ids_list}")
-            print(f"[round_robin_scheduler.py: select_from_candidate_replicas] Current counter: {self._round_robin_counter}")
-            
-            # Use modulo to select the next replica in round robin fashion
             index = self._round_robin_counter % len(self._replica_ids_list)
-            print(f"[round_robin_scheduler.py: select_from_candidate_replicas] Calculated index: {index}")
-            
-            # Return the selected replica
             chosen_replica_id = self._replica_ids_list[index]
-            print(f"[round_robin_scheduler.py: select_from_candidate_replicas] Selected replica ID: {chosen_replica_id}")
-            
-            # Increment the counter for next time
             self._round_robin_counter += 1
-            print(f"[round_robin_scheduler.py: select_from_candidate_replicas] Updated counter: {self._round_robin_counter}")
         
         # Fallback to first candidate if no replicas in set
         if chosen_replica_id is None:
-            print(f"[round_robin_scheduler.py: select_from_candidate_replicas] No replicas in set, falling back to random candidate: {random.choice(candidates).replica_id}")
             chosen_replica_id = random.choice(candidates).replica_id
         # END ROUND ROBIN LOGIC
 
@@ -846,10 +809,16 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
         #         self._prefix_match_rates[chosen_replica_id.unique_id].append(len(matched_text) / len(input_text))
         #     else:
         #         self._prefix_match_rates[chosen_replica_id.unique_id].append(0.0)
-        #     self._tree_deployment.insert.remote(input_text, chosen_replica_id)
         #     self._num_requests_seen += 1
         # # END PREFIX MATCH RATE TRACKING
-        return self._replicas[chosen_replica_id]
+
+        # # BEGIN UPDATE TREE
+        # if pending_request is not None:
+        #     input_text = self._get_input_text(pending_request)
+        #     self._tree_deployment.insert.remote(input_text, chosen_replica_id)
+        # # END UPDATE TREE
+
+        return self._replicas.get(chosen_replica_id, None)
 
     def _get_pending_request_matching_metadata(
         self,

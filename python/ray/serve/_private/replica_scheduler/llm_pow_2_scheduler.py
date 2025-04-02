@@ -757,7 +757,6 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
                     # None is returned if we failed to get the queue len.
                     continue
                 highest_queue_len = max(highest_queue_len, queue_len)
-
                 if queue_len < r.max_ongoing_requests and queue_len < lowest_queue_len:
                     lowest_queue_len = queue_len
                     chosen_replica_id = r.replica_id
@@ -769,37 +768,15 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
             )
         # END POW 2 LOGIC
 
-        # # BEGIN PREFIX AWARE LOGIC
-        # # Determine if the load is imbalanced.
-        # # chosen_replica_id = least_busy_replica_id
+        # BEGIN DUMMY TREE CALL
+        hello = await self._tree_deployment.hello.remote()
+        hello = await self._tree_deployment.hello.remote()
+        # END DUMMY TREE CALL
+
+        # # BEGIN PREFIX AWARE LOGIC (don't forget update tree)
         # if pending_request is not None:
         #     input_text = self._get_input_text(pending_request)
-        #     is_imbalanced = highest_queue_len - lowest_queue_len > 10
-        #     if is_imbalanced:
-        #         print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] is_imbalanced: {is_imbalanced}")
-        #         # chosen_replica_id = least_busy_replica_id
-        #     else:
-        #         # Use tree-based prefix matching
-        #         # async for matched_text, tenant_id_unique_id in self._tree_deployment.options(stream=True).prefix_match_generator.remote(input_text):
-        #         matched_text, tenant_id = await self._tree_deployment.prefix_match.remote(input_text)
-        #         print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] matched_text: {matched_text}, tenant_id: {tenant_id}")
-        #         # Calculate match rate
-        #         match_rate = len(matched_text) / len(input_text) if input_text else 0
-        #         print(f"[prefix_aware_scheduler.py: select_from_candidate_replicas] match_rate: {match_rate}")
-        #         if match_rate < 0.1:
-        #             # chosen_replica = self._tree_deployment.get_smallest_tenant.remote()
-        #             pass
-        #         else:
-        #             # Find the candidate replica that matches the prefix-matched tenant
-        #             for replica in candidates:
-        #                 if tenant_id == replica.replica_id:
-        #                     # chosen_replica_id = replica.replica_id
-        #                     pass
-                
-        #         # If no good match was found or match rate was too low
-        #         if chosen_replica_id is None or chosen_replica_id == "empty":
-        #             # chosen_replica_id = least_busy_replica_id
-        #             pass
+        #     matched_text, tenant_id = await self._tree_deployment.prefix_match.remote(input_text)
         # # END PREFIX AWARE LOGIC
 
         # # BEGIN PREFIX MATCH RATE TRACKING
@@ -812,9 +789,14 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
         #         self._prefix_match_rates[chosen_replica_id.unique_id].append(len(matched_text) / len(input_text))
         #     else:
         #         self._prefix_match_rates[chosen_replica_id.unique_id].append(0.0)
-        #     self._tree_deployment.insert.remote(input_text, chosen_replica_id)
         #     self._num_requests_seen += 1
         # # END PREFIX MATCH RATE TRACKING
+
+        # # BEGIN UPDATE TREE
+        # if pending_request is not None:
+        #     input_text = self._get_input_text(pending_request)
+        #     self._tree_deployment.insert.remote(input_text, chosen_replica_id)
+        # # END UPDATE TREE
 
         # `self._replicas` may have been updated since the candidates were chosen.
         # In that case, return `None` so a new one is selected.

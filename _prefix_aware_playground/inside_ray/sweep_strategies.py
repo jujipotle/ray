@@ -29,10 +29,10 @@ DEFAULT_CONFIG = {
     # "worker_ports": "8001,8002,8003,8004",
     "scheduler_strategies_dict": {
         # "fake": "ray.serve._private.replica_scheduler.fake_replica_scheduler.FakeReplicaScheduler",
-        # "random": "ray.serve._private.replica_scheduler.random_scheduler.RandomReplicaScheduler",
-        # "round_robin": "ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler",
-        # "pow_of_2": "ray.serve._private.replica_scheduler.llm_pow_2_scheduler.LLMPowerOfTwoChoicesReplicaScheduler",
-        "prefix_aware": "ray.serve._private.replica_scheduler.prefix_aware_scheduler.PrefixAwareReplicaScheduler",
+        "random": "ray.serve._private.replica_scheduler.random_scheduler.RandomReplicaScheduler",
+        "round_robin": "ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler",
+        "pow_of_2": "ray.serve._private.replica_scheduler.llm_pow_2_scheduler.LLMPowerOfTwoChoicesReplicaScheduler",
+        # "prefix_aware": "ray.serve._private.replica_scheduler.prefix_aware_scheduler.PrefixAwareReplicaScheduler",
     },
 
     # Model Info
@@ -42,7 +42,7 @@ DEFAULT_CONFIG = {
     "enable_prefix_caching": True,
     "enable_chunked_prefill": True,
     # Benchmark Info
-    "benchmark_label": "no-overhead-no-tracking",
+    "benchmark_label": "2dummies",
     "dataset_name": "sharegpt",
     "max_concurrency": 40,  # Max concurrency (total)
     "min_output_len": 10,
@@ -363,7 +363,7 @@ def main():
     # Define sweep configurations
     sweeps_configs = [
         {},
-        # {},
+        {},
         # {},
         # {},
     ]
@@ -393,7 +393,7 @@ def main():
                 print(f"Error running benchmark with strategy {strategy}: {e}")        
             finally:
                 print("Sleeping for 10 seconds (to allow load distribution to be written to file)...")
-                time.sleep(10)
+                time.sleep(3)
                 # Close log files
                 stdout_log.close()
                 stderr_log.close()
@@ -401,7 +401,7 @@ def main():
                 # Clean up: stop server if still running
                 subprocess.run(["serve", "shutdown", "--yes"], check=False)
                 print("Sleeping for 5 seconds (to allow server to shut down)...")
-                time.sleep(5)  # Give it time to shut down
+                time.sleep(3)  # Give it time to shut down
         
 
 if __name__ == "__main__":
