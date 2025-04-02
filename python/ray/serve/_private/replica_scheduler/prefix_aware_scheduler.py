@@ -810,22 +810,23 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
                 # If no good match was found or match rate was too low
                 if chosen_replica_id is None or chosen_replica_id == "empty":
                     pass
+            self._tree_deployment.insert.remote(input_text, chosen_replica_id)
+
         # END PREFIX AWARE LOGIC
 
-        # BEGIN PREFIX MATCH RATE TRACKING
-        if pending_request is not None:
-            input_text = self._get_input_text(pending_request)
-            matched_text = await self._tree_deployment.prefix_match_tenant.remote(input_text, chosen_replica_id)
-            if chosen_replica_id.unique_id not in self._prefix_match_rates:
-                self._prefix_match_rates[chosen_replica_id.unique_id] = []
-            if matched_text is not None:
-                self._prefix_match_rates[chosen_replica_id.unique_id].append(len(matched_text) / len(input_text))
-            else:
-                self._prefix_match_rates[chosen_replica_id.unique_id].append(0.0)
-            self._tree_deployment.insert.remote(input_text, chosen_replica_id)
-            self._num_requests_seen += 1
-        # END PREFIX MATCH RATE TRACKING
-
+        # # BEGIN PREFIX MATCH RATE TRACKING
+        # if pending_request is not None:
+        #     input_text = self._get_input_text(pending_request)
+        #     matched_text = await self._tree_deployment.prefix_match_tenant.remote(input_text, chosen_replica_id)
+        #     if chosen_replica_id.unique_id not in self._prefix_match_rates:
+        #         self._prefix_match_rates[chosen_replica_id.unique_id] = []
+        #     if matched_text is not None:
+        #         self._prefix_match_rates[chosen_replica_id.unique_id].append(len(matched_text) / len(input_text))
+        #     else:
+        #         self._prefix_match_rates[chosen_replica_id.unique_id].append(0.0)
+        #     self._tree_deployment.insert.remote(input_text, chosen_replica_id)
+        #     self._num_requests_seen += 1
+        # # END PREFIX MATCH RATE TRACKING
         return self._replicas.get(chosen_replica_id, None)
 
     def _get_pending_request_matching_metadata(
