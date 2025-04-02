@@ -509,7 +509,6 @@ def sample_sharegpt_requests(
     tokenizer: PreTrainedTokenizerBase,
     min_output_len: int,
     max_output_len: int,
-    fixed_output_len: int = -1,
     max_conversations: Optional[int] = None,
     prefix_length: int = 100,  # Length of prefix to consider for grouping
 ) -> List[Tuple[str, int, int, int]]:
@@ -586,8 +585,6 @@ def sample_sharegpt_requests(
             output_len = (
                 # len(completion_token_ids)
                 random.randint(min_output_len, max_output_len)
-                if fixed_output_len == -1
-                else fixed_output_len
             )
             # print(f"Prompt length: {prompt_len}, output length: {output_len}")
 
@@ -1090,7 +1087,6 @@ def run_benchmark(args_: argparse.Namespace):
             tokenizer=tokenizer,
             min_output_len=args.min_output_len,
             max_output_len=args.max_output_len,
-            fixed_output_len=args.fixed_output_len,
             max_conversations=args.max_conversations,
             prefix_length=args.prefix_length,
         )
@@ -1310,12 +1306,6 @@ if __name__ == "__main__":
         type=int,
         default=256,
         help="Minimum target length in tokens for outputs in generated-shared-prefix dataset",
-    )
-    group.add_argument(
-        "--fixed-output-len",
-        type=int,
-        default=-1,
-        help="Fixed target length in tokens for outputs in generated-shared-prefix dataset",
     )
     group.add_argument(
         "--max-output-len",

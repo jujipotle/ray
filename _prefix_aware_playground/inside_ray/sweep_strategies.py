@@ -39,18 +39,17 @@ DEFAULT_CONFIG = {
     "model_name": "Qwen/Qwen2.5-1.5B-Instruct",
     "gpu_type": "L4",
     "num_servers": 4,
-    "is_prefix_cached": True,
-
+    "enable_prefix_caching": True,
+    "enable_chunked_prefill": True,
     # Benchmark Info
-    "benchmark_label": "long-conversations_short-outputs_4-gpu_40-concurrency",
+    "benchmark_label": "no-overhead-2",
     "dataset_name": "sharegpt",
     "max_concurrency": 40,  # Max concurrency (total)
-    "min_output_len": 32,
-    "max_output_len": 32,
-    "fixed_output_len": 10,
+    "min_output_len": 10,
+    "max_output_len": 200,
     "with_warmup": False,
     "disable_ignore_eos": False, # If false, will ignore EOS token and generate output_len tokens. If True, will stop at EOS token. Use false for more control.
-    "request_rate": -1,
+    "request_rate": 100,
 
     # Generate Shared Prefix Info
     "gen-num-groups": 1,
@@ -60,7 +59,8 @@ DEFAULT_CONFIG = {
 
     # ShareGPT Info
     "num_prompts": 1000,  # Number of prompts to sample from ShareGPT
-    "max_conversations": 10000,  # Max conversations to include from ShareGPT; num_unique_prefixes is approximately max_conversations / 10. To aim for num_unique_prefixes = num_prompts / 10, set max_conversations = num_prompts.
+    "max_conversations": 10000,  # Max conversations to include from ShareGPT; num_unique_prefixes is approximately 3/100 * max_conversations.
+    # To aim for average_prompts_per_prefix = 3, set max_conversations = 10 * num_prompts.
     "dataset_path": "/home/ray/default/work/ray/_prefix_aware_playground/shared/sharegpt.json",  # Path to ShareGPT dataset
     # "dataset_path": ""
 }
@@ -82,8 +82,10 @@ def parse_arguments():
     parser.add_argument("--model-name", type=str, default=DEFAULT_CONFIG["model_name"], help="Model name")
     parser.add_argument("--gpu-type", type=str, default=DEFAULT_CONFIG["gpu_type"], help="GPU type (e.g., A100, H100)")
     parser.add_argument("--num-servers", type=int, default=DEFAULT_CONFIG["num_servers"], help="Number of servers")
-    parser.add_argument("--is-prefix-cached", type=bool, default=DEFAULT_CONFIG["is_prefix_cached"], 
+    parser.add_argument("--enable-prefix-caching", type=bool, default=DEFAULT_CONFIG["enable_prefix_caching"], 
                         help="Whether prefix caching is enabled")
+    parser.add_argument("--enable-chunked-prefill", type=bool, default=DEFAULT_CONFIG["enable_chunked_prefill"], 
+                        help="Whether chunked prefill is enabled")
 
     # Benchmark info
     parser.add_argument("--benchmark-label", type=str, default=DEFAULT_CONFIG["benchmark_label"], help="Benchmark label")
@@ -96,8 +98,6 @@ def parse_arguments():
                         help="Minimum output length")
     parser.add_argument("--max-output-len", type=int, default=DEFAULT_CONFIG["max_output_len"], 
                         help="Maximum output length")
-    parser.add_argument("--fixed-output-len", type=int, default=DEFAULT_CONFIG["fixed_output_len"], 
-                        help="Fixed output length")
     parser.add_argument("--with-warmup", type=bool, default=DEFAULT_CONFIG["with_warmup"], 
                         help="Whether to run warmup")
     parser.add_argument("--disable-ignore-eos", type=bool, default=DEFAULT_CONFIG["disable_ignore_eos"], 
@@ -161,8 +161,9 @@ def restart_server_with_strategy(strategy, args):
                             },
                             "accelerator_type": args.gpu_type,
                             "engine_kwargs": {
-                                "enable_prefix_caching": args.is_prefix_cached,
-                                "disable_log_requests": True
+                                "disable_log_requests": True,
+                                "enable_prefix_caching": args.enable_prefix_caching,
+                                "enable_chunked_prefill": args.enable_chunked_prefill
                             },
                             "deployment_config": {
                                 "autoscaling_config": {
@@ -265,7 +266,6 @@ def run_single_benchmark(strategy, args):
             "--output-file", str(output_file),
             "--min-output-len", str(args.min_output_len),
             "--max-output-len", str(args.max_output_len),
-            "--fixed-output-len", str(args.fixed_output_len),
             "--max-concurrency", str(args.max_concurrency),
             "--request-rate", str(args.request_rate),
             "--with-warmup", str(args.with_warmup),
@@ -288,12 +288,12 @@ def run_single_benchmark(strategy, args):
         "gpu_type": args.gpu_type,
         "model_name": args.model_name,
         "num_servers": args.num_servers,
-        "is_prefix_cached": args.is_prefix_cached,
+        "enable_prefix_caching": args.enable_prefix_caching,
+        "enable_chunked_prefill": args.enable_chunked_prefill,
         "benchmark_label": args.benchmark_label,
         "scheduler_strategy": strategy,
         "min_output_len": args.min_output_len,
         "max_output_len": args.max_output_len,
-        "fixed_output_len": args.fixed_output_len,
         "max_concurrency": args.max_concurrency,
         "request_rate": args.request_rate,
         "with_warmup": args.with_warmup,
@@ -317,7 +317,7 @@ def run_single_benchmark(strategy, args):
 def save_results_to_csv(results, args):
     """Save the benchmark results to a CSV file."""
     # Define CSV column order
-    shared_params = ["gpu_type", "model_name", "num_servers", "is_prefix_cached", "benchmark_label", "scheduler_strategy", "min_output_len", "max_output_len", "fixed_output_len", "max_concurrency", "request_rate", "with_warmup", "disable_ignore_eos"]
+    shared_params = ["gpu_type", "model_name", "num_servers", "enable_prefix_caching", "enable_chunked_prefill", "benchmark_label", "scheduler_strategy", "min_output_len", "max_output_len", "max_concurrency", "request_rate", "with_warmup", "disable_ignore_eos"]
     if args.dataset_name == "generate-shared-prefix":
         dataset_params = ["num_groups", "prompts_per_group", "system_prompt_len", "question_len"]
     elif args.dataset_name == "sharegpt":
@@ -363,6 +363,9 @@ def main():
     # Define sweep configurations
     sweeps_configs = [
         {},
+        # {},
+        # {},
+        # {},
     ]
     
     # Loop through each sweep configuration

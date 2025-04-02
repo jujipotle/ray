@@ -1,5 +1,2 @@
 inside_ray/logs
-inside_ray/results/load_distributions
-inside_ray/results/prefix_match_rates
-outside_ray/results/load_distributions
 outside_ray/logs

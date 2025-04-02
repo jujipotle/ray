@@ -1,0 +1,3830 @@
+{
+  "0.1": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 1,
+    "ubyltpur": 0
+  },
+  "0.21": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 1,
+    "ubyltpur": 0
+  },
+  "0.31": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 1,
+    "ubyltpur": 0
+  },
+  "0.41": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 1,
+    "ubyltpur": 0
+  },
+  "0.51": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 1,
+    "ubyltpur": 0
+  },
+  "0.62": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 1,
+    "ubyltpur": 0
+  },
+  "0.72": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 1,
+    "ubyltpur": 0
+  },
+  "0.82": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 1,
+    "ubyltpur": 0
+  },
+  "0.92": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 1,
+    "ubyltpur": 0
+  },
+  "1.03": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 1,
+    "ubyltpur": 0
+  },
+  "1.13": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 1,
+    "ubyltpur": 0
+  },
+  "1.23": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 1,
+    "ubyltpur": 0
+  },
+  "1.33": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 1,
+    "ubyltpur": 0
+  },
+  "1.44": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 1,
+    "ubyltpur": 0
+  },
+  "1.54": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 1,
+    "ubyltpur": 0
+  },
+  "1.64": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "1.74": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "1.85": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "1.95": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "2.05": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "2.15": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "2.26": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "2.36": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "2.46": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "2.56": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "2.67": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "2.77": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "2.87": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "2.97": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "3.08": {
+    "13nm7xye": 1,
+    "bhplg5jb": 1,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "3.39": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "3.49": {
+    "13nm7xye": 7,
+    "bhplg5jb": 8,
+    "tvzuvva2": 7,
+    "ubyltpur": 7
+  },
+  "3.6": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "3.7": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "3.8": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "3.9": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "4.01": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "4.11": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "4.21": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "4.33": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "4.43": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "4.55": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "4.67": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "4.78": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "4.88": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "4.99": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "5.1": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "5.22": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "5.34": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "5.45": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "5.57": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "5.68": {
+    "13nm7xye": 11,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "5.78": {
+    "13nm7xye": 11,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "5.89": {
+    "13nm7xye": 11,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "6.0": {
+    "13nm7xye": 11,
+    "bhplg5jb": 1,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "6.1": {
+    "13nm7xye": 1,
+    "bhplg5jb": 2,
+    "tvzuvva2": 1,
+    "ubyltpur": 1
+  },
+  "6.26": {
+    "13nm7xye": 3,
+    "bhplg5jb": 4,
+    "tvzuvva2": 3,
+    "ubyltpur": 3
+  },
+  "6.37": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "6.47": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "6.57": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "6.67": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "6.77": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "6.88": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "6.98": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "7.08": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "7.19": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "7.3": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "7.41": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "7.52": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "7.63": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "7.74": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "7.85": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "7.97": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "8.07": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "8.18": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "8.29": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "8.4": {
+    "13nm7xye": 9,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "8.53": {
+    "13nm7xye": 9,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "8.63": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "8.74": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 11
+  },
+  "8.94": {
+    "13nm7xye": 0,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 11
+  },
+  "9.17": {
+    "13nm7xye": 1,
+    "bhplg5jb": 2,
+    "tvzuvva2": 1,
+    "ubyltpur": 11
+  },
+  "9.38": {
+    "13nm7xye": 4,
+    "bhplg5jb": 5,
+    "tvzuvva2": 0,
+    "ubyltpur": 5
+  },
+  "9.56": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "9.66": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "9.76": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "9.87": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "9.97": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "10.07": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "10.18": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "10.29": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "10.39": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "10.5": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "10.61": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "10.72": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "10.83": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "10.94": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "11.06": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "11.17": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "11.28": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "11.38": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "11.51": {
+    "13nm7xye": 9,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "11.62": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "11.73": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "11.84": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 8,
+    "ubyltpur": 10
+  },
+  "11.96": {
+    "13nm7xye": 1,
+    "bhplg5jb": 1,
+    "tvzuvva2": 8,
+    "ubyltpur": 1
+  },
+  "12.1": {
+    "13nm7xye": 2,
+    "bhplg5jb": 2,
+    "tvzuvva2": 8,
+    "ubyltpur": 2
+  },
+  "12.25": {
+    "13nm7xye": 4,
+    "bhplg5jb": 4,
+    "tvzuvva2": 3,
+    "ubyltpur": 3
+  },
+  "12.36": {
+    "13nm7xye": 8,
+    "bhplg5jb": 8,
+    "tvzuvva2": 7,
+    "ubyltpur": 7
+  },
+  "12.46": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "12.56": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "12.66": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "12.77": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "12.87": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "12.97": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "13.07": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "13.19": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "13.3": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "13.41": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "13.52": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "13.64": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "13.76": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "13.86": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "13.96": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "14.07": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "14.18": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "14.29": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "14.42": {
+    "13nm7xye": 9,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 8
+  },
+  "14.53": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 8
+  },
+  "14.87": {
+    "13nm7xye": 9,
+    "bhplg5jb": 9,
+    "tvzuvva2": 4,
+    "ubyltpur": 8
+  },
+  "14.99": {
+    "13nm7xye": 1,
+    "bhplg5jb": 2,
+    "tvzuvva2": 1,
+    "ubyltpur": 1
+  },
+  "15.09": {
+    "13nm7xye": 2,
+    "bhplg5jb": 2,
+    "tvzuvva2": 1,
+    "ubyltpur": 1
+  },
+  "15.24": {
+    "13nm7xye": 3,
+    "bhplg5jb": 3,
+    "tvzuvva2": 2,
+    "ubyltpur": 2
+  },
+  "15.35": {
+    "13nm7xye": 7,
+    "bhplg5jb": 7,
+    "tvzuvva2": 6,
+    "ubyltpur": 6
+  },
+  "15.45": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "15.56": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "15.66": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "15.76": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "15.86": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "15.97": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "16.07": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "16.18": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "16.29": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "16.41": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "16.53": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "16.64": {
+    "13nm7xye": 10,
+    "bhplg5jb": 11,
+    "tvzuvva2": 8,
+    "ubyltpur": 10
+  },
+  "16.76": {
+    "13nm7xye": 11,
+    "bhplg5jb": 11,
+    "tvzuvva2": 8,
+    "ubyltpur": 10
+  },
+  "16.87": {
+    "13nm7xye": 11,
+    "bhplg5jb": 11,
+    "tvzuvva2": 8,
+    "ubyltpur": 10
+  },
+  "16.97": {
+    "13nm7xye": 11,
+    "bhplg5jb": 11,
+    "tvzuvva2": 8,
+    "ubyltpur": 10
+  },
+  "17.09": {
+    "13nm7xye": 11,
+    "bhplg5jb": 11,
+    "tvzuvva2": 8,
+    "ubyltpur": 10
+  },
+  "17.2": {
+    "13nm7xye": 11,
+    "bhplg5jb": 10,
+    "tvzuvva2": 8,
+    "ubyltpur": 10
+  },
+  "17.31": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 8,
+    "ubyltpur": 10
+  },
+  "17.42": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 7,
+    "ubyltpur": 10
+  },
+  "17.53": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 7,
+    "ubyltpur": 9
+  },
+  "17.64": {
+    "13nm7xye": 10,
+    "bhplg5jb": 11,
+    "tvzuvva2": 8,
+    "ubyltpur": 9
+  },
+  "17.75": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 8,
+    "ubyltpur": 10
+  },
+  "17.85": {
+    "13nm7xye": 10,
+    "bhplg5jb": 11,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "17.97": {
+    "13nm7xye": 3,
+    "bhplg5jb": 3,
+    "tvzuvva2": 9,
+    "ubyltpur": 2
+  },
+  "18.09": {
+    "13nm7xye": 3,
+    "bhplg5jb": 3,
+    "tvzuvva2": 3,
+    "ubyltpur": 3
+  },
+  "18.23": {
+    "13nm7xye": 4,
+    "bhplg5jb": 4,
+    "tvzuvva2": 4,
+    "ubyltpur": 4
+  },
+  "18.35": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "18.45": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "18.55": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "18.65": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "18.75": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "18.86": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "18.96": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "19.07": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "19.19": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "19.3": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "19.41": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "19.53": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "19.64": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "19.75": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "19.86": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "19.97": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "20.08": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "20.19": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "20.29": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "20.41": {
+    "13nm7xye": 10,
+    "bhplg5jb": 8,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "20.52": {
+    "13nm7xye": 8,
+    "bhplg5jb": 8,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "20.63": {
+    "13nm7xye": 9,
+    "bhplg5jb": 8,
+    "tvzuvva2": 9,
+    "ubyltpur": 2
+  },
+  "20.75": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 2
+  },
+  "20.85": {
+    "13nm7xye": 12,
+    "bhplg5jb": 11,
+    "tvzuvva2": 12,
+    "ubyltpur": 5
+  },
+  "20.95": {
+    "13nm7xye": 12,
+    "bhplg5jb": 11,
+    "tvzuvva2": 12,
+    "ubyltpur": 5
+  },
+  "21.08": {
+    "13nm7xye": 12,
+    "bhplg5jb": 6,
+    "tvzuvva2": 13,
+    "ubyltpur": 5
+  },
+  "21.18": {
+    "13nm7xye": 13,
+    "bhplg5jb": 7,
+    "tvzuvva2": 14,
+    "ubyltpur": 6
+  },
+  "21.29": {
+    "13nm7xye": 13,
+    "bhplg5jb": 7,
+    "tvzuvva2": 6,
+    "ubyltpur": 6
+  },
+  "21.41": {
+    "13nm7xye": 13,
+    "bhplg5jb": 8,
+    "tvzuvva2": 7,
+    "ubyltpur": 7
+  },
+  "21.51": {
+    "13nm7xye": 15,
+    "bhplg5jb": 9,
+    "tvzuvva2": 8,
+    "ubyltpur": 8
+  },
+  "21.61": {
+    "13nm7xye": 15,
+    "bhplg5jb": 9,
+    "tvzuvva2": 8,
+    "ubyltpur": 8
+  },
+  "21.72": {
+    "13nm7xye": 15,
+    "bhplg5jb": 9,
+    "tvzuvva2": 8,
+    "ubyltpur": 8
+  },
+  "21.83": {
+    "13nm7xye": 9,
+    "bhplg5jb": 9,
+    "tvzuvva2": 8,
+    "ubyltpur": 8
+  },
+  "21.94": {
+    "13nm7xye": 9,
+    "bhplg5jb": 9,
+    "tvzuvva2": 8,
+    "ubyltpur": 9
+  },
+  "22.06": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "22.17": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "22.28": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "22.39": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "22.51": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "22.62": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "22.74": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "22.86": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "22.96": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "23.07": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "23.18": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "23.29": {
+    "13nm7xye": 10,
+    "bhplg5jb": 7,
+    "tvzuvva2": 4,
+    "ubyltpur": 9
+  },
+  "23.4": {
+    "13nm7xye": 9,
+    "bhplg5jb": 6,
+    "tvzuvva2": 5,
+    "ubyltpur": 5
+  },
+  "23.53": {
+    "13nm7xye": 3,
+    "bhplg5jb": 5,
+    "tvzuvva2": 6,
+    "ubyltpur": 6
+  },
+  "23.66": {
+    "13nm7xye": 4,
+    "bhplg5jb": 7,
+    "tvzuvva2": 5,
+    "ubyltpur": 7
+  },
+  "23.81": {
+    "13nm7xye": 6,
+    "bhplg5jb": 6,
+    "tvzuvva2": 7,
+    "ubyltpur": 7
+  },
+  "23.91": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "24.01": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "24.12": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "24.22": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "24.32": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "24.43": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "24.54": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "24.89": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "25.01": {
+    "13nm7xye": 9,
+    "bhplg5jb": 8,
+    "tvzuvva2": 8,
+    "ubyltpur": 9
+  },
+  "25.12": {
+    "13nm7xye": 9,
+    "bhplg5jb": 8,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "25.23": {
+    "13nm7xye": 9,
+    "bhplg5jb": 8,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "25.34": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "25.46": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "25.56": {
+    "13nm7xye": 8,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "25.68": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "25.78": {
+    "13nm7xye": 9,
+    "bhplg5jb": 9,
+    "tvzuvva2": 11,
+    "ubyltpur": 10
+  },
+  "25.88": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 11,
+    "ubyltpur": 10
+  },
+  "25.99": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 11,
+    "ubyltpur": 10
+  },
+  "26.12": {
+    "13nm7xye": 9,
+    "bhplg5jb": 9,
+    "tvzuvva2": 11,
+    "ubyltpur": 10
+  },
+  "26.24": {
+    "13nm7xye": 10,
+    "bhplg5jb": 8,
+    "tvzuvva2": 10,
+    "ubyltpur": 3
+  },
+  "26.36": {
+    "13nm7xye": 10,
+    "bhplg5jb": 3,
+    "tvzuvva2": 10,
+    "ubyltpur": 4
+  },
+  "26.51": {
+    "13nm7xye": 4,
+    "bhplg5jb": 4,
+    "tvzuvva2": 4,
+    "ubyltpur": 5
+  },
+  "26.65": {
+    "13nm7xye": 6,
+    "bhplg5jb": 6,
+    "tvzuvva2": 7,
+    "ubyltpur": 7
+  },
+  "26.75": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "26.86": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "26.96": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "27.06": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "27.16": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "27.27": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "27.37": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "27.48": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "27.59": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "27.7": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "27.81": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "27.92": {
+    "13nm7xye": 9,
+    "bhplg5jb": 11,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "28.03": {
+    "13nm7xye": 9,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 8
+  },
+  "28.15": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 8
+  },
+  "28.25": {
+    "13nm7xye": 11,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "28.36": {
+    "13nm7xye": 11,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "28.47": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 11,
+    "ubyltpur": 9
+  },
+  "28.59": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "28.7": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "28.82": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "28.92": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "29.04": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "29.15": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 3,
+    "ubyltpur": 8
+  },
+  "29.27": {
+    "13nm7xye": 9,
+    "bhplg5jb": 4,
+    "tvzuvva2": 4,
+    "ubyltpur": 3
+  },
+  "29.4": {
+    "13nm7xye": 10,
+    "bhplg5jb": 4,
+    "tvzuvva2": 4,
+    "ubyltpur": 4
+  },
+  "29.55": {
+    "13nm7xye": 5,
+    "bhplg5jb": 6,
+    "tvzuvva2": 6,
+    "ubyltpur": 5
+  },
+  "29.66": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "29.76": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "29.86": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "29.97": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "30.07": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "30.18": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "30.29": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "30.41": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "30.52": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "30.64": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "30.76": {
+    "13nm7xye": 10,
+    "bhplg5jb": 8,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "30.88": {
+    "13nm7xye": 11,
+    "bhplg5jb": 9,
+    "tvzuvva2": 8,
+    "ubyltpur": 8
+  },
+  "30.99": {
+    "13nm7xye": 9,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "31.1": {
+    "13nm7xye": 9,
+    "bhplg5jb": 8,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "31.22": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "31.32": {
+    "13nm7xye": 11,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "31.43": {
+    "13nm7xye": 11,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "31.54": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "31.65": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "31.76": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "31.89": {
+    "13nm7xye": 10,
+    "bhplg5jb": 4,
+    "tvzuvva2": 4,
+    "ubyltpur": 10
+  },
+  "32.01": {
+    "13nm7xye": 11,
+    "bhplg5jb": 4,
+    "tvzuvva2": 4,
+    "ubyltpur": 10
+  },
+  "32.13": {
+    "13nm7xye": 11,
+    "bhplg5jb": 5,
+    "tvzuvva2": 5,
+    "ubyltpur": 5
+  },
+  "32.25": {
+    "13nm7xye": 6,
+    "bhplg5jb": 7,
+    "tvzuvva2": 7,
+    "ubyltpur": 6
+  },
+  "32.36": {
+    "13nm7xye": 8,
+    "bhplg5jb": 8,
+    "tvzuvva2": 8,
+    "ubyltpur": 7
+  },
+  "32.46": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "32.57": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "32.67": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "32.78": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "32.88": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "32.99": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "33.11": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "33.22": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "33.34": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "33.45": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "33.57": {
+    "13nm7xye": 11,
+    "bhplg5jb": 7,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "33.67": {
+    "13nm7xye": 11,
+    "bhplg5jb": 7,
+    "tvzuvva2": 9,
+    "ubyltpur": 11
+  },
+  "33.78": {
+    "13nm7xye": 11,
+    "bhplg5jb": 8,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "33.9": {
+    "13nm7xye": 11,
+    "bhplg5jb": 8,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "34.01": {
+    "13nm7xye": 11,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "34.12": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 11
+  },
+  "34.22": {
+    "13nm7xye": 10,
+    "bhplg5jb": 8,
+    "tvzuvva2": 10,
+    "ubyltpur": 11
+  },
+  "34.33": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 11
+  },
+  "34.44": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "34.56": {
+    "13nm7xye": 11,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "34.67": {
+    "13nm7xye": 11,
+    "bhplg5jb": 4,
+    "tvzuvva2": 4,
+    "ubyltpur": 10
+  },
+  "34.78": {
+    "13nm7xye": 11,
+    "bhplg5jb": 4,
+    "tvzuvva2": 5,
+    "ubyltpur": 8
+  },
+  "35.11": {
+    "13nm7xye": 10,
+    "bhplg5jb": 5,
+    "tvzuvva2": 6,
+    "ubyltpur": 5
+  },
+  "35.23": {
+    "13nm7xye": 7,
+    "bhplg5jb": 7,
+    "tvzuvva2": 7,
+    "ubyltpur": 6
+  },
+  "35.36": {
+    "13nm7xye": 8,
+    "bhplg5jb": 8,
+    "tvzuvva2": 8,
+    "ubyltpur": 7
+  },
+  "35.48": {
+    "13nm7xye": 9,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "35.58": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "35.69": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "35.8": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "35.91": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "36.02": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "36.12": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "36.24": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "36.34": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "36.47": {
+    "13nm7xye": 10,
+    "bhplg5jb": 8,
+    "tvzuvva2": 7,
+    "ubyltpur": 10
+  },
+  "36.59": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 8,
+    "ubyltpur": 10
+  },
+  "36.7": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "36.81": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "36.92": {
+    "13nm7xye": 11,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "37.02": {
+    "13nm7xye": 11,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "37.13": {
+    "13nm7xye": 11,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "37.24": {
+    "13nm7xye": 11,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "37.37": {
+    "13nm7xye": 11,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "37.49": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 8,
+    "ubyltpur": 8
+  },
+  "37.6": {
+    "13nm7xye": 10,
+    "bhplg5jb": 7,
+    "tvzuvva2": 6,
+    "ubyltpur": 6
+  },
+  "37.72": {
+    "13nm7xye": 10,
+    "bhplg5jb": 7,
+    "tvzuvva2": 6,
+    "ubyltpur": 5
+  },
+  "37.83": {
+    "13nm7xye": 10,
+    "bhplg5jb": 6,
+    "tvzuvva2": 7,
+    "ubyltpur": 5
+  },
+  "37.98": {
+    "13nm7xye": 11,
+    "bhplg5jb": 7,
+    "tvzuvva2": 7,
+    "ubyltpur": 6
+  },
+  "38.09": {
+    "13nm7xye": 9,
+    "bhplg5jb": 9,
+    "tvzuvva2": 8,
+    "ubyltpur": 8
+  },
+  "38.2": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "38.3": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "38.4": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "38.51": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "38.63": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "38.76": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "38.87": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 8
+  },
+  "38.98": {
+    "13nm7xye": 11,
+    "bhplg5jb": 10,
+    "tvzuvva2": 7,
+    "ubyltpur": 8
+  },
+  "39.11": {
+    "13nm7xye": 11,
+    "bhplg5jb": 10,
+    "tvzuvva2": 8,
+    "ubyltpur": 8
+  },
+  "39.21": {
+    "13nm7xye": 11,
+    "bhplg5jb": 11,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "39.31": {
+    "13nm7xye": 11,
+    "bhplg5jb": 11,
+    "tvzuvva2": 9,
+    "ubyltpur": 8
+  },
+  "39.43": {
+    "13nm7xye": 8,
+    "bhplg5jb": 11,
+    "tvzuvva2": 9,
+    "ubyltpur": 7
+  },
+  "39.54": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 8
+  },
+  "39.65": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "39.75": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 11,
+    "ubyltpur": 9
+  },
+  "39.86": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 11,
+    "ubyltpur": 9
+  },
+  "39.96": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 11,
+    "ubyltpur": 9
+  },
+  "40.08": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 11,
+    "ubyltpur": 9
+  },
+  "40.19": {
+    "13nm7xye": 9,
+    "bhplg5jb": 9,
+    "tvzuvva2": 11,
+    "ubyltpur": 8
+  },
+  "40.3": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 8,
+    "ubyltpur": 7
+  },
+  "40.42": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 6,
+    "ubyltpur": 5
+  },
+  "40.53": {
+    "13nm7xye": 6,
+    "bhplg5jb": 11,
+    "tvzuvva2": 5,
+    "ubyltpur": 6
+  },
+  "40.64": {
+    "13nm7xye": 9,
+    "bhplg5jb": 14,
+    "tvzuvva2": 8,
+    "ubyltpur": 9
+  },
+  "40.74": {
+    "13nm7xye": 9,
+    "bhplg5jb": 14,
+    "tvzuvva2": 8,
+    "ubyltpur": 9
+  },
+  "40.84": {
+    "13nm7xye": 9,
+    "bhplg5jb": 13,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "40.96": {
+    "13nm7xye": 9,
+    "bhplg5jb": 8,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "41.07": {
+    "13nm7xye": 9,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "41.18": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "41.28": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "41.39": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "41.51": {
+    "13nm7xye": 9,
+    "bhplg5jb": 8,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "41.62": {
+    "13nm7xye": 9,
+    "bhplg5jb": 8,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "41.73": {
+    "13nm7xye": 9,
+    "bhplg5jb": 8,
+    "tvzuvva2": 11,
+    "ubyltpur": 9
+  },
+  "41.85": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 11,
+    "ubyltpur": 10
+  },
+  "41.97": {
+    "13nm7xye": 10,
+    "bhplg5jb": 8,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "42.08": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 8
+  },
+  "42.19": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 11,
+    "ubyltpur": 9
+  },
+  "42.29": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 11,
+    "ubyltpur": 9
+  },
+  "42.4": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "42.51": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "42.61": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "42.73": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "42.85": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "42.98": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 5
+  },
+  "43.1": {
+    "13nm7xye": 6,
+    "bhplg5jb": 6,
+    "tvzuvva2": 9,
+    "ubyltpur": 4
+  },
+  "43.22": {
+    "13nm7xye": 6,
+    "bhplg5jb": 6,
+    "tvzuvva2": 5,
+    "ubyltpur": 4
+  },
+  "43.35": {
+    "13nm7xye": 7,
+    "bhplg5jb": 7,
+    "tvzuvva2": 7,
+    "ubyltpur": 5
+  },
+  "43.45": {
+    "13nm7xye": 11,
+    "bhplg5jb": 11,
+    "tvzuvva2": 10,
+    "ubyltpur": 8
+  },
+  "43.55": {
+    "13nm7xye": 11,
+    "bhplg5jb": 11,
+    "tvzuvva2": 10,
+    "ubyltpur": 8
+  },
+  "43.66": {
+    "13nm7xye": 11,
+    "bhplg5jb": 11,
+    "tvzuvva2": 10,
+    "ubyltpur": 8
+  },
+  "43.76": {
+    "13nm7xye": 11,
+    "bhplg5jb": 9,
+    "tvzuvva2": 11,
+    "ubyltpur": 9
+  },
+  "43.88": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "43.99": {
+    "13nm7xye": 11,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 8
+  },
+  "44.1": {
+    "13nm7xye": 11,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "44.2": {
+    "13nm7xye": 11,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "44.32": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "44.44": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 8
+  },
+  "44.55": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 8
+  },
+  "44.66": {
+    "13nm7xye": 9,
+    "bhplg5jb": 8,
+    "tvzuvva2": 8,
+    "ubyltpur": 9
+  },
+  "44.78": {
+    "13nm7xye": 8,
+    "bhplg5jb": 8,
+    "tvzuvva2": 9,
+    "ubyltpur": 8
+  },
+  "44.91": {
+    "13nm7xye": 8,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "45.01": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 11,
+    "ubyltpur": 10
+  },
+  "45.12": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 11,
+    "ubyltpur": 10
+  },
+  "45.22": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "45.34": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "45.47": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "45.58": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "45.69": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "45.8": {
+    "13nm7xye": 4,
+    "bhplg5jb": 5,
+    "tvzuvva2": 11,
+    "ubyltpur": 6
+  },
+  "45.91": {
+    "13nm7xye": 4,
+    "bhplg5jb": 6,
+    "tvzuvva2": 5,
+    "ubyltpur": 6
+  },
+  "46.2": {
+    "13nm7xye": 4,
+    "bhplg5jb": 5,
+    "tvzuvva2": 5,
+    "ubyltpur": 5
+  },
+  "46.34": {
+    "13nm7xye": 6,
+    "bhplg5jb": 6,
+    "tvzuvva2": 6,
+    "ubyltpur": 5
+  },
+  "46.53": {
+    "13nm7xye": 8,
+    "bhplg5jb": 8,
+    "tvzuvva2": 8,
+    "ubyltpur": 7
+  },
+  "46.66": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "46.76": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 11,
+    "ubyltpur": 10
+  },
+  "46.86": {
+    "13nm7xye": 8,
+    "bhplg5jb": 11,
+    "tvzuvva2": 11,
+    "ubyltpur": 10
+  },
+  "46.98": {
+    "13nm7xye": 9,
+    "bhplg5jb": 11,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "47.09": {
+    "13nm7xye": 8,
+    "bhplg5jb": 11,
+    "tvzuvva2": 10,
+    "ubyltpur": 11
+  },
+  "47.2": {
+    "13nm7xye": 7,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 11
+  },
+  "47.31": {
+    "13nm7xye": 7,
+    "bhplg5jb": 11,
+    "tvzuvva2": 11,
+    "ubyltpur": 11
+  },
+  "47.42": {
+    "13nm7xye": 6,
+    "bhplg5jb": 11,
+    "tvzuvva2": 8,
+    "ubyltpur": 11
+  },
+  "47.53": {
+    "13nm7xye": 7,
+    "bhplg5jb": 11,
+    "tvzuvva2": 9,
+    "ubyltpur": 11
+  },
+  "47.65": {
+    "13nm7xye": 7,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "47.77": {
+    "13nm7xye": 7,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "47.89": {
+    "13nm7xye": 8,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "48.0": {
+    "13nm7xye": 7,
+    "bhplg5jb": 8,
+    "tvzuvva2": 11,
+    "ubyltpur": 11
+  },
+  "48.1": {
+    "13nm7xye": 8,
+    "bhplg5jb": 9,
+    "tvzuvva2": 11,
+    "ubyltpur": 12
+  },
+  "48.21": {
+    "13nm7xye": 8,
+    "bhplg5jb": 10,
+    "tvzuvva2": 11,
+    "ubyltpur": 10
+  },
+  "48.31": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 11,
+    "ubyltpur": 10
+  },
+  "48.42": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 11,
+    "ubyltpur": 10
+  },
+  "48.53": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 11,
+    "ubyltpur": 10
+  },
+  "48.64": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 11,
+    "ubyltpur": 10
+  },
+  "48.76": {
+    "13nm7xye": 9,
+    "bhplg5jb": 9,
+    "tvzuvva2": 11,
+    "ubyltpur": 10
+  },
+  "48.88": {
+    "13nm7xye": 8,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 5
+  },
+  "48.99": {
+    "13nm7xye": 6,
+    "bhplg5jb": 9,
+    "tvzuvva2": 4,
+    "ubyltpur": 6
+  },
+  "49.11": {
+    "13nm7xye": 5,
+    "bhplg5jb": 6,
+    "tvzuvva2": 4,
+    "ubyltpur": 6
+  },
+  "49.28": {
+    "13nm7xye": 6,
+    "bhplg5jb": 7,
+    "tvzuvva2": 5,
+    "ubyltpur": 7
+  },
+  "49.4": {
+    "13nm7xye": 8,
+    "bhplg5jb": 9,
+    "tvzuvva2": 7,
+    "ubyltpur": 8
+  },
+  "49.5": {
+    "13nm7xye": 10,
+    "bhplg5jb": 11,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "49.6": {
+    "13nm7xye": 10,
+    "bhplg5jb": 11,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "49.71": {
+    "13nm7xye": 9,
+    "bhplg5jb": 11,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "49.83": {
+    "13nm7xye": 9,
+    "bhplg5jb": 11,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "49.94": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "50.05": {
+    "13nm7xye": 9,
+    "bhplg5jb": 11,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "50.17": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "50.28": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 8
+  },
+  "50.39": {
+    "13nm7xye": 10,
+    "bhplg5jb": 11,
+    "tvzuvva2": 9,
+    "ubyltpur": 8
+  },
+  "50.5": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "50.6": {
+    "13nm7xye": 10,
+    "bhplg5jb": 11,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "50.71": {
+    "13nm7xye": 9,
+    "bhplg5jb": 11,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "50.82": {
+    "13nm7xye": 9,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "50.94": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 11,
+    "ubyltpur": 10
+  },
+  "51.05": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "51.15": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "51.26": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "51.37": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "51.49": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "51.6": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "51.73": {
+    "13nm7xye": 4,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 5
+  },
+  "51.87": {
+    "13nm7xye": 5,
+    "bhplg5jb": 5,
+    "tvzuvva2": 10,
+    "ubyltpur": 5
+  },
+  "51.99": {
+    "13nm7xye": 7,
+    "bhplg5jb": 7,
+    "tvzuvva2": 6,
+    "ubyltpur": 6
+  },
+  "52.11": {
+    "13nm7xye": 8,
+    "bhplg5jb": 9,
+    "tvzuvva2": 8,
+    "ubyltpur": 8
+  },
+  "52.21": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "52.32": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "52.42": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "52.52": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "52.63": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "52.74": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "52.85": {
+    "13nm7xye": 8,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 8
+  },
+  "52.96": {
+    "13nm7xye": 9,
+    "bhplg5jb": 9,
+    "tvzuvva2": 8,
+    "ubyltpur": 9
+  },
+  "53.08": {
+    "13nm7xye": 9,
+    "bhplg5jb": 8,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "53.19": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "53.3": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "53.41": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "53.52": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "53.62": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "53.73": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "53.84": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "53.95": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "54.07": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "54.18": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "54.31": {
+    "13nm7xye": 4,
+    "bhplg5jb": 7,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "54.42": {
+    "13nm7xye": 3,
+    "bhplg5jb": 5,
+    "tvzuvva2": 10,
+    "ubyltpur": 4
+  },
+  "54.54": {
+    "13nm7xye": 4,
+    "bhplg5jb": 5,
+    "tvzuvva2": 11,
+    "ubyltpur": 5
+  },
+  "54.68": {
+    "13nm7xye": 6,
+    "bhplg5jb": 7,
+    "tvzuvva2": 12,
+    "ubyltpur": 6
+  },
+  "54.79": {
+    "13nm7xye": 8,
+    "bhplg5jb": 9,
+    "tvzuvva2": 14,
+    "ubyltpur": 9
+  },
+  "54.89": {
+    "13nm7xye": 8,
+    "bhplg5jb": 9,
+    "tvzuvva2": 14,
+    "ubyltpur": 9
+  },
+  "54.99": {
+    "13nm7xye": 8,
+    "bhplg5jb": 8,
+    "tvzuvva2": 8,
+    "ubyltpur": 9
+  },
+  "55.12": {
+    "13nm7xye": 9,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "55.22": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "55.55": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "55.66": {
+    "13nm7xye": 9,
+    "bhplg5jb": 8,
+    "tvzuvva2": 10,
+    "ubyltpur": 7
+  },
+  "55.77": {
+    "13nm7xye": 8,
+    "bhplg5jb": 8,
+    "tvzuvva2": 10,
+    "ubyltpur": 7
+  },
+  "55.88": {
+    "13nm7xye": 7,
+    "bhplg5jb": 7,
+    "tvzuvva2": 9,
+    "ubyltpur": 8
+  },
+  "56.0": {
+    "13nm7xye": 7,
+    "bhplg5jb": 7,
+    "tvzuvva2": 9,
+    "ubyltpur": 8
+  },
+  "56.11": {
+    "13nm7xye": 8,
+    "bhplg5jb": 8,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "56.23": {
+    "13nm7xye": 9,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "56.34": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "56.44": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "56.55": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "56.66": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "56.78": {
+    "13nm7xye": 9,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "56.89": {
+    "13nm7xye": 9,
+    "bhplg5jb": 7,
+    "tvzuvva2": 11,
+    "ubyltpur": 10
+  },
+  "56.99": {
+    "13nm7xye": 9,
+    "bhplg5jb": 6,
+    "tvzuvva2": 10,
+    "ubyltpur": 8
+  },
+  "57.1": {
+    "13nm7xye": 9,
+    "bhplg5jb": 6,
+    "tvzuvva2": 9,
+    "ubyltpur": 5
+  },
+  "57.23": {
+    "13nm7xye": 11,
+    "bhplg5jb": 5,
+    "tvzuvva2": 7,
+    "ubyltpur": 6
+  },
+  "57.35": {
+    "13nm7xye": 12,
+    "bhplg5jb": 6,
+    "tvzuvva2": 9,
+    "ubyltpur": 7
+  },
+  "57.46": {
+    "13nm7xye": 14,
+    "bhplg5jb": 8,
+    "tvzuvva2": 10,
+    "ubyltpur": 8
+  },
+  "57.56": {
+    "13nm7xye": 14,
+    "bhplg5jb": 8,
+    "tvzuvva2": 10,
+    "ubyltpur": 8
+  },
+  "57.68": {
+    "13nm7xye": 10,
+    "bhplg5jb": 8,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "57.79": {
+    "13nm7xye": 8,
+    "bhplg5jb": 8,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "57.91": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "58.02": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "58.12": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "58.23": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 11,
+    "ubyltpur": 10
+  },
+  "58.34": {
+    "13nm7xye": 10,
+    "bhplg5jb": 8,
+    "tvzuvva2": 11,
+    "ubyltpur": 10
+  },
+  "58.45": {
+    "13nm7xye": 10,
+    "bhplg5jb": 8,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "58.57": {
+    "13nm7xye": 11,
+    "bhplg5jb": 8,
+    "tvzuvva2": 9,
+    "ubyltpur": 8
+  },
+  "58.7": {
+    "13nm7xye": 11,
+    "bhplg5jb": 8,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "58.8": {
+    "13nm7xye": 11,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "58.92": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "59.04": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "59.15": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "59.27": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "59.37": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "59.48": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "59.59": {
+    "13nm7xye": 11,
+    "bhplg5jb": 10,
+    "tvzuvva2": 6,
+    "ubyltpur": 8
+  },
+  "59.72": {
+    "13nm7xye": 11,
+    "bhplg5jb": 8,
+    "tvzuvva2": 7,
+    "ubyltpur": 6
+  },
+  "59.84": {
+    "13nm7xye": 8,
+    "bhplg5jb": 8,
+    "tvzuvva2": 8,
+    "ubyltpur": 8
+  },
+  "59.94": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "60.04": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "60.14": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 11,
+    "ubyltpur": 9
+  },
+  "60.26": {
+    "13nm7xye": 10,
+    "bhplg5jb": 11,
+    "tvzuvva2": 10,
+    "ubyltpur": 8
+  },
+  "60.36": {
+    "13nm7xye": 8,
+    "bhplg5jb": 11,
+    "tvzuvva2": 9,
+    "ubyltpur": 8
+  },
+  "60.47": {
+    "13nm7xye": 9,
+    "bhplg5jb": 11,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "60.58": {
+    "13nm7xye": 9,
+    "bhplg5jb": 12,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "60.68": {
+    "13nm7xye": 9,
+    "bhplg5jb": 12,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "60.79": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "60.92": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 8
+  },
+  "61.03": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 8
+  },
+  "61.14": {
+    "13nm7xye": 10,
+    "bhplg5jb": 11,
+    "tvzuvva2": 10,
+    "ubyltpur": 8
+  },
+  "61.25": {
+    "13nm7xye": 9,
+    "bhplg5jb": 12,
+    "tvzuvva2": 10,
+    "ubyltpur": 8
+  },
+  "61.36": {
+    "13nm7xye": 10,
+    "bhplg5jb": 12,
+    "tvzuvva2": 10,
+    "ubyltpur": 8
+  },
+  "61.47": {
+    "13nm7xye": 10,
+    "bhplg5jb": 11,
+    "tvzuvva2": 9,
+    "ubyltpur": 7
+  },
+  "61.57": {
+    "13nm7xye": 9,
+    "bhplg5jb": 11,
+    "tvzuvva2": 10,
+    "ubyltpur": 8
+  },
+  "61.69": {
+    "13nm7xye": 9,
+    "bhplg5jb": 11,
+    "tvzuvva2": 10,
+    "ubyltpur": 8
+  },
+  "61.79": {
+    "13nm7xye": 10,
+    "bhplg5jb": 11,
+    "tvzuvva2": 9,
+    "ubyltpur": 8
+  },
+  "61.9": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "62.01": {
+    "13nm7xye": 10,
+    "bhplg5jb": 11,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "62.12": {
+    "13nm7xye": 9,
+    "bhplg5jb": 11,
+    "tvzuvva2": 10,
+    "ubyltpur": 5
+  },
+  "62.23": {
+    "13nm7xye": 10,
+    "bhplg5jb": 12,
+    "tvzuvva2": 6,
+    "ubyltpur": 6
+  },
+  "62.35": {
+    "13nm7xye": 7,
+    "bhplg5jb": 12,
+    "tvzuvva2": 6,
+    "ubyltpur": 6
+  },
+  "62.48": {
+    "13nm7xye": 9,
+    "bhplg5jb": 14,
+    "tvzuvva2": 8,
+    "ubyltpur": 8
+  },
+  "62.6": {
+    "13nm7xye": 9,
+    "bhplg5jb": 13,
+    "tvzuvva2": 8,
+    "ubyltpur": 9
+  },
+  "62.71": {
+    "13nm7xye": 9,
+    "bhplg5jb": 13,
+    "tvzuvva2": 8,
+    "ubyltpur": 9
+  },
+  "62.82": {
+    "13nm7xye": 10,
+    "bhplg5jb": 13,
+    "tvzuvva2": 8,
+    "ubyltpur": 9
+  },
+  "62.92": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 8,
+    "ubyltpur": 10
+  },
+  "63.04": {
+    "13nm7xye": 9,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "63.16": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 8,
+    "ubyltpur": 9
+  },
+  "63.27": {
+    "13nm7xye": 9,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "63.38": {
+    "13nm7xye": 8,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "63.5": {
+    "13nm7xye": 8,
+    "bhplg5jb": 10,
+    "tvzuvva2": 8,
+    "ubyltpur": 11
+  },
+  "63.6": {
+    "13nm7xye": 8,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 11
+  },
+  "63.71": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 11
+  },
+  "63.82": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 11
+  },
+  "63.93": {
+    "13nm7xye": 8,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "64.05": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "64.17": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 11
+  },
+  "64.28": {
+    "13nm7xye": 7,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "64.39": {
+    "13nm7xye": 6,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "64.51": {
+    "13nm7xye": 6,
+    "bhplg5jb": 10,
+    "tvzuvva2": 8,
+    "ubyltpur": 10
+  },
+  "64.63": {
+    "13nm7xye": 6,
+    "bhplg5jb": 9,
+    "tvzuvva2": 8,
+    "ubyltpur": 10
+  },
+  "64.96": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "65.08": {
+    "13nm7xye": 7,
+    "bhplg5jb": 6,
+    "tvzuvva2": 6,
+    "ubyltpur": 6
+  },
+  "65.19": {
+    "13nm7xye": 7,
+    "bhplg5jb": 6,
+    "tvzuvva2": 6,
+    "ubyltpur": 7
+  },
+  "65.31": {
+    "13nm7xye": 7,
+    "bhplg5jb": 7,
+    "tvzuvva2": 6,
+    "ubyltpur": 8
+  },
+  "65.43": {
+    "13nm7xye": 8,
+    "bhplg5jb": 9,
+    "tvzuvva2": 7,
+    "ubyltpur": 8
+  },
+  "65.54": {
+    "13nm7xye": 7,
+    "bhplg5jb": 9,
+    "tvzuvva2": 7,
+    "ubyltpur": 9
+  },
+  "65.68": {
+    "13nm7xye": 7,
+    "bhplg5jb": 10,
+    "tvzuvva2": 8,
+    "ubyltpur": 8
+  },
+  "65.8": {
+    "13nm7xye": 9,
+    "bhplg5jb": 11,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "65.91": {
+    "13nm7xye": 9,
+    "bhplg5jb": 9,
+    "tvzuvva2": 8,
+    "ubyltpur": 9
+  },
+  "66.03": {
+    "13nm7xye": 8,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "66.14": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 8,
+    "ubyltpur": 9
+  },
+  "66.25": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "66.37": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 8,
+    "ubyltpur": 9
+  },
+  "66.47": {
+    "13nm7xye": 10,
+    "bhplg5jb": 11,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "66.58": {
+    "13nm7xye": 10,
+    "bhplg5jb": 11,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "66.69": {
+    "13nm7xye": 10,
+    "bhplg5jb": 11,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "66.8": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 8,
+    "ubyltpur": 9
+  },
+  "66.91": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "67.02": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "67.13": {
+    "13nm7xye": 8,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "67.25": {
+    "13nm7xye": 8,
+    "bhplg5jb": 11,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "67.36": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "67.46": {
+    "13nm7xye": 9,
+    "bhplg5jb": 11,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "67.57": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "67.69": {
+    "13nm7xye": 10,
+    "bhplg5jb": 8,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "67.82": {
+    "13nm7xye": 9,
+    "bhplg5jb": 8,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "67.95": {
+    "13nm7xye": 9,
+    "bhplg5jb": 7,
+    "tvzuvva2": 8,
+    "ubyltpur": 7
+  },
+  "68.05": {
+    "13nm7xye": 9,
+    "bhplg5jb": 8,
+    "tvzuvva2": 7,
+    "ubyltpur": 8
+  },
+  "68.17": {
+    "13nm7xye": 8,
+    "bhplg5jb": 7,
+    "tvzuvva2": 8,
+    "ubyltpur": 9
+  },
+  "68.28": {
+    "13nm7xye": 9,
+    "bhplg5jb": 8,
+    "tvzuvva2": 8,
+    "ubyltpur": 9
+  },
+  "68.39": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 8,
+    "ubyltpur": 9
+  },
+  "68.51": {
+    "13nm7xye": 11,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "68.62": {
+    "13nm7xye": 11,
+    "bhplg5jb": 8,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "68.74": {
+    "13nm7xye": 10,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "68.85": {
+    "13nm7xye": 11,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "68.96": {
+    "13nm7xye": 8,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "69.08": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 9
+  },
+  "69.19": {
+    "13nm7xye": 9,
+    "bhplg5jb": 11,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "69.3": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "69.42": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "69.53": {
+    "13nm7xye": 9,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "69.64": {
+    "13nm7xye": 9,
+    "bhplg5jb": 8,
+    "tvzuvva2": 8,
+    "ubyltpur": 10
+  },
+  "69.74": {
+    "13nm7xye": 8,
+    "bhplg5jb": 9,
+    "tvzuvva2": 8,
+    "ubyltpur": 9
+  },
+  "69.85": {
+    "13nm7xye": 8,
+    "bhplg5jb": 9,
+    "tvzuvva2": 8,
+    "ubyltpur": 10
+  },
+  "69.96": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 11
+  },
+  "70.06": {
+    "13nm7xye": 9,
+    "bhplg5jb": 10,
+    "tvzuvva2": 10,
+    "ubyltpur": 10
+  },
+  "70.18": {
+    "13nm7xye": 10,
+    "bhplg5jb": 10,
+    "tvzuvva2": 9,
+    "ubyltpur": 11
+  },
+  "70.3": {
+    "13nm7xye": 9,
+    "bhplg5jb": 9,
+    "tvzuvva2": 9,
+    "ubyltpur": 10
+  },
+  "70.4": {
+    "13nm7xye": 9,
+    "bhplg5jb": 7,
+    "tvzuvva2": 10,
+    "ubyltpur": 9
+  },
+  "70.51": {
+    "13nm7xye": 8,
+    "bhplg5jb": 7,
+    "tvzuvva2": 9,
+    "ubyltpur": 8
+  },
+  "70.62": {
+    "13nm7xye": 6,
+    "bhplg5jb": 4,
+    "tvzuvva2": 9,
+    "ubyltpur": 7
+  },
+  "70.72": {
+    "13nm7xye": 5,
+    "bhplg5jb": 4,
+    "tvzuvva2": 7,
+    "ubyltpur": 6
+  },
+  "70.82": {
+    "13nm7xye": 5,
+    "bhplg5jb": 4,
+    "tvzuvva2": 5,
+    "ubyltpur": 6
+  },
+  "70.93": {
+    "13nm7xye": 5,
+    "bhplg5jb": 4,
+    "tvzuvva2": 5,
+    "ubyltpur": 6
+  },
+  "71.03": {
+    "13nm7xye": 5,
+    "bhplg5jb": 2,
+    "tvzuvva2": 5,
+    "ubyltpur": 5
+  },
+  "71.13": {
+    "13nm7xye": 4,
+    "bhplg5jb": 2,
+    "tvzuvva2": 4,
+    "ubyltpur": 4
+  },
+  "71.23": {
+    "13nm7xye": 3,
+    "bhplg5jb": 2,
+    "tvzuvva2": 3,
+    "ubyltpur": 4
+  },
+  "71.34": {
+    "13nm7xye": 3,
+    "bhplg5jb": 2,
+    "tvzuvva2": 3,
+    "ubyltpur": 4
+  },
+  "71.44": {
+    "13nm7xye": 3,
+    "bhplg5jb": 2,
+    "tvzuvva2": 3,
+    "ubyltpur": 3
+  },
+  "71.55": {
+    "13nm7xye": 3,
+    "bhplg5jb": 2,
+    "tvzuvva2": 3,
+    "ubyltpur": 3
+  },
+  "71.65": {
+    "13nm7xye": 2,
+    "bhplg5jb": 1,
+    "tvzuvva2": 2,
+    "ubyltpur": 2
+  },
+  "71.76": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 1,
+    "ubyltpur": 1
+  },
+  "71.86": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 1
+  },
+  "71.96": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "72.06": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "72.17": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "72.27": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "72.37": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "72.47": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "72.58": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "72.68": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "72.78": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  },
+  "72.89": {
+    "13nm7xye": 0,
+    "bhplg5jb": 0,
+    "tvzuvva2": 0,
+    "ubyltpur": 0
+  }
+}
