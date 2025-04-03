@@ -770,7 +770,7 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
 
         # BEGIN DUMMY TREE CALL
         hello = await self._tree_deployment.hello.remote()
-        hello = await self._tree_deployment.hello.remote()
+        # hello = await self._tree_deployment.hello.remote()
         # END DUMMY TREE CALL
 
         # # BEGIN PREFIX AWARE LOGIC (don't forget update tree)

@@ -29,8 +29,8 @@ DEFAULT_CONFIG = {
     # "worker_ports": "8001,8002,8003,8004",
     "scheduler_strategies_dict": {
         # "fake": "ray.serve._private.replica_scheduler.fake_replica_scheduler.FakeReplicaScheduler",
-        "random": "ray.serve._private.replica_scheduler.random_scheduler.RandomReplicaScheduler",
-        "round_robin": "ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler",
+        # "random": "ray.serve._private.replica_scheduler.random_scheduler.RandomReplicaScheduler",
+        # "round_robin": "ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler",
         "pow_of_2": "ray.serve._private.replica_scheduler.llm_pow_2_scheduler.LLMPowerOfTwoChoicesReplicaScheduler",
         # "prefix_aware": "ray.serve._private.replica_scheduler.prefix_aware_scheduler.PrefixAwareReplicaScheduler",
     },
@@ -42,7 +42,7 @@ DEFAULT_CONFIG = {
     "enable_prefix_caching": True,
     "enable_chunked_prefill": True,
     # Benchmark Info
-    "benchmark_label": "2dummies",
+    "benchmark_label": "1 dummy",
     "dataset_name": "sharegpt",
     "max_concurrency": 40,  # Max concurrency (total)
     "min_output_len": 10,
@@ -361,12 +361,7 @@ def main():
     args = parse_arguments()
     
     # Define sweep configurations
-    sweeps_configs = [
-        {},
-        {},
-        # {},
-        # {},
-    ]
+    sweeps_configs = [{} for _ in range(10)]
     
     # Loop through each sweep configuration
     for config_idx, sweep_config in enumerate(sweeps_configs):
