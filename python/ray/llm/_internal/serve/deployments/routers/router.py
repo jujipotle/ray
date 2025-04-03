@@ -177,13 +177,13 @@ class LLMRouter:
     def __init__(
         self,
         llm_deployments: List[DeploymentHandle],
-        tree_deployment: DeploymentHandle,
+        tree_deployment: Optional[DeploymentHandle] = None,
         *,
         _get_lora_model_metadata_func: Optional[
             Callable[[str, LLMConfig], Awaitable[Dict[str, Any]]]
         ] = None,
     ):
-        print(f"[llm router.py] Initializing LLMRouter with {len(llm_deployments)} deployments")
+        # print(f"[llm router.py] Initializing LLMRouter with {len(llm_deployments)} deployments")
         self._default_serve_handles: Dict[str, DeploymentHandle] = {}
         self._llm_configs: Dict[str, LLMConfig] = {}
 
@@ -213,12 +213,12 @@ class LLMRouter:
         self, llm_deployments: List[DeploymentHandle]
     ):
         for handle in llm_deployments:
-            print(f"[llm router.py] Setting up handle and config maps for handle: {handle}")
-            print(f"[llm router.py] Handle options: {handle.handle_options}")
+            # print(f"[llm router.py] Setting up handle and config maps for handle: {handle}")
+            # print(f"[llm router.py] Handle options: {handle.handle_options}")
             llm_config = await handle.llm_config.remote()
-            print(f"[llm router.py] LLM config: {llm_config}")
+            # print(f"[llm router.py] LLM config: {llm_config}")
             self._default_serve_handles[llm_config.model_id] = handle
-            print(f"[llm router.py] Default serve handles: {self._default_serve_handles}")
+            # print(f"[llm router.py] Default serve handles: {self._default_serve_handles}")
             self._llm_configs[llm_config.model_id] = llm_config
 
         # Note (genesu): Even though we have already checked model id uniqueness in
@@ -255,7 +255,7 @@ class LLMRouter:
             base_model_id = get_base_model_id(model_id)
             if base_model_id in self._default_serve_handles:
                 if model_id == base_model_id:
-                    print(f"[llm router.py] Initializing serve handle with tree deployment for base model {model_id}")
+                    # print(f"[llm router.py] Initializing serve handle with tree deployment for base model {model_id}")
                     default_handle = self._default_serve_handles[model_id]
                     
                     # Get the replica scheduler class from the llm_config if it exists
@@ -264,7 +264,7 @@ class LLMRouter:
                     
                     if llm_config.replica_scheduler_cls_path:
                         try:
-                            print(f"[llm router.py] Importing replica scheduler class from {llm_config.replica_scheduler_cls_path}")
+                            # print(f"[llm router.py] Importing replica scheduler class from {llm_config.replica_scheduler_cls_path}")
                             replica_scheduler_cls = import_attr(llm_config.replica_scheduler_cls_path)
                         except Exception as e:
                             print(f"[llm router.py] Error importing replica scheduler class: {e}. Using default.")
@@ -273,7 +273,7 @@ class LLMRouter:
                         stream=True,
                         replica_scheduler_cls=replica_scheduler_cls,
                     )
-                    print(f"[llm router.py] Configured handle .handle_options: {configured_handle.handle_options}")
+                    # print(f"[llm router.py] Configured handle .handle_options: {configured_handle.handle_options}")
                     self._configured_serve_handles[model_id] = configured_handle
                 else:
                     default_handle = self._default_serve_handles[base_model_id]
@@ -298,7 +298,7 @@ class LLMRouter:
         body: Union[CompletionRequest, ChatCompletionRequest],
         call_method: str,
     ) -> AsyncGenerator[Union[LLMChatResponse, LLMCompletionsResponse], None]:
-        print(f"[llm router.py] Getting response for {body.model}")
+        # print(f"[llm router.py] Getting response for {body.model}")
         """Calls the model deployment and returns the stream."""
         model: str = body.model
         base_model_id = get_base_model_id(model)

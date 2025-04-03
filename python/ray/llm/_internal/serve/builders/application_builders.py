@@ -25,7 +25,7 @@ def build_llm_deployment(
     llm_config: LLMConfig,
     deployment_kwargs: Optional[dict] = None,
 ) -> Application:
-    print(f"[application_builders.py: build_llm_deployment] llm_config: {llm_config} and deployment_kwargs: {deployment_kwargs}")
+    # print(f"[application_builders.py: build_llm_deployment] llm_config: {llm_config} and deployment_kwargs: {deployment_kwargs}")
     if deployment_kwargs is None:
         deployment_kwargs = {}
 
@@ -37,7 +37,7 @@ def build_llm_deployment(
     #     replica_scheduler_cls = import_attr(llm_config.replica_scheduler_cls_path)
     #     deployment_options["replica_scheduler_cls"] = replica_scheduler_cls
 
-    print(f"[application_builders.py: build_llm_deployment] binding llm_config: {llm_config}")
+    # print(f"[application_builders.py: build_llm_deployment] binding llm_config: {llm_config}")
     return LLMDeployment.options(**deployment_options).bind(
         llm_config=llm_config, **deployment_kwargs
     )
@@ -60,7 +60,7 @@ def _get_llm_deployments(
 
 from ray import serve
 def build_openai_app(llm_serving_args: LLMServingArgs) -> Application:
-    print(f"[application_builders.py: build_openai_app] llm_serving_args: {llm_serving_args}")
+    # print(f"[application_builders.py: build_openai_app] llm_serving_args: {llm_serving_args}")
     rayllm_args = LLMServingArgs.model_validate(llm_serving_args).parse_args()
 
     llm_configs = rayllm_args.llm_configs
@@ -72,12 +72,12 @@ def build_openai_app(llm_serving_args: LLMServingArgs) -> Application:
         logger.error(
             "List of models is empty. Maybe some parameters cannot be parsed into the LLMConfig config."
         )
-    tree_deployment = PrefixTree.bind()
+    # tree_deployment = PrefixTree.bind()
     # serve.run(tree_deployment)
     # print(f"[application_builders.py: build_openai_app] tree_deployment: {tree_deployment}")
     llm_deployments = _get_llm_deployments(llm_configs)
-    print(f"[application_builders.py: build_openai_app] llm_deployments: {llm_deployments}")
+    # print(f"[application_builders.py: build_openai_app] llm_deployments: {llm_deployments}")
     return LLMRouter.as_deployment(llm_configs=llm_configs).options(autoscaling_config=dict(min_replicas=1, max_replicas=1, initial_replicas=1)).bind(
         llm_deployments=llm_deployments, 
-        tree_deployment=tree_deployment
+        # tree_deployment=tree_deployment
     )

@@ -7,7 +7,8 @@ applications:
           accelerator_type: L4
           engine_kwargs:
             enable_prefix_caching: true,
-            disable_log_requests: false
+            enable_chunked_prefill: true,
+            disable_log_requests: false,
           deployment_config:
             autoscaling_config:
                 initial_replicas: 4

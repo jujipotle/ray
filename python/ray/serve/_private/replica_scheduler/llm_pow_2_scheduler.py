@@ -1,3 +1,5 @@
+from ray.llm._internal.serve.deployments.routers.prefix_tree import PrefixTree
+
 from ray import serve
 import asyncio
 import enum
@@ -118,7 +120,8 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
 
         # Variables to track prefix match rates / replica
         self._prefix_match_rates: Dict[str, List[float]] = {}
-        self._tree_deployment = serve.get_deployment_handle("deploymentTest", app_name="llm_app")
+        # self._tree_deployment = serve.get_deployment_handle("TreeDeployment", app_name="llm_app")
+        self._tree_deployment = PrefixTree()
 
         self._deployment_id = deployment_id
         self._handle_source = handle_source
@@ -289,7 +292,6 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
 
                 elapsed_since_start = round(current_time - self._benchmark_start_time, 2) # Round to hundredth of a second
                 self._load_distribution[elapsed_since_start] = current_load
-                
                 if self._num_requests_seen > 10 and total_load == 0:
                     self._zero_load_count += 1
                     if self._zero_load_count >= 10:
@@ -768,38 +770,41 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
             )
         # END POW 2 LOGIC
 
-        # BEGIN DUMMY TREE CALL
-        hello = await self._tree_deployment.hello.remote()
+        # # BEGIN DUMMY TREE CALL
         # hello = await self._tree_deployment.hello.remote()
-        # END DUMMY TREE CALL
+        # # hello = await self._tree_deployment.hello.remote()
+        # # END DUMMY TREE CALL
 
         # # BEGIN PREFIX AWARE LOGIC (don't forget update tree)
         # if pending_request is not None:
         #     input_text = self._get_input_text(pending_request)
-        #     matched_text, tenant_id = await self._tree_deployment.prefix_match.remote(input_text)
+        #     # matched_text, tenant_id = await self._tree_deployment.prefix_match.remote(input_text)
+        #     matched_text, tenant_id = self._tree_deployment.prefix_match(input_text)
         # # END PREFIX AWARE LOGIC
 
         # # BEGIN PREFIX MATCH RATE TRACKING
         # if pending_request is not None:
         #     input_text = self._get_input_text(pending_request)
-        #     matched_text = await self._tree_deployment.prefix_match_tenant.remote(input_text, chosen_replica_id)
+        #     # matched_text = await self._tree_deployment.prefix_match_tenant.remote(input_text, chosen_replica_id)
+        #     matched_text = self._tree_deployment.prefix_match_tenant(input_text, chosen_replica_id)
         #     if chosen_replica_id.unique_id not in self._prefix_match_rates:
         #         self._prefix_match_rates[chosen_replica_id.unique_id] = []
         #     if matched_text is not None:
         #         self._prefix_match_rates[chosen_replica_id.unique_id].append(len(matched_text) / len(input_text))
         #     else:
         #         self._prefix_match_rates[chosen_replica_id.unique_id].append(0.0)
-        #     self._num_requests_seen += 1
         # # END PREFIX MATCH RATE TRACKING
 
         # # BEGIN UPDATE TREE
         # if pending_request is not None:
         #     input_text = self._get_input_text(pending_request)
-        #     self._tree_deployment.insert.remote(input_text, chosen_replica_id)
+        #     # self._tree_deployment.insert.remote(input_text, chosen_replica_id)
+        #     self._tree_deployment.insert(input_text, chosen_replica_id)
         # # END UPDATE TREE
 
         # `self._replicas` may have been updated since the candidates were chosen.
         # In that case, return `None` so a new one is selected.
+        self._num_requests_seen += 1
         return self._replicas.get(chosen_replica_id, None)
 
 

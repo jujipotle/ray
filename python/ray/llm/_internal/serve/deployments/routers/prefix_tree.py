@@ -21,7 +21,7 @@ class Node:
     def __str__(self):
         return f"Node(text='{self.text}', tenants={list(self.tenant_last_access_time.keys())})"
 
-@serve.deployment(name="deploymentTest")
+# @serve.deployment(name="TreeDeployment")
 class PrefixTree:
     """
     Thread-safe multi-tenant prefix tree (approximate radix tree).
@@ -408,11 +408,11 @@ class PrefixTree:
                 evict_amount = min(excess, size // 2)
                 
                 if evict_amount > 0:
-                    print(f"Evicting {evict_amount} chars from tenant {tenant}")
+                    # print(f"Evicting {evict_amount} chars from tenant {tenant}")
                     self.tenant_char_count[tenant] -= evict_amount
                     excess -= evict_amount
             
-            print(f"Tree eviction complete. New size: {sum(self.tenant_char_count.values())}")
+            # print(f"Tree eviction complete. New size: {sum(self.tenant_char_count.values())}")
     
     def get_tenant_char_count(self):
         """Get character count for each tenant."""

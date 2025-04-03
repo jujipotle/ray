@@ -1,5 +1,5 @@
 from ray import serve
-
+from ray.llm._internal.serve.deployments.routers.prefix_tree import PrefixTree
 import os
 import json
 import asyncio
@@ -120,13 +120,11 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         # Variables to track prefix match rates / replica
         self._prefix_match_rates: Dict[str, List[float]] = {}
         
-        # print(f"[prefix_aware_scheduler.py: __init__] Initializing Prefix Aware Replica Scheduler")
         # Extracting tree_deployment from scheduler_params
-        # self._tree_deployment = scheduler_params.get("tree_deployment", None)
-        self._tree_deployment = serve.get_deployment_handle("deploymentTest", app_name="llm_app")
-        print(f"[prefix_aware_scheduler.py: __init__] self._tree_deployment: {self._tree_deployment}")
-        if self._tree_deployment is None:
-            raise ValueError("tree_deployment must be provided in scheduler_params")
+        # self._tree_deployment = serve.get_deployment_handle("TreeDeployment", app_name="llm_app")
+        # if self._tree_deployment is None:
+        #     raise ValueError("Tree deployment was not found")
+        self._tree_deployment = PrefixTree()
         self.running_queue = {}
         self.processed_queue = {}
         self.balance_abs_threshold = 10
@@ -301,7 +299,6 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
 
                 elapsed_since_start = round(current_time - self._benchmark_start_time, 2) # Round to hundredth of a second
                 self._load_distribution[elapsed_since_start] = current_load
-                
                 if self._num_requests_seen > 10 and total_load == 0:
                     self._zero_load_count += 1
                     if self._zero_load_count >= 10:
@@ -788,8 +785,8 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
             if is_imbalanced:
                 pass
             else:
-                # async for matched_text, tenant_id_unique_id in self._tree_deployment.options(stream=True).prefix_match_generator.remote(input_text):
-                matched_text, tenant_id = await self._tree_deployment.prefix_match.remote(input_text)
+                # matched_text, tenant_id = await self._tree_deployment.prefix_match.remote(input_text)
+                matched_text, tenant_id = self._tree_deployment.prefix_match(input_text)
                 match_rate = len(matched_text) / len(input_text) if input_text else 0
                 if match_rate < 0.1:
                     # chosen_replica = self._tree_deployment.get_smallest_tenant.remote()
@@ -804,25 +801,27 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
                     pass
         # END PREFIX AWARE LOGIC
 
-        # # BEGIN PREFIX MATCH RATE TRACKING
-        # if pending_request is not None:
-        #     input_text = self._get_input_text(pending_request)
-        #     matched_text = await self._tree_deployment.prefix_match_tenant.remote(input_text, chosen_replica_id)
-        #     if chosen_replica_id.unique_id not in self._prefix_match_rates:
-        #         self._prefix_match_rates[chosen_replica_id.unique_id] = []
-        #     if matched_text is not None:
-        #         self._prefix_match_rates[chosen_replica_id.unique_id].append(len(matched_text) / len(input_text))
-        #     else:
-        #         self._prefix_match_rates[chosen_replica_id.unique_id].append(0.0)
-        #     self._num_requests_seen += 1
-        # # END PREFIX MATCH RATE TRACKING
+        # BEGIN PREFIX MATCH RATE TRACKING
+        if pending_request is not None:
+            input_text = self._get_input_text(pending_request)
+            # matched_text = await self._tree_deployment.prefix_match_tenant.remote(input_text, chosen_replica_id)
+            matched_text = self._tree_deployment.prefix_match_tenant(input_text, chosen_replica_id)
+            if chosen_replica_id.unique_id not in self._prefix_match_rates:
+                self._prefix_match_rates[chosen_replica_id.unique_id] = []
+            if matched_text is not None:
+                self._prefix_match_rates[chosen_replica_id.unique_id].append(len(matched_text) / len(input_text))
+            else:
+                self._prefix_match_rates[chosen_replica_id.unique_id].append(0.0)
+        # END PREFIX MATCH RATE TRACKING
 
         # BEGIN UPDATE TREE
         if pending_request is not None:
             input_text = self._get_input_text(pending_request)
-            self._tree_deployment.insert.remote(input_text, chosen_replica_id)
+            # self._tree_deployment.insert.remote(input_text, chosen_replica_id)
+            self._tree_deployment.insert(input_text, chosen_replica_id)
         # END UPDATE TREE
 
+        self._num_requests_seen += 1
         return self._replicas.get(chosen_replica_id, None)
 
     def _get_pending_request_matching_metadata(
