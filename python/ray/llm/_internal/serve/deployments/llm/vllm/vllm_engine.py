@@ -212,7 +212,7 @@ class BatchLLMRawResponses:
 class _EngineBackgroundProcess:
     def __init__(self, ipc_path, engine_args, engine_config):
         from vllm.engine.multiprocessing.engine import MQLLMEngine
-
+        print(f"__init__ of _EngineBackgroundProcess: engine_args: {engine_args}, engine_config: {engine_config}")
         # Adapted from vllm.engine.multiprocessing.engine.MQLLMEngine.from_engine_args
         vllm.plugins.load_general_plugins()
 
@@ -235,11 +235,15 @@ class _EngineBackgroundProcess:
             log_stats=not engine_args.disable_log_stats,
             usage_context=vllm.usage.usage_lib.UsageContext.API_SERVER,
         )
+        print(f"engine after MQLLMEngine: {self.engine}")
         self._error = None
 
     def start(self):
+        print("_EngineBackgroundProcess.start")
         try:
+            print("before self.engine.start()")
             self.engine.start()
+            print("after self.engine.start()")
         except Exception as e:
             self._error = e
 
@@ -285,28 +289,58 @@ class VLLMEngine:
 
     async def start(self):
         """Start the vLLM engine.
-
+        print("Inside VLLMEngine.start")
         If the engine is already running, do nothing.
         """
         if self.running:
+            print("self.running is True")
             # The engine is already running!
             logger.info("Skipping engine restart because the engine is already running")
             return
 
         # Get the scaling options
+        print("self.running is False, calling _start_engine")
         self.engine = await self._start_engine()
+        print("After _start_engine")
+        # # Beginning of injected code: to log metrics from vllm
+        # from vllm.engine.metrics import RayPrometheusStatLogger
+        # from typing import Union
+        # from vllm.engine.arg_utils import AsyncEngineArgs
+
+        # def get_served_model_names(engine_args: AsyncEngineArgs) -> List[str]:
+        #     if engine_args.served_model_name is not None:
+        #         served_model_names: Union[str, List[str]] = engine_args.served_model_name
+        #         # Because the typing suggests it could be a string or list of strings
+        #         if isinstance(served_model_names, str):
+        #             served_model_names: List[str] = [served_model_names]
+        #     else:
+        #         served_model_names: List[str] = [engine_args.model]
+        #     return served_model_names
+        # engine_args, engine_config = _get_vllm_engine_config(self.llm_config)
+        # served_model_names = get_served_model_names(engine_args)
+        # logger = RayPrometheusStatLogger(
+        #     local_interval=0.5,
+        #     labels={"model_name": served_model_names[0]},
+        #     vllm_config=engine_config,
+        # )
+        # self.engine.add_logger("ray", logger)
+        # # End of injected code
+
         self.running = True
         self.model_config = await self.engine.get_model_config()
 
         logger.info("Started vLLM engine.")
 
     async def _start_engine(self) -> "EngineClient":
+        print("Inside VLLMEngine._start_engine")
         from vllm.engine.multiprocessing.client import MQLLMEngineClient
 
         args: InitializeNodeOutput = await self.initialize_node(self.llm_config)
         engine_args, engine_config = _get_vllm_engine_config(self.llm_config)
 
-        if MQLLMEngineClient.is_unsupported_config(engine_args):
+        # if MQLLMEngineClient.is_unsupported_config(engine_args):
+        if True:
+            print("MQLLMEngineClient.is_unsupported_config(engine_args) is True")
             # If the engine is not supported, we fall back to the legacy async engine.
             #
             # Note (genesu): as of 2025-02-11, this code path is only triggered when
@@ -317,7 +351,7 @@ class VLLMEngine:
                 engine_config,
                 args.placement_group,
             )
-
+        print("MQLLMEngineClient.is_unsupported_config(engine_args) is False")
         return await self._start_mq_engine(
             engine_args, engine_config, args.placement_group
         )
@@ -347,6 +381,16 @@ class VLLMEngine:
             engine_config=engine_config,
             engine_pid=os.getpid(),
         )
+        # Beginning of injected code: to log metrics from vllm
+        from vllm.engine.metrics import RayPrometheusStatLogger
+        addition_metrics_logger = RayPrometheusStatLogger(
+            local_interval=0.5,
+            labels={"model_name": engine_args.model},
+            vllm_config=engine_config,
+        )
+        print(f"addition_metrics_logger: {addition_metrics_logger}")
+        engine_client.add_logger("ray", addition_metrics_logger)
+        # End of injected code
 
         logger.info("[STATUS] Getting the server ready ...")
         while True:
@@ -394,6 +438,27 @@ class VLLMEngine:
 
         _clear_current_platform_cache()
 
+        # Beginning of injected code: to log metrics from vllm
+        from vllm.engine.metrics import RayPrometheusStatLogger
+        from vllm.engine.metrics import PrometheusStatLogger
+
+        engine = vllm.engine.async_llm_engine.AsyncLLMEngine(
+            vllm_config=vllm_config,
+            executor_class=RayDistributedExecutor,
+            log_stats=True,
+        )
+        print(f"vllm_config: {vllm_config}, engine_args: {engine_args}")
+        addition_metrics_logger = RayPrometheusStatLogger(
+            local_interval=0.5,
+            labels={"model_name": engine_args.model},
+            vllm_config=vllm_config,
+        )
+        print(f"addition_metrics_logger: {addition_metrics_logger}")
+        print(f"engine before adding logger: {engine}")
+        engine.add_logger("ray", addition_metrics_logger)
+        print(f"engine after adding logger: {engine}")
+        # End of injected code
+        return engine
         return vllm.engine.async_llm_engine.AsyncLLMEngine(
             vllm_config=vllm_config,
             executor_class=RayDistributedExecutor,

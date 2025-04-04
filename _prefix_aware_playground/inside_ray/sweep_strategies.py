@@ -30,9 +30,9 @@ DEFAULT_CONFIG = {
     "scheduler_strategies_dict": {
         # "fake": "ray.serve._private.replica_scheduler.fake_replica_scheduler.FakeReplicaScheduler",
         "random": "ray.serve._private.replica_scheduler.random_scheduler.RandomReplicaScheduler",
-        "round_robin": "ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler",
-        "pow_of_2": "ray.serve._private.replica_scheduler.llm_pow_2_scheduler.LLMPowerOfTwoChoicesReplicaScheduler",
-        "prefix_aware": "ray.serve._private.replica_scheduler.prefix_aware_scheduler.PrefixAwareReplicaScheduler",
+        # "round_robin": "ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler",
+        # "pow_of_2": "ray.serve._private.replica_scheduler.llm_pow_2_scheduler.LLMPowerOfTwoChoicesReplicaScheduler",
+        # "prefix_aware": "ray.serve._private.replica_scheduler.prefix_aware_scheduler.PrefixAwareReplicaScheduler",
     },
 
     # Model Info
@@ -44,7 +44,7 @@ DEFAULT_CONFIG = {
     # Benchmark Info
     "benchmark_label": "probe_queues",
     "dataset_name": "sharegpt",
-    "max_concurrency": 1,  # Max concurrency (total)
+    "max_concurrency": 40,  # Max concurrency (total)
     "min_output_len": 10,
     "max_output_len": 200,
     "with_warmup": False,
@@ -58,8 +58,8 @@ DEFAULT_CONFIG = {
     "gen-question-len": 512,
 
     # ShareGPT Info
-    "num_prompts": 100,  # Number of prompts to sample from ShareGPT
-    "max_conversations": 1000,  # Max conversations to include from ShareGPT; num_unique_prefixes is approximately 3/100 * max_conversations.
+    "num_prompts": 1000,  # Number of prompts to sample from ShareGPT
+    "max_conversations": 10000,  # Max conversations to include from ShareGPT; num_unique_prefixes is approximately 3/100 * max_conversations.
     # To aim for average_prompts_per_prefix = 3, set max_conversations = 10 * num_prompts.
     "dataset_path": "/home/ray/default/work/ray/_prefix_aware_playground/shared/sharegpt.json",  # Path to ShareGPT dataset
     # "dataset_path": ""

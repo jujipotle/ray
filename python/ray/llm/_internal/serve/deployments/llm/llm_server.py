@@ -446,7 +446,7 @@ class LLMServer(_LLMServerBase):
         self._engine_cls = engine_cls or self._default_engine_cls
         self.engine = self._get_engine_class(self._llm_config)
 
-        # # To log metrics from vllm
+        # # Beginning of injected code: to log metrics from vllm
         # from vllm.engine.metrics import RayPrometheusStatLogger
         # from vllm.engine.arg_utils import AsyncEngineArgs
         # from vllm.engine.async_llm_engine import AsyncLLMEngine
