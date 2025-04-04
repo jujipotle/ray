@@ -11,9 +11,9 @@ applications:
             disable_log_requests: false,
           deployment_config:
             autoscaling_config:
-                initial_replicas: 4
-                min_replicas: 4
-                max_replicas: 4
+                initial_replicas: 2
+                min_replicas: 2
+                max_replicas: 2
           replica_scheduler_cls_path: ray.serve._private.replica_scheduler.prefix_aware_scheduler.PrefixAwareReplicaScheduler
   import_path: ray.serve.llm:build_openai_app
   name: llm_app
