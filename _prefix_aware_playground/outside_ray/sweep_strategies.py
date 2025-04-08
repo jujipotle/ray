@@ -20,7 +20,7 @@ DEFAULT_CONFIG = {
     # Server Info
     "host": "127.0.0.1",
     "router_port": 8000,
-    "worker_ports": "8001",
+    "worker_ports": "8001,8002,8003,8004",
     "router_strategies": [
         "random",
         # "round_robin",
@@ -31,14 +31,14 @@ DEFAULT_CONFIG = {
     # Model Info
     "model_name": "Qwen/Qwen2.5-1.5B-Instruct",
     "gpu_type": "L4",
-    "num_servers": 1,
+    "num_servers": 4,
     "is_prefix_cached": True,
 
     # Benchmark Info
-    "benchmark_label": "1-gpu_10-concurrency",
+    "benchmark_label": "4-gpu_40-concurrency",
     "dataset_name": "sharegpt",
-    "max_concurrency": 10,  # Max concurrency (total)
-    "output_len": 1000,
+    "max_concurrency": 40,  # Max concurrency (total)
+    "output_len": 32,
     "with_warmup": "False",
 
     # Generate Shared Prefix Info
@@ -48,7 +48,7 @@ DEFAULT_CONFIG = {
     "gen-question-len": 512,
 
     # ShareGPT Info
-    "num_prompts": 100,  # Number of prompts to sample from ShareGPT
+    "num_prompts": 1000,  # Number of prompts to sample from ShareGPT
     "max_conversations": 10000,  # Max conversations to include from ShareGPT; num_unique_prefixes is approximately max_conversations / 10. To aim for num_unique_prefixes = num_prompts / 10, set max_conversations = num_prompts.
     "dataset_path": "/home/ray/default/work/ray/_prefix_aware_playground/shared/sharegpt.json",  # Path to ShareGPT dataset
 }

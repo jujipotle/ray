@@ -9,4 +9,4 @@ scrape_configs:
 - job_name: 'ray'
   file_sd_configs:
   - files:
-    - '/tmp/ray/prom_metrics_service_discovery.json'
+    - '/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/custom_prom_metrics_service_discovery.json'
