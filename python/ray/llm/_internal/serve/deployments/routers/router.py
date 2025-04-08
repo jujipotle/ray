@@ -1,3 +1,5 @@
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
+from fastapi.responses import Response as FastAPIResponse
 from ray.serve._private.replica_scheduler import PrefixAwareReplicaScheduler, PowerOfTwoChoicesReplicaScheduler, RoundRobinReplicaScheduler
 import asyncio
 import json
@@ -116,12 +118,6 @@ def init() -> FastAPI:
 
 fastapi_router_app = init()
 
-# Beginning of injected code: to log metrics from fastapi
-from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
-from fastapi.responses import Response
-@fastapi_router_app.get("/metrics")
-async def metrics():
-    return Response(content=generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
 def _apply_openai_json_format(
     response: Union[ChatCompletionStreamResponse, CompletionStreamResponse]
@@ -345,6 +341,13 @@ class LLMRouter:
                     f'"{model_id}". Omitting it from list of available models. '
                     "Check that adapter config file exists in cloud bucket."
                 )
+
+
+    # Beginning of injected code: to log metrics from fastapi
+    @fastapi_router_app.get("/metrics")
+    async def metrics(self):
+        return FastAPIResponse(content=generate_latest(), media_type=CONTENT_TYPE_LATEST)
+    # End of injected code
 
     @fastapi_router_app.get("/v1/models", response_model=Model)
     async def models(self) -> Model:

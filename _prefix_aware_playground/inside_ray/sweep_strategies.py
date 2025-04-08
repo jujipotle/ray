@@ -197,10 +197,10 @@ def restart_server_with_strategy(strategy, args):
     
     server_process = subprocess.Popen(
         cmd,
-        # stdout=stdout_log,
-        # stderr=stderr_log
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL
+        stdout=stdout_log,
+        stderr=stderr_log
+        # stdout=subprocess.DEVNULL,
+        # stderr=subprocess.DEVNULL
     )
     
     # Wait for server to start - give it more time and retry health checks

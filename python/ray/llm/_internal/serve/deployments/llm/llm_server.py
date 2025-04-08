@@ -446,33 +446,6 @@ class LLMServer(_LLMServerBase):
         self._engine_cls = engine_cls or self._default_engine_cls
         self.engine = self._get_engine_class(self._llm_config)
 
-        # # Beginning of injected code: to log metrics from vllm
-        # from vllm.engine.metrics import RayPrometheusStatLogger
-        # from vllm.engine.arg_utils import AsyncEngineArgs
-        # from vllm.engine.async_llm_engine import AsyncLLMEngine
-
-        # from ray.llm._internal.serve.deployments.llm.vllm.vllm_engine import _get_vllm_engine_config
-        # from typing import List
-        # engine_args, engine_config = _get_vllm_engine_config(self._llm_config)
-        # self.engine = AsyncLLMEngine.from_engine_args(engine_args)
-        # def get_served_model_names(engine_args: AsyncEngineArgs) -> List[str]:
-        #     if engine_args.served_model_name is not None:
-        #         served_model_names: Union[str, List[str]] = engine_args.served_model_name
-        #         # Because the typing suggests it could be a string or list of strings
-        #         if isinstance(served_model_names, str):
-        #             served_model_names: List[str] = [served_model_names]
-        #     else:
-        #         served_model_names: List[str] = [engine_args.model]
-        #     return served_model_names
-        # served_model_names = get_served_model_names(engine_args)
-        # additional_metrics_logger: RayPrometheusStatLogger = RayPrometheusStatLogger(
-        #     local_interval=0.5,
-        #     labels=dict(model_name=served_model_names[0]),
-        #     vllm_config=engine_config,
-        # )
-        # self.engine.add_logger("ray", additional_metrics_logger)
-        # # End of injected code
-
         await asyncio.wait_for(self._start_engine(), timeout=ENGINE_START_TIMEOUT_S)
 
         self.image_retriever = (

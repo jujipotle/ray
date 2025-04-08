@@ -96,8 +96,8 @@ Ray provides a Prometheus config that works out of the box. After running Ray, y
 
 ```yaml
 global:
-  scrape_interval: 15s
-  evaluation_interval: 15s
+  scrape_interval: 1s
+  evaluation_interval: 1s
 
 scrape_configs:
 # Scrape from each Ray node as defined in the service_discovery.json provided by Ray.

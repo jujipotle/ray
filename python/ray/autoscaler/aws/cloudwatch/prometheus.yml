@@ -2,9 +2,9 @@
 
 # my global config
 global:
-  scrape_interval:     10s
-  evaluation_interval: 10s
-  scrape_timeout: 10s
+  scrape_interval:     1s
+  evaluation_interval: 1s
+  scrape_timeout: 1s
 
 # use ray file-based service discovery file as scrape target.
 scrape_configs:

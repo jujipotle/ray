@@ -48,11 +48,11 @@ def GRAFANA_DATASOURCE_TEMPLATE(
 
 PROMETHEUS_YML_TEMPLATE = """# my global config
 global:
-  scrape_interval: 10s # Set the scrape interval to every 10 seconds. Default is every \
+  scrape_interval: 1s # Set the scrape interval to every 10 seconds. Default is every \
 1 minute.
-  evaluation_interval: 10s # Evaluate rules every 10 seconds. The default is every 1 \
+  evaluation_interval: 1s # Evaluate rules every 10 seconds. The default is every 1 \
 minute.
-  # scrape_timeout is set to the global default (10s).
+  # scrape_timeout is set to the global default (1s).
 
 scrape_configs:
 # Scrape from each Ray node as defined in the service_discovery.json provided by Ray.
