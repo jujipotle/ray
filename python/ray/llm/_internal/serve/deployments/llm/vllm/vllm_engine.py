@@ -399,50 +399,18 @@ class VLLMEngine:
         from vllm.engine.metrics import PrometheusStatLogger
         from prometheus_client import REGISTRY
         import os
-
-        class DebugPrometheusStatLogger(RayPrometheusStatLogger):
-            def log(self, stats):
-                print("\n[DEBUG][vLLM] ==================== Logging Stats ====================")
-                print(f"  • Replica ID: {self.labels.get('replica_id')}")
-                print(f"  • GPU cache usage: {stats.gpu_cache_usage_sys}")
-                print(f"  • TTFT samples: {len(stats.time_to_first_tokens_iter)}")
-                print(f"  • Prompt tokens: {stats.num_prompt_tokens_iter}")
-                print(f"  • Generated tokens: {stats.num_generation_tokens_iter}")
-
-                # Print ENV
-                print("[DEBUG] ENV:", {k: v for k, v in os.environ.items() if "REPLICA" in k or "RAY" in k})
-
-                # Print all registered metrics and current values
-                print("[DEBUG] Registered Prometheus Metrics:")
-                for metric in REGISTRY.collect():
-                    print(f"  - Metric: {metric.name} ({metric.documentation})")
-                    for sample in metric.samples:
-                        print(f"    * name={sample.name}, labels={sample.labels}, value={sample.value}")
-
-                print("[DEBUG][vLLM] =======================================================\n")
-
-                # Continue normal logging
-                super().log(stats)
-        # replica_id = os.environ.get("SERVE_REPLICA_ID", "unknown")
-        labels = {
-            "model_name": engine_args.model,
-            # "replica_id": replica_id
-        }
-        additional_metrics_logger = DebugPrometheusStatLogger(
+        additional_metrics_logger = RayPrometheusStatLogger(
             local_interval=0.5,
-            # labels={"model_name": engine_args.model},
-            labels=labels,
+            labels={"model_name": engine_args.model},
             vllm_config=vllm_config,
         )
         engine = vllm.engine.async_llm_engine.AsyncLLMEngine(
             vllm_config=vllm_config,
             executor_class=RayDistributedExecutor,
             log_stats=True,
-            # stat_loggers={"prometheus": additional_metrics_logger},
         )
 
         engine.add_logger("ray", additional_metrics_logger)
-        # engine.stat_loggers["prometheus"] = additional_metrics_logger
         # End of injected code
         return engine
         return vllm.engine.async_llm_engine.AsyncLLMEngine(

@@ -14,7 +14,7 @@ applications:
                 initial_replicas: 2
                 min_replicas: 2
                 max_replicas: 2
-          replica_scheduler_cls_path: ray.serve._private.replica_scheduler.prefix_aware_scheduler.PrefixAwareReplicaScheduler
+          replica_scheduler_cls_path: ray.serve._private.replica_scheduler.random_scheduler.RandomReplicaScheduler
   import_path: ray.serve.llm:build_openai_app
   name: llm_app
   route_prefix: "/"

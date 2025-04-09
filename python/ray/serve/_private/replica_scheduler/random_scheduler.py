@@ -294,9 +294,56 @@ class RandomReplicaScheduler(ReplicaScheduler):
 
                 self._load_distribution[elapsed] = current_load
 
+                # # Simple:
+                # # === vLLM metrics via curl ===
+                # try:
+                #     output = subprocess.check_output(["curl", "-s", "http://localhost:9999/metrics"]).decode("utf-8")
+                #     lines = output.strip().split("\n")
+                #     current_vllm_metrics = {}
+
+                #     for line in lines:
+                #         if line.startswith("#") or "vllm" not in line:
+                #             continue
+
+                #         parts = line.split()
+                #         if len(parts) != 2:
+                #             continue
+
+                #         metric_line, value = parts
+                #         try:
+                #             value = float(value)
+                #         except ValueError:
+                #             continue
+
+                #         # Parse metric name and labels
+                #         if "{" in metric_line:
+                #             name, label_str = metric_line.split("{", 1)
+                #             label_str = label_str.rstrip("}")
+                #             labels = dict(item.split("=") for item in label_str.split(","))
+                #             labels = {k: v.strip('"') for k, v in labels.items()}
+                #         else:
+                #             name = metric_line
+                #             labels = {}
+
+                #         # Construct full metric key including labels (to preserve le, model_name, etc.)
+                #         label_suffix = ",".join(f"{k}={v}" for k, v in sorted(labels.items()))
+                #         metric_key = f"{name}{{{label_suffix}}}" if label_suffix else name
+
+                #         # Bucket by WorkerId
+                #         worker_id = labels.get("WorkerId", "unknown")
+                #         if worker_id not in current_vllm_metrics:
+                #             current_vllm_metrics[worker_id] = {}
+                #         current_vllm_metrics[worker_id][metric_key] = value
+
+                #     self._vllm_metrics_over_time[elapsed] = current_vllm_metrics
+
+                # except Exception as e:
+                #     print(f"[WARN] Failed to curl or parse /metrics: {e}")
+                    
+                # All buckets:
                 # === vLLM metrics via curl ===
                 try:
-                    output = subprocess.check_output(["curl", "-s", "http://localhost:8085/metrics"]).decode("utf-8")
+                    output = subprocess.check_output(["curl", "-s", "http://localhost:9999/metrics"]).decode("utf-8")
                     lines = output.strip().split("\n")
                     current_vllm_metrics = {}
 
