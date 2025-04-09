@@ -214,6 +214,7 @@ class RouterMetricsManager:
                     autoscaling_config.metrics_interval_s,
                 )
             else:
+                print(f"[INFO] Pushing metrics to controller every {HANDLE_METRIC_PUSH_INTERVAL_S} seconds")
                 self.metrics_pusher.register_or_update_task(
                     self.PUSH_METRICS_TO_CONTROLLER_TASK_NAME,
                     self.push_autoscaling_metrics_to_controller,

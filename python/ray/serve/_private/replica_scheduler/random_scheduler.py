@@ -309,7 +309,10 @@ class RandomReplicaScheduler(ReplicaScheduler):
                             continue
 
                         metric_line, value = parts
-                        value = float(value)
+                        try:
+                            value = float(value)
+                        except ValueError:
+                            continue
 
                         # Parse metric name and labels
                         if "{" in metric_line:
@@ -321,16 +324,28 @@ class RandomReplicaScheduler(ReplicaScheduler):
                             name = metric_line
                             labels = {}
 
+                        # Extract WorkerId
                         worker_id = labels.get("WorkerId", "unknown")
+
+                        # Keep only important label keys
+                        important_keys = {"le", "model_name"}
+                        filtered_labels = {k: v for k, v in labels.items() if k in important_keys}
+
+                        # Append important label suffix to metric name
+                        if filtered_labels:
+                            label_suffix = ",".join(f"{k}={v}" for k, v in sorted(filtered_labels.items()))
+                            metric_key = f"{name}{{{label_suffix}}}"
+                        else:
+                            metric_key = name
+
                         if worker_id not in current_vllm_metrics:
                             current_vllm_metrics[worker_id] = {}
-                        current_vllm_metrics[worker_id][name] = value
+                        current_vllm_metrics[worker_id][metric_key] = value
 
                     self._vllm_metrics_over_time[elapsed] = current_vllm_metrics
 
                 except Exception as e:
                     print(f"[WARN] Failed to curl or parse /metrics: {e}")
-
                 # === End condition ===
                 if self._num_requests_seen > 10 and total_load == 0:
                     self._zero_load_count += 1
