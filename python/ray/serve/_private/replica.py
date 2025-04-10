@@ -219,13 +219,12 @@ class ReplicaMetricsManager:
         consecutive_errors = 0
         while True:
             try:
-                print(f"Sleeping for {self._cached_metrics_interval_s} seconds")
                 await asyncio.sleep(self._cached_metrics_interval_s)
                 self._report_cached_metrics()
                 consecutive_errors = 0
             except Exception:
                 logger.exception("Unexpected error reporting metrics.")
-                print(f"Unexpected error reporting metrics. consecutive_errors: {consecutive_errors}")
+                
                 # Exponential backoff starting at 1s and capping at 10s.
                 backoff_time_s = min(10, 2**consecutive_errors)
                 consecutive_errors += 1
@@ -272,7 +271,6 @@ class ReplicaMetricsManager:
     def dec_num_ongoing_requests(self) -> int:
         """Decrement the current total queue length of requests for this replica."""
         self._num_ongoing_requests -= 1
-
         if not self._cached_metrics_enabled:
             self._num_ongoing_requests_gauge.set(self._num_ongoing_requests)
 

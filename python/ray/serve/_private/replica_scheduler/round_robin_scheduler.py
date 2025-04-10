@@ -1,3 +1,4 @@
+import subprocess
 from ray import serve
 from ray.llm._internal.serve.deployments.routers.prefix_tree import PrefixTree
 import os
@@ -270,61 +271,112 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
         return self._replica_queue_len_cache
 
     async def _track_load_distribution(self):
-        """Periodically track the load distribution across replicas."""
+        """Track load + vLLM metrics by WorkerId every 0.1s, save to JSON at end."""
         try:
-            # Start tracking immediately
             self._benchmark_start_time = time.time()
             print("Beginning to track load distribution immediately")
-            
+
+            self._vllm_metrics_over_time = {}
+
             while True:
                 await asyncio.sleep(0.1)
+                current_time = time.time()
+                elapsed = round(current_time - self._benchmark_start_time, 2)
+
+                # === Load distribution ===
                 result = await self._probe_queue_lens(self._replicas.values(), 0)
                 result_dict = {r.replica_id: q for r, q in result}
-                current_time = time.time()
-                
-                # Get current load for all replicas
                 total_load = 0
                 current_load = {}
-                
+
                 for replica_id, replica in self._replicas.items():
                     queue_len = result_dict[replica_id] or 0
                     current_load[replica_id.unique_id] = queue_len
                     total_load += queue_len
 
+                self._load_distribution[elapsed] = current_load
 
-                elapsed_since_start = round(current_time - self._benchmark_start_time, 2) # Round to hundredth of a second
-                self._load_distribution[elapsed_since_start] = current_load
-                
+                # === vLLM metrics via curl ===
+                try:
+                    output = subprocess.check_output(["curl", "-s", "http://localhost:5001/metrics"]).decode("utf-8")
+                    lines = output.strip().split("\n")
+                    current_vllm_metrics = {}
+
+                    for line in lines:
+                        if line.startswith("#") or "vllm" not in line:
+                            continue
+
+                        parts = line.split()
+                        if len(parts) != 2:
+                            continue
+
+                        metric_line, value = parts
+                        try:
+                            value = float(value)
+                        except ValueError:
+                            continue
+
+                        # Parse metric name and labels
+                        if "{" in metric_line:
+                            name, label_str = metric_line.split("{", 1)
+                            label_str = label_str.rstrip("}")
+                            labels = dict(item.split("=") for item in label_str.split(","))
+                            labels = {k: v.strip('"') for k, v in labels.items()}
+                        else:
+                            name = metric_line
+                            labels = {}
+
+                        # Extract WorkerId
+                        worker_id = labels.get("WorkerId", "unknown")
+
+                        # Keep only important label keys
+                        important_keys = {"le", "model_name"}
+                        filtered_labels = {k: v for k, v in labels.items() if k in important_keys}
+
+                        # Append important label suffix to metric name
+                        if filtered_labels:
+                            label_suffix = ",".join(f"{k}={v}" for k, v in sorted(filtered_labels.items()))
+                            metric_key = f"{name}{{{label_suffix}}}"
+                        else:
+                            metric_key = name
+
+                        if worker_id not in current_vllm_metrics:
+                            current_vllm_metrics[worker_id] = {}
+                        current_vllm_metrics[worker_id][metric_key] = value
+
+                    self._vllm_metrics_over_time[elapsed] = current_vllm_metrics
+
+                except Exception as e:
+                    print(f"[WARN] Failed to curl or parse /metrics: {e}")
+                # === End condition ===
                 if self._num_requests_seen > 10 and total_load == 0:
                     self._zero_load_count += 1
                     if self._zero_load_count >= 10:
-                        print("Benchmark ended, writing load distribution to file")
-                        # Write results to file
+                        print("Benchmark ended, writing data to disk")
+
+                        # Dump load distribution
                         results_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/load_distributions"
                         os.makedirs(results_dir, exist_ok=True)
-                        
-                        # Save load distribution
-                        load_filename = os.path.join(
-                            results_dir, 
-                            f"round_robin_{int(time.time())}.json"
-                        )
-                        with open(load_filename, "w") as f:
+                        with open(os.path.join(results_dir, f"round_robin_{int(time.time())}.json"), "w") as f:
                             json.dump(self._load_distribution, f, indent=2)
-                            
-                        # Save prefix match rates
+
+                        # Dump prefix match rates
                         prefix_match_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/prefix_match_rates"
                         os.makedirs(prefix_match_dir, exist_ok=True)
-                        prefix_match_filename = os.path.join(
-                            prefix_match_dir,
-                            f"round_robin_{int(time.time())}.json"
-                        )
-                        with open(prefix_match_filename, "w") as f:
+                        with open(os.path.join(prefix_match_dir, f"round_robin_{int(time.time())}.json"), "w") as f:
                             json.dump(self._prefix_match_rates, f, indent=2)
+
+                        # Dump vLLM metrics
+                        metrics_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/vllm_metrics"
+                        os.makedirs(metrics_dir, exist_ok=True)
+                        with open(os.path.join(metrics_dir, f"round_robin_{int(time.time())}.json"), "w") as f:
+                            json.dump(self._vllm_metrics_over_time, f, indent=2)
+
                         break
                 else:
                     self._zero_load_count = 0
         except Exception as e:
-            print(f"Error in load distribution tracking: {e}")
+            print(f"Error in load tracking: {e}")
         finally:
             self._load_tracking_task = None
 
