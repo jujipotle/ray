@@ -44,8 +44,8 @@ class AutoscalingConfig(BaseModel):
     target_ongoing_requests: PositiveFloat = DEFAULT_TARGET_ONGOING_REQUESTS
 
     # How often to scrape for metrics
-    # metrics_interval_s: PositiveFloat = 10.0
-    metrics_interval_s: PositiveFloat = 1.0
+    metrics_interval_s: PositiveFloat = 10.0
+    # metrics_interval_s: PositiveFloat = 0.1
     # Time window to average over for metrics.
     look_back_period_s: PositiveFloat = 30.0
 

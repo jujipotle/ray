@@ -343,7 +343,7 @@ class RandomReplicaScheduler(ReplicaScheduler):
                 # All buckets:
                 # === vLLM metrics via curl ===
                 try:
-                    output = subprocess.check_output(["curl", "-s", "http://localhost:9999/metrics"]).decode("utf-8")
+                    output = subprocess.check_output(["curl", "-s", "http://localhost:5001/metrics"]).decode("utf-8")
                     lines = output.strip().split("\n")
                     current_vllm_metrics = {}
 

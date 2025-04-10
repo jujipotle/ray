@@ -394,30 +394,23 @@ class VLLMEngine:
 
         _clear_current_platform_cache()
 
+        engine = vllm.engine.async_llm_engine.AsyncLLMEngine(
+            vllm_config=vllm_config,
+            executor_class=RayDistributedExecutor,
+            log_stats=not engine_args.disable_log_stats,
+        )
+
         # Beginning of injected code: to log metrics from vllm
         from vllm.engine.metrics import RayPrometheusStatLogger
-        from vllm.engine.metrics import PrometheusStatLogger
-        from prometheus_client import REGISTRY
-        import os
         additional_metrics_logger = RayPrometheusStatLogger(
             local_interval=0.5,
             labels={"model_name": engine_args.model},
             vllm_config=vllm_config,
         )
-        engine = vllm.engine.async_llm_engine.AsyncLLMEngine(
-            vllm_config=vllm_config,
-            executor_class=RayDistributedExecutor,
-            log_stats=True,
-        )
 
         engine.add_logger("ray", additional_metrics_logger)
         # End of injected code
         return engine
-        return vllm.engine.async_llm_engine.AsyncLLMEngine(
-            vllm_config=vllm_config,
-            executor_class=RayDistributedExecutor,
-            log_stats=not engine_args.disable_log_stats,
-        )
 
     async def generate(
         self,

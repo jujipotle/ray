@@ -394,7 +394,7 @@ def main():
                 stderr_log.close()
                 
                 # Clean up: stop server if still running
-                subprocess.run(["serve", "shutdown", "--yes"], check=False)
+                subprocess.run(["serve", "shutdown", "-a", "http://localhost:5002", "--yes"], check=False)
                 print("Sleeping for 5 seconds (to allow server to shut down)...")
                 time.sleep(3)  # Give it time to shut down
         
