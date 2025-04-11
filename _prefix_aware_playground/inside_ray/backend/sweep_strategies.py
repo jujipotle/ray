@@ -30,9 +30,9 @@ DEFAULT_CONFIG = {
     "scheduler_strategies_dict": {
         # "fake": "ray.serve._private.replica_scheduler.fake_replica_scheduler.FakeReplicaScheduler",
         # "random": "ray.serve._private.replica_scheduler.random_scheduler.RandomReplicaScheduler",
-        "round_robin": "ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler",
-        "pow_of_2": "ray.serve._private.replica_scheduler.llm_pow_2_scheduler.LLMPowerOfTwoChoicesReplicaScheduler",
-        # "prefix_aware": "ray.serve._private.replica_scheduler.prefix_aware_scheduler.PrefixAwareReplicaScheduler",
+        # "round_robin": "ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler",
+        # "pow_of_2": "ray.serve._private.replica_scheduler.llm_pow_2_scheduler.LLMPowerOfTwoChoicesReplicaScheduler",
+        "prefix_aware": "ray.serve._private.replica_scheduler.prefix_aware_scheduler.PrefixAwareReplicaScheduler",
     },
 
     # Model Info
@@ -42,7 +42,7 @@ DEFAULT_CONFIG = {
     "enable_prefix_caching": True,
     "enable_chunked_prefill": True,
     # Benchmark Info
-    "benchmark_label": "probe_queues",
+    "benchmark_label": "probe_queues_and_hardcode_tree",
     "dataset_name": "sharegpt",
     "max_concurrency": 40,  # Max concurrency (total)
     "min_output_len": 10,
@@ -192,8 +192,8 @@ def restart_server_with_strategy(strategy, args):
     print(f"Executing: {' '.join(cmd)}")
     
     # Open log files for writing
-    stdout_log = open(f"/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/logs/{strategy}_stdout.log", "w")
-    stderr_log = open(f"/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/logs/{strategy}_stderr.log", "w")
+    stdout_log = open(f"logs/{strategy}_stdout.log", "w")
+    stderr_log = open(f"logs/{strategy}_stderr.log", "w")
     
     server_process = subprocess.Popen(
         cmd,
@@ -314,15 +314,62 @@ def run_single_benchmark(strategy, args):
         
     return result
 
+# def save_results_to_csv(results, args):
+#     """Save the benchmark results to a CSV file."""
+#     # Define CSV column order
+#     shared_params = ["gpu_type", "model_name", "num_servers", "enable_prefix_caching", "enable_chunked_prefill", "benchmark_label", "scheduler_strategy", "min_output_len", "max_output_len", "max_concurrency", "request_rate", "with_warmup", "disable_ignore_eos"]
+#     if args.dataset_name == "generate-shared-prefix":
+#         dataset_params = ["num_groups", "prompts_per_group", "system_prompt_len", "question_len"]
+#     elif args.dataset_name == "sharegpt":
+#         dataset_params = ["max_conversations", "num_prompts"]
+#     result_keys = [
+#         "duration",
+#         "completed",
+#         "request_throughput",
+#         "input_throughput",
+#         "output_throughput",
+#         "mean_ttft_ms",
+#         "median_ttft_ms",
+#         "std_ttft_ms",
+#         "p99_ttft_ms",
+#         "mean_tpot_ms",
+#         "median_tpot_ms",
+#         "std_tpot_ms",
+#         "p99_tpot_ms",
+#         "mean_itl_ms",
+#         "median_itl_ms",
+#         "std_itl_ms",
+#         "p99_itl_ms",
+#         "mean_e2e_latency_ms",
+#         "median_e2e_latency_ms",
+#     ]
+
+#     ordered_columns = shared_params + dataset_params + result_keys
+#     df = pd.DataFrame(results)
+#     df = df[[col for col in ordered_columns if col in df.columns]]
+    
+#     # Round numeric values to 4 decimal places
+#     numeric_columns = df.select_dtypes(include=['float', 'int']).columns
+#     df[numeric_columns] = df[numeric_columns].round(4)
+
+#     csv_file = f"/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/serve_{args.dataset_name}_sweep_results.csv"
+#     df.to_csv(csv_file, mode='a', index=False)
+#     print(f"\nAppended sweep results to {csv_file}")
+
 def save_results_to_csv(results, args):
-    """Save the benchmark results to a CSV file."""
-    # Define CSV column order
+    """Save the benchmark results to two CSV files: one for Serve metrics, one for vLLM metrics."""
+    # === Shared column definitions ===
     shared_params = ["gpu_type", "model_name", "num_servers", "enable_prefix_caching", "enable_chunked_prefill", "benchmark_label", "scheduler_strategy", "min_output_len", "max_output_len", "max_concurrency", "request_rate", "with_warmup", "disable_ignore_eos"]
+    
     if args.dataset_name == "generate-shared-prefix":
         dataset_params = ["num_groups", "prompts_per_group", "system_prompt_len", "question_len"]
     elif args.dataset_name == "sharegpt":
         dataset_params = ["max_conversations", "num_prompts"]
-    result_keys = [
+    else:
+        dataset_params = []
+
+    # === Serve result saving ===
+    serve_result_keys = [
         "duration",
         "completed",
         "request_throughput",
@@ -344,17 +391,95 @@ def save_results_to_csv(results, args):
         "median_e2e_latency_ms",
     ]
 
-    ordered_columns = shared_params + dataset_params + result_keys
+    ordered_columns = shared_params + dataset_params + serve_result_keys
     df = pd.DataFrame(results)
     df = df[[col for col in ordered_columns if col in df.columns]]
     
-    # Round numeric values to 4 decimal places
+    # Round numeric values
     numeric_columns = df.select_dtypes(include=['float', 'int']).columns
     df[numeric_columns] = df[numeric_columns].round(4)
 
-    csv_file = f"/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/{args.dataset_name}_sweep_results.csv"
-    df.to_csv(csv_file, mode='a', index=False)
-    print(f"\nAppended sweep results to {csv_file}")
+    # Save Serve results
+    serve_csv_file = f"/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/serve_{args.dataset_name}_sweep_results.csv"
+    df.to_csv(serve_csv_file, mode='a', index=False)
+    print(f"\nAppended Serve results to {serve_csv_file}")
+
+    # === vLLM metric collection and saving ===
+    try:
+        output = subprocess.check_output(["curl", "-s", "http://localhost:5001/metrics"]).decode("utf-8")
+        lines = output.strip().split("\n")
+        current_vllm_metrics = {}
+
+        for line in lines:
+            if line.startswith("#") or "vllm" not in line:
+                continue
+
+            parts = line.split()
+            if len(parts) != 2:
+                continue
+
+            metric_line, value = parts
+            try:
+                value = float(value)
+            except ValueError:
+                continue
+
+            # Parse metric name and labels
+            if "{" in metric_line:
+                name, label_str = metric_line.split("{", 1)
+                label_str = label_str.rstrip("}")
+                labels = dict(item.split("=") for item in label_str.split(","))
+                labels = {k: v.strip('"') for k, v in labels.items()}
+            else:
+                name = metric_line
+                labels = {}
+
+            worker_id = labels.get("WorkerId", "unknown")
+            if worker_id not in current_vllm_metrics:
+                current_vllm_metrics[worker_id] = {}
+            current_vllm_metrics[worker_id][name] = current_vllm_metrics[worker_id].get(name, 0.0) + value
+
+        # === Aggregate vLLM metrics ===
+        counter_metrics = [
+            "ray_vllm:prompt_tokens_total",
+            "ray_vllm:generation_tokens_total",
+            "ray_vllm:request_success_total",
+        ]
+
+        average_metrics = [
+            "ray_vllm:time_to_first_token_seconds",
+            "ray_vllm:time_per_output_token_seconds",
+            "ray_vllm:e2e_request_latency_seconds",
+            "ray_vllm:request_queue_time_seconds",
+            "ray_vllm:request_inference_time_seconds",
+            "ray_vllm:request_prefill_time_seconds",
+            "ray_vllm:request_decode_time_seconds",
+        ]
+
+        vllm_summary = {}
+
+        # Sum counters
+        for metric in counter_metrics:
+            total = sum(worker.get(metric, 0.0) for worker in current_vllm_metrics.values())
+            vllm_summary[metric] = round(total, 4)
+        # Compute averages
+        for base_metric in average_metrics:
+            sum_metric = f"{base_metric}_sum"
+            count_metric = f"{base_metric}_count"
+            total_sum = sum(worker.get(sum_metric, 0.0) for worker in current_vllm_metrics.values())
+            total_count = sum(worker.get(count_metric, 0.0) for worker in current_vllm_metrics.values())
+            average = total_sum / total_count if total_count > 0 else 0.0
+            vllm_summary[base_metric] = round(average, 7)
+        # === Format vLLM results with shared metadata ===
+        base_record = {k: results[0][k] for k in shared_params + dataset_params if k in results[0]}
+        vllm_record = {**base_record, **vllm_summary}
+        vllm_df = pd.DataFrame([vllm_record])
+
+        vllm_csv_file = f"/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/vllm_{args.dataset_name}_sweep_results.csv"
+        vllm_df.to_csv(vllm_csv_file, mode='a', index=False)
+
+    except subprocess.CalledProcessError:
+        print("Error: Failed to curl vLLM metrics at http://localhost:5001/metrics")
 
 def main():
     """Main function to run the benchmark sweep."""

@@ -332,13 +332,6 @@ class LLMRouter:
                     "Check that adapter config file exists in cloud bucket."
                 )
 
-
-    # # Beginning of injected code: to log metrics from fastapi
-    # @fastapi_router_app.get("/metrics")
-    # async def metrics(self):
-    #     return FastAPIResponse(content=generate_latest(), media_type=CONTENT_TYPE_LATEST)
-    # # End of injected code
-
     @fastapi_router_app.get("/v1/models", response_model=Model)
     async def models(self) -> Model:
         """OpenAI API-compliant endpoint to get all rayllm models."""
