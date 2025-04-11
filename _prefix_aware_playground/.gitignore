@@ -1,5 +1,3 @@
 inside_ray/backend/logs
 outside_ray/backend/logs
-inside_ray/results/load_distributions
-inside_ray/results/prefix_match_rates
 inside_ray/results/vllm_metrics

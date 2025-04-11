@@ -1,20 +1,3 @@
------------
---- 4/10 --
------------
-gpu_type,model_name,num_servers,enable_prefix_caching,enable_chunked_prefill,benchmark_label,scheduler_strategy,min_output_len,max_output_len,max_concurrency,request_rate,with_warmup,disable_ignore_eos,max_conversations,num_prompts,ray_vllm:prompt_tokens_total,ray_vllm:generation_tokens_total,ray_vllm:request_success_total,ray_vllm:time_to_first_token_seconds,ray_vllm:time_per_output_token_seconds,ray_vllm:e2e_request_latency_seconds,ray_vllm:request_queue_time_seconds,ray_vllm:request_inference_time_seconds,ray_vllm:request_prefill_time_seconds,ray_vllm:request_decode_time_seconds
-L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,probe_queues_and_hardcode_tree,random,10,200,40,100,False,False,10000,1000,1781449.0,96962.0,1001.0,0.1659,0.025,2.5595,0.0509,2.5087,0.115,2.3937
-L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,probe_queues_and_hardcode_tree,random,10,200,40,100,False,False,10000,1000,1781449.0,96767.0,1001.0,0.157581,0.0252589,2.5763127,0.047173,2.5291397,0.110408,2.4187317
-L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,probe_queues_and_hardcode_tree,round_robin,10,200,40,100,False,False,10000,1000,1781449.0,97179.0,1000.0,0.1268,0.0247,2.4963,0.0304,2.466,0.0964,2.3696
-L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,probe_queues_and_hardcode_tree,round_robin,10,200,40,100,False,False,10000,1000,1781449.0,97056.0,999.0,0.1242602,0.0247564,2.5010801,0.0289757,2.4721044,0.0953441,2.3767603
-L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,probe_queues_and_hardcode_tree,pow_of_2,10,200,40,100,False,False,10000,1000,1781449.0,97122.0,1001.0,0.1645,0.0244,2.5129,0.0477,2.4652,0.1168,2.3483
-L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,probe_queues_and_hardcode_tree,pow_of_2,10,200,40,100,False,False,10000,1000,1781449.0,96863.0,1001.0,0.164714,0.0244673,2.5091108,0.047794,2.4613168,0.1169201,2.3443967
-L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,probe_queues_and_hardcode_tree,prefix_aware,10,200,40,100,False,False,10000,1000,1781449.0,97049.0,997.0,0.113,0.0214,2.1608,0.0395,2.1213,0.0737,2.0476
-L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,probe_queues_and_hardcode_tree,prefix_aware,10,200,40,100,False,False,10000,1000,1781449.0,97068.0,1001.0,0.1129646,0.0212392,2.1525284,0.0387316,2.1137968,0.074233,2.0395638
-
-
------------
---- 4/11 --
------------
 gpu_type,model_name,num_servers,enable_prefix_caching,enable_chunked_prefill,benchmark_label,scheduler_strategy,min_output_len,max_output_len,max_concurrency,request_rate,with_warmup,disable_ignore_eos,max_conversations,num_prompts,ray_vllm:prompt_tokens_total,ray_vllm:generation_tokens_total,ray_vllm:request_success_total,ray_vllm:time_to_first_token_seconds,ray_vllm:time_per_output_token_seconds,ray_vllm:e2e_request_latency_seconds,ray_vllm:request_queue_time_seconds,ray_vllm:request_inference_time_seconds,ray_vllm:request_prefill_time_seconds,ray_vllm:request_decode_time_seconds
 L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,no_overhead,random,10,200,40,100,False,False,10000,1000,1781449.0,97010.0,1001.0,0.1544533,0.0249855,2.5523536,0.045619,2.5067346,0.1088343,2.3979003
 L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,no_overhead,random,10,200,40,100,False,False,10000,1000,1781449.0,97097.0,1001.0,0.1624698,0.0252986,2.5924416,0.0480932,2.5443483,0.1143766,2.4299717

@@ -294,58 +294,58 @@ class RandomReplicaScheduler(ReplicaScheduler):
 
                 self._load_distribution[elapsed] = current_load
 
-                # # === vLLM metrics via curl ===
-                # try:
-                #     output = subprocess.check_output(["curl", "-s", "http://localhost:5001/metrics"]).decode("utf-8")
-                #     lines = output.strip().split("\n")
-                #     current_vllm_metrics = {}
+                # === vLLM metrics via curl ===
+                try:
+                    output = subprocess.check_output(["curl", "-s", "http://localhost:5001/metrics"]).decode("utf-8")
+                    lines = output.strip().split("\n")
+                    current_vllm_metrics = {}
 
-                #     for line in lines:
-                #         if line.startswith("#") or "vllm" not in line:
-                #             continue
+                    for line in lines:
+                        if line.startswith("#") or "vllm" not in line:
+                            continue
 
-                #         parts = line.split()
-                #         if len(parts) != 2:
-                #             continue
+                        parts = line.split()
+                        if len(parts) != 2:
+                            continue
 
-                #         metric_line, value = parts
-                #         try:
-                #             value = float(value)
-                #         except ValueError:
-                #             continue
+                        metric_line, value = parts
+                        try:
+                            value = float(value)
+                        except ValueError:
+                            continue
 
-                #         # Parse metric name and labels
-                #         if "{" in metric_line:
-                #             name, label_str = metric_line.split("{", 1)
-                #             label_str = label_str.rstrip("}")
-                #             labels = dict(item.split("=") for item in label_str.split(","))
-                #             labels = {k: v.strip('"') for k, v in labels.items()}
-                #         else:
-                #             name = metric_line
-                #             labels = {}
+                        # Parse metric name and labels
+                        if "{" in metric_line:
+                            name, label_str = metric_line.split("{", 1)
+                            label_str = label_str.rstrip("}")
+                            labels = dict(item.split("=") for item in label_str.split(","))
+                            labels = {k: v.strip('"') for k, v in labels.items()}
+                        else:
+                            name = metric_line
+                            labels = {}
 
-                #         # Extract WorkerId
-                #         worker_id = labels.get("WorkerId", "unknown")
+                        # Extract WorkerId
+                        worker_id = labels.get("WorkerId", "unknown")
 
-                #         # Keep only important label keys
-                #         important_keys = {"le", "model_name"}
-                #         filtered_labels = {k: v for k, v in labels.items() if k in important_keys}
+                        # Keep only important label keys
+                        important_keys = {"le", "model_name"}
+                        filtered_labels = {k: v for k, v in labels.items() if k in important_keys}
 
-                #         # Append important label suffix to metric name
-                #         if filtered_labels:
-                #             label_suffix = ",".join(f"{k}={v}" for k, v in sorted(filtered_labels.items()))
-                #             metric_key = f"{name}{{{label_suffix}}}"
-                #         else:
-                #             metric_key = name
+                        # Append important label suffix to metric name
+                        if filtered_labels:
+                            label_suffix = ",".join(f"{k}={v}" for k, v in sorted(filtered_labels.items()))
+                            metric_key = f"{name}{{{label_suffix}}}"
+                        else:
+                            metric_key = name
 
-                #         if worker_id not in current_vllm_metrics:
-                #             current_vllm_metrics[worker_id] = {}
-                #         current_vllm_metrics[worker_id][metric_key] = value
+                        if worker_id not in current_vllm_metrics:
+                            current_vllm_metrics[worker_id] = {}
+                        current_vllm_metrics[worker_id][metric_key] = value
 
-                #     self._vllm_metrics_over_time[elapsed] = current_vllm_metrics
+                    self._vllm_metrics_over_time[elapsed] = current_vllm_metrics
 
-                # except Exception as e:
-                #     print(f"[WARN] Failed to curl or parse /metrics: {e}")
+                except Exception as e:
+                    print(f"[WARN] Failed to curl or parse /metrics: {e}")
                 # === End condition ===
                 if self._num_requests_seen > 10 and total_load == 0:
                     self._zero_load_count += 1
@@ -464,9 +464,9 @@ class RandomReplicaScheduler(ReplicaScheduler):
         self._replicas_updated_event.set()
         self.maybe_start_scheduling_tasks()
         
-        # Start load tracking task if it's not already running and we have replicas
-        if self._load_tracking_task is None and len(self._replicas) > 0:
-            self._load_tracking_task = self._event_loop.create_task(self._track_load_distribution())
+        # # Start load tracking task if it's not already running and we have replicas
+        # if self._load_tracking_task is None and len(self._replicas) > 0:
+        #     self._load_tracking_task = self._event_loop.create_task(self._track_load_distribution())
 
     def _get_replica_ids_with_fewest_multiplexed_models(self) -> Set[str]:
         """Get the set of replicas that have the fewest multiplexed models loaded."""
@@ -779,86 +779,86 @@ class RandomReplicaScheduler(ReplicaScheduler):
         Among replicas that respond within the deadline and don't have full queues, the
         one with the lowest queue length is chosen.
         """
-        # BEGIN POW 2 LOGIC
-        lowest_queue_len = math.inf
-        highest_queue_len = 0
-        chosen_replica_id: Optional[str] = None
-        not_in_cache: List[RunningReplica] = []
-        if self._use_replica_queue_len_cache:
-            # Populate available queue lens from the cache.
-            for r in candidates:
-                queue_len = self._replica_queue_len_cache.get(r.replica_id)
-                # Include replicas whose queues are full as not in the cache so we will
-                # actively probe them. Otherwise we may end up in "deadlock" until their
-                # cache entries expire.
-                if queue_len is None or queue_len >= r.max_ongoing_requests:
-                    not_in_cache.append(r)
-                else:
-                    highest_queue_len = max(highest_queue_len, queue_len)
-                    if queue_len < lowest_queue_len:
-                        lowest_queue_len = queue_len
-                        chosen_replica_id = r.replica_id
-        else:
-            not_in_cache = candidates
+        # # BEGIN POW 2 LOGIC
+        # lowest_queue_len = math.inf
+        # highest_queue_len = 0
+        # chosen_replica_id: Optional[str] = None
+        # not_in_cache: List[RunningReplica] = []
+        # if self._use_replica_queue_len_cache:
+        #     # Populate available queue lens from the cache.
+        #     for r in candidates:
+        #         queue_len = self._replica_queue_len_cache.get(r.replica_id)
+        #         # Include replicas whose queues are full as not in the cache so we will
+        #         # actively probe them. Otherwise we may end up in "deadlock" until their
+        #         # cache entries expire.
+        #         if queue_len is None or queue_len >= r.max_ongoing_requests:
+        #             not_in_cache.append(r)
+        #         else:
+        #             highest_queue_len = max(highest_queue_len, queue_len)
+        #             if queue_len < lowest_queue_len:
+        #                 lowest_queue_len = queue_len
+        #                 chosen_replica_id = r.replica_id
+        # else:
+        #     not_in_cache = candidates
 
-        # If there is a valid replica to schedule based on the information in the
-        # cache, schedule it. Else fall back to actively probing.
-        if chosen_replica_id is None:
-            for r, queue_len in await self._probe_queue_lens(
-                not_in_cache,
-                backoff_index,
-            ):
-                if queue_len is None:
-                    # None is returned if we failed to get the queue len.
-                    continue
-                highest_queue_len = max(highest_queue_len, queue_len)
-                if queue_len < r.max_ongoing_requests and queue_len < lowest_queue_len:
-                    lowest_queue_len = queue_len
-                    chosen_replica_id = r.replica_id
-        elif len(not_in_cache) > 0:
-            # If there are replicas without a valid cache entry, probe them in the
-            # background to populate the cache.
-            self._event_loop.create_task(
-                self._probe_queue_lens(not_in_cache, backoff_index)
-            )
-        # END POW 2 LOGIC
+        # # If there is a valid replica to schedule based on the information in the
+        # # cache, schedule it. Else fall back to actively probing.
+        # if chosen_replica_id is None:
+        #     for r, queue_len in await self._probe_queue_lens(
+        #         not_in_cache,
+        #         backoff_index,
+        #     ):
+        #         if queue_len is None:
+        #             # None is returned if we failed to get the queue len.
+        #             continue
+        #         highest_queue_len = max(highest_queue_len, queue_len)
+        #         if queue_len < r.max_ongoing_requests and queue_len < lowest_queue_len:
+        #             lowest_queue_len = queue_len
+        #             chosen_replica_id = r.replica_id
+        # elif len(not_in_cache) > 0:
+        #     # If there are replicas without a valid cache entry, probe them in the
+        #     # background to populate the cache.
+        #     self._event_loop.create_task(
+        #         self._probe_queue_lens(not_in_cache, backoff_index)
+        #     )
+        # # END POW 2 LOGIC
         
         # # BEGIN DUMMY TREE CALL
         # hello = await self._tree_deployment.hello.remote()
         # hello = await self._tree_deployment.hello.remote()
         # # END DUMMY TREE CALL
 
-        # BEGIN PREFIX AWARE LOGIC (don't forget update tree)
-        # Determine if the load is imbalanced.
-        if pending_request is not None:
-            input_text = self._get_input_text(pending_request)
-            # matched_text, tenant_id = await self._tree_deployment.prefix_match.remote(input_text)
-            matched_text, tenant_id = self._tree_deployment.prefix_match(input_text)
-        # END PREFIX AWARE LOGIC
+        # # BEGIN PREFIX AWARE LOGIC (don't forget update tree)
+        # # Determine if the load is imbalanced.
+        # if pending_request is not None:
+        #     input_text = self._get_input_text(pending_request)
+        #     # matched_text, tenant_id = await self._tree_deployment.prefix_match.remote(input_text)
+        #     matched_text, tenant_id = self._tree_deployment.prefix_match(input_text)
+        # # END PREFIX AWARE LOGIC
 
         # BEGIN RANDOM LOGIC
         chosen_replica_id = random.choice(candidates).replica_id
         # END RANDOM LOGIC
 
-        # BEGIN PREFIX MATCH RATE TRACKING
-        if pending_request is not None:
-            input_text = self._get_input_text(pending_request)
-            # matched_text = await self._tree_deployment.prefix_match_tenant.remote(input_text, chosen_replica_id)
-            matched_text = self._tree_deployment.prefix_match_tenant(input_text, chosen_replica_id)
-            if chosen_replica_id.unique_id not in self._prefix_match_rates:
-                self._prefix_match_rates[chosen_replica_id.unique_id] = []
-            if matched_text is not None:
-                self._prefix_match_rates[chosen_replica_id.unique_id].append(len(matched_text) / len(input_text))
-            else:
-                self._prefix_match_rates[chosen_replica_id.unique_id].append(0.0)
-        # END PREFIX MATCH RATE TRACKING
+        # # BEGIN PREFIX MATCH RATE TRACKING
+        # if pending_request is not None:
+        #     input_text = self._get_input_text(pending_request)
+        #     # matched_text = await self._tree_deployment.prefix_match_tenant.remote(input_text, chosen_replica_id)
+        #     matched_text = self._tree_deployment.prefix_match_tenant(input_text, chosen_replica_id)
+        #     if chosen_replica_id.unique_id not in self._prefix_match_rates:
+        #         self._prefix_match_rates[chosen_replica_id.unique_id] = []
+        #     if matched_text is not None:
+        #         self._prefix_match_rates[chosen_replica_id.unique_id].append(len(matched_text) / len(input_text))
+        #     else:
+        #         self._prefix_match_rates[chosen_replica_id.unique_id].append(0.0)
+        # # END PREFIX MATCH RATE TRACKING
 
-        # BEGIN UPDATE TREE
-        if pending_request is not None:
-            input_text = self._get_input_text(pending_request)
-            # self._tree_deployment.insert.remote(input_text, chosen_replica_id)
-            self._tree_deployment.insert(input_text, chosen_replica_id)
-        # END UPDATE TREE
+        # # BEGIN UPDATE TREE
+        # if pending_request is not None:
+        #     input_text = self._get_input_text(pending_request)
+        #     # self._tree_deployment.insert.remote(input_text, chosen_replica_id)
+        #     self._tree_deployment.insert(input_text, chosen_replica_id)
+        # # END UPDATE TREE
         
         self._num_requests_seen += 1
         return self._replicas.get(chosen_replica_id, None)
