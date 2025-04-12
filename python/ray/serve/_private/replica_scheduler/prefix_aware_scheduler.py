@@ -471,7 +471,7 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         self._replicas_updated_event.set()
         self.maybe_start_scheduling_tasks()
 
-        # Start load tracking task if it's not already running and we have replicas
+        # # Start load tracking task if it's not already running and we have replicas
         # if self._load_tracking_task is None and len(self._replicas) > 0:
         #     self._load_tracking_task = self._event_loop.create_task(self._track_load_distribution())
 

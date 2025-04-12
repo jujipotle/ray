@@ -835,9 +835,6 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
             matched_text, tenant_id = self._tree_deployment.prefix_match(input_text)
         # END PREFIX AWARE LOGIC
 
-        # # BEGIN RANDOM LOGIC
-        # chosen_replica_id = random.choice(candidates).replica_id
-        # # END RANDOM LOGIC
 
         # BEGIN PREFIX MATCH RATE TRACKING
         if pending_request is not None:
