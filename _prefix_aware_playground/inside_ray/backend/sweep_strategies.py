@@ -42,7 +42,7 @@ DEFAULT_CONFIG = {
     "enable_prefix_caching": True,
     "enable_chunked_prefill": True,
     # Benchmark Info
-    "benchmark_label": "probe_queues_and_hardcode_trees",
+    "benchmark_label": "probe_queues_and_hardcode_trees_seed2_realpow2_notrack",
     "dataset_name": "sharegpt",
     "max_concurrency": 40,  # Max concurrency (total)
     "min_output_len": 10,
@@ -445,7 +445,7 @@ def main():
     args = parse_arguments()
     
     # Define sweep configurations
-    sweeps_configs = [{} for _ in range(2)]
+    sweeps_configs = [{} for _ in range(1)]
     
     # Loop through each sweep configuration
     for config_idx, sweep_config in enumerate(sweeps_configs):
