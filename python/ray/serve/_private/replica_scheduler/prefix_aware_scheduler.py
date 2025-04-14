@@ -118,6 +118,7 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         self._zero_load_count = 0
         self._load_tracking_task = None
         self._num_requests_seen = 0
+        self._timing_output_file = f"/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/deployment_overhead/standalone/{time.strftime('%Y-%m-%d_%H-%M-%S')}.jsonl"
 
         # Variables to track prefix match rates / replica
         self._prefix_match_rates: Dict[str, List[float]] = {}
@@ -832,7 +833,6 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         # END POW 2 LOGIC
 
         # BEGIN PREFIX AWARE LOGIC
-        timing_output_file = f"/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/deployment_overhead/standalone/{time.strftime('%Y-%m-%d_%H-%M-%S')}.jsonl"
         request_id = self._num_requests_seen + 1
         # Determine if the load is imbalanced.
         if pending_request is not None:
@@ -841,14 +841,14 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
             if is_imbalanced:
                 pass
             else:
-                with open(timing_output_file, "a") as f:
+                with open(self._timing_output_file, "a") as f:
                     f.write(json.dumps({
                         "request_id": request_id,
                         "stage": "before_calling_prefix_match",
                         "timestamp": time.time()
                     }) + "\n")
-                matched_text, tenant_id = await self._tree_deployment.prefix_match.remote(input_text, output_file=timing_output_file, request_id=request_id)
-                with open(timing_output_file, "a") as f:
+                matched_text, tenant_id = await self._tree_deployment.prefix_match.remote(input_text, output_file=self._timing_output_file, request_id=request_id)
+                with open(self._timing_output_file, "a") as f:
                     f.write(json.dumps({
                         "request_id": request_id,
                         "stage": "after_calling_prefix_match",
@@ -885,14 +885,14 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         # BEGIN UPDATE TREE
         if pending_request is not None:
             input_text = self._get_input_text(pending_request)
-            with open(timing_output_file, "a") as f:
+            with open(self._timing_output_file, "a") as f:
                 f.write(json.dumps({
                     "request_id": request_id,
                     "stage": "before_calling_insert",
                     "timestamp": time.time()
                 }) + "\n")
-            self._tree_deployment.insert.remote(input_text, chosen_replica_id, output_file=timing_output_file, request_id=request_id)
-            with open(timing_output_file, "a") as f:
+            success = await self._tree_deployment.insert.remote(input_text, chosen_replica_id, output_file=self._timing_output_file, request_id=request_id)
+            with open(self._timing_output_file, "a") as f:
                 f.write(json.dumps({
                     "request_id": request_id,
                     "stage": "after_calling_insert",
