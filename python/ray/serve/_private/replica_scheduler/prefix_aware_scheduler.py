@@ -832,6 +832,8 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         # END POW 2 LOGIC
 
         # BEGIN PREFIX AWARE LOGIC
+        timing_output_file = f"/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/deployment_overhead/standalone/{time.strftime('%Y-%m-%d_%H-%M-%S')}.jsonl"
+        request_id = self._num_requests_seen + 1
         # Determine if the load is imbalanced.
         if pending_request is not None:
             input_text = self._get_input_text(pending_request)
@@ -839,7 +841,19 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
             if is_imbalanced:
                 pass
             else:
-                matched_text, tenant_id = await self._tree_deployment.prefix_match.remote(input_text)
+                with open(timing_output_file, "a") as f:
+                    f.write(json.dumps({
+                        "request_id": request_id,
+                        "stage": "before_calling_prefix_match",
+                        "timestamp": time.time()
+                    }) + "\n")
+                matched_text, tenant_id = await self._tree_deployment.prefix_match.remote(input_text, output_file=timing_output_file, request_id=request_id)
+                with open(timing_output_file, "a") as f:
+                    f.write(json.dumps({
+                        "request_id": request_id,
+                        "stage": "after_calling_prefix_match",
+                        "timestamp": time.time()
+                    }) + "\n")
                 # matched_text, tenant_id = self._tree_deployment.prefix_match(input_text)
                 match_rate = len(matched_text) / len(input_text) if input_text else 0
                 if match_rate < 0.1:
@@ -855,24 +869,36 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
                     pass
         # END PREFIX AWARE LOGIC
 
-        # BEGIN PREFIX MATCH RATE TRACKING
-        if pending_request is not None:
-            input_text = self._get_input_text(pending_request)
-            matched_text = await self._tree_deployment.prefix_match_tenant.remote(input_text, chosen_replica_id)
-            # matched_text = self._tree_deployment.prefix_match_tenant(input_text, chosen_replica_id)
-            if chosen_replica_id.unique_id not in self._prefix_match_rates:
-                self._prefix_match_rates[chosen_replica_id.unique_id] = []
-            if matched_text is not None:
-                self._prefix_match_rates[chosen_replica_id.unique_id].append(len(matched_text) / len(input_text))
-            else:
-                self._prefix_match_rates[chosen_replica_id.unique_id].append(0.0)
-        # END PREFIX MATCH RATE TRACKING
+        # # BEGIN PREFIX MATCH RATE TRACKING
+        # if pending_request is not None:
+        #     input_text = self._get_input_text(pending_request)
+        #     matched_text = await self._tree_deployment.prefix_match_tenant.remote(input_text, chosen_replica_id)
+        #     # matched_text = self._tree_deployment.prefix_match_tenant(input_text, chosen_replica_id)
+        #     if chosen_replica_id.unique_id not in self._prefix_match_rates:
+        #         self._prefix_match_rates[chosen_replica_id.unique_id] = []
+        #     if matched_text is not None:
+        #         self._prefix_match_rates[chosen_replica_id.unique_id].append(len(matched_text) / len(input_text))
+        #     else:
+        #         self._prefix_match_rates[chosen_replica_id.unique_id].append(0.0)
+        # # END PREFIX MATCH RATE TRACKING
 
         # BEGIN UPDATE TREE
         if pending_request is not None:
             input_text = self._get_input_text(pending_request)
-            self._tree_deployment.insert.remote(input_text, chosen_replica_id)
-            self._tree_deployment.insert(input_text, chosen_replica_id)
+            with open(timing_output_file, "a") as f:
+                f.write(json.dumps({
+                    "request_id": request_id,
+                    "stage": "before_calling_insert",
+                    "timestamp": time.time()
+                }) + "\n")
+            self._tree_deployment.insert.remote(input_text, chosen_replica_id, output_file=timing_output_file, request_id=request_id)
+            with open(timing_output_file, "a") as f:
+                f.write(json.dumps({
+                    "request_id": request_id,
+                    "stage": "after_calling_insert",
+                    "timestamp": time.time()
+                }) + "\n")
+            # self._tree_deployment.insert(input_text, chosen_replica_id)
         # END UPDATE TREE
 
         self._num_requests_seen += 1

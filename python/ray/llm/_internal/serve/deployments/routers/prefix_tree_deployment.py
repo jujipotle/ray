@@ -113,7 +113,7 @@ class PrefixTree:
                         self.tenant_char_count[tenant] += len(curr_text)
                         
                         curr_node.children[first_char] = new_node
-                        return
+                        return True
                     else:
                         # Match found, check if need to split
                         matched_node = curr_node.children[first_char]
@@ -174,6 +174,7 @@ class PrefixTree:
                             # Move down the tree
                             curr_node = matched_node
                             i += shared_count
+            return True
         finally:
             # Record completion time - this will execute regardless of how the function exits
             # (both normal return and exception cases)
