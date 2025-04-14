@@ -127,7 +127,7 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         self._tree_deployment = serve.get_deployment_handle("TreeDeployment", app_name="llm_app")
         if self._tree_deployment is None:
             raise ValueError("Tree deployment was not found")
-        # self._tree_deployment = PrefixTree()
+        self._hardcoded_tree_deployment = PrefixTree()
         self.running_queue = {}
         self.processed_queue = {}
         self.balance_abs_threshold = 10
@@ -361,17 +361,17 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
                     if self._zero_load_count >= 10:
                         print("Benchmark ended, writing data to disk")
 
-                        # Dump load distribution
-                        results_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/load_distributions"
-                        os.makedirs(results_dir, exist_ok=True)
-                        with open(os.path.join(results_dir, f"prefix_aware_{int(time.time())}.json"), "w") as f:
-                            json.dump(self._load_distribution, f, indent=2)
+                        # # Dump load distribution
+                        # results_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/load_distributions"
+                        # os.makedirs(results_dir, exist_ok=True)
+                        # with open(os.path.join(results_dir, f"prefix_aware_{int(time.time())}.json"), "w") as f:
+                        #     json.dump(self._load_distribution, f, indent=2)
 
-                        # Dump prefix match rates
-                        prefix_match_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/prefix_match_rates"
-                        os.makedirs(prefix_match_dir, exist_ok=True)
-                        with open(os.path.join(prefix_match_dir, f"prefix_aware_{int(time.time())}.json"), "w") as f:
-                            json.dump(self._prefix_match_rates, f, indent=2)
+                        # # Dump prefix match rates
+                        # prefix_match_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/prefix_match_rates"
+                        # os.makedirs(prefix_match_dir, exist_ok=True)
+                        # with open(os.path.join(prefix_match_dir, f"prefix_aware_{int(time.time())}.json"), "w") as f:
+                        #     json.dump(self._prefix_match_rates, f, indent=2)
 
                         # Dump vLLM metrics
                         metrics_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/vllm_metrics"
@@ -473,7 +473,7 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         self._replicas_updated_event.set()
         self.maybe_start_scheduling_tasks()
 
-        # # Start load tracking task if it's not already running and we have replicas
+        # Start load tracking task if it's not already running and we have replicas
         # if self._load_tracking_task is None and len(self._replicas) > 0:
         #     self._load_tracking_task = self._event_loop.create_task(self._track_load_distribution())
 
@@ -788,6 +788,7 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         Among replicas that respond within the deadline and don't have full queues, the
         one with the lowest queue length is chosen.
         """
+
         # BEGIN POW 2 LOGIC
         lowest_queue_len = math.inf
         highest_queue_len = 0
@@ -834,26 +835,21 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
 
         # BEGIN PREFIX AWARE LOGIC
         request_id = self._num_requests_seen + 1
+        self._num_requests_seen += 1
+        timing_info = {"request_id": request_id}
         # Determine if the load is imbalanced.
         if pending_request is not None:
             input_text = self._get_input_text(pending_request)
             is_imbalanced = highest_queue_len - lowest_queue_len > 10
+            # is_imbalanced = False
             if is_imbalanced:
                 pass
             else:
-                with open(self._timing_output_file, "a") as f:
-                    f.write(json.dumps({
-                        "request_id": request_id,
-                        "stage": "before_calling_prefix_match",
-                        "timestamp": time.time()
-                    }) + "\n")
-                matched_text, tenant_id = await self._tree_deployment.prefix_match.remote(input_text, output_file=self._timing_output_file, request_id=request_id)
-                with open(self._timing_output_file, "a") as f:
-                    f.write(json.dumps({
-                        "request_id": request_id,
-                        "stage": "after_calling_prefix_match",
-                        "timestamp": time.time()
-                    }) + "\n")
+                timing_info["before_calling_prefix_match"] = time.time()
+                matched_text, tenant_id, match_timing = await self._tree_deployment.prefix_match.remote(input_text, output_file=self._timing_output_file, request_id=request_id)
+                timing_info.update(match_timing)
+                timing_info["after_calling_prefix_match"] = time.time()
+                # matched_text, tenant_id = self._hardcoded_tree_deployment.prefix_match(input_text)
                 # matched_text, tenant_id = self._tree_deployment.prefix_match(input_text)
                 match_rate = len(matched_text) / len(input_text) if input_text else 0
                 if match_rate < 0.1:
@@ -885,23 +881,15 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         # BEGIN UPDATE TREE
         if pending_request is not None:
             input_text = self._get_input_text(pending_request)
-            with open(self._timing_output_file, "a") as f:
-                f.write(json.dumps({
-                    "request_id": request_id,
-                    "stage": "before_calling_insert",
-                    "timestamp": time.time()
-                }) + "\n")
-            success = await self._tree_deployment.insert.remote(input_text, chosen_replica_id, output_file=self._timing_output_file, request_id=request_id)
-            with open(self._timing_output_file, "a") as f:
-                f.write(json.dumps({
-                    "request_id": request_id,
-                    "stage": "after_calling_insert",
-                    "timestamp": time.time()
-                }) + "\n")
-            # self._tree_deployment.insert(input_text, chosen_replica_id)
+            timing_info["before_calling_insert"] = time.time()
+            success, insert_timing = await self._tree_deployment.insert.remote(input_text, tenant=chosen_replica_id, output_file=self._timing_output_file, request_id=request_id)
+            timing_info.update(insert_timing)
+            timing_info["after_calling_insert"] = time.time()
+            # self._hardcoded_tree_deployment.insert(input_text, chosen_replica_id)
         # END UPDATE TREE
-
-        self._num_requests_seen += 1
+        # with open(self._timing_output_file, "a") as f:
+        #     f.write(json.dumps(timing_info) + "\n")
+        # self._num_requests_seen += 1
         return self._replicas.get(chosen_replica_id, None)
 
     def _get_pending_request_matching_metadata(

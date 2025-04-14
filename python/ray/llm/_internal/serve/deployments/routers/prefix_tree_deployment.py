@@ -84,16 +84,7 @@ class PrefixTree:
     def insert(self, text, tenant, output_file=None, request_id=None):
         """Insert text into tree with given tenant."""
         # Record time when the insert method is called
-        received_time = time.time()
-        
-        # Write timing data in JSON format if output file and request ID are provided
-        if output_file and request_id is not None:
-            with open(output_file, "a") as f:
-                f.write(json.dumps({
-                    "request_id": request_id,
-                    "stage": "received_by_insert",
-                    "timestamp": received_time
-                }) + "\n")
+        timing = {"received_by_insert": time.time()}
         try:
             with self.lock:
                 curr_node = self.root
@@ -113,7 +104,7 @@ class PrefixTree:
                         self.tenant_char_count[tenant] += len(curr_text)
                         
                         curr_node.children[first_char] = new_node
-                        return True
+                        return True, timing
                     else:
                         # Match found, check if need to split
                         matched_node = curr_node.children[first_char]
@@ -174,18 +165,11 @@ class PrefixTree:
                             # Move down the tree
                             curr_node = matched_node
                             i += shared_count
-            return True
+            return True, timing
         finally:
             # Record completion time - this will execute regardless of how the function exits
             # (both normal return and exception cases)
-            completed_time = time.time()
-            if output_file and request_id is not None:
-                with open(output_file, "a") as f:
-                    f.write(json.dumps({
-                        "request_id": request_id,
-                        "stage": "completed_insert",
-                        "timestamp": completed_time
-                    }) + "\n")
+            timing["completed_insert"] = time.time()
 
     # # NOTE: This is AI generated. Need to verify that it works (I don't really like the recursive approach).
     # def prefix_match_generator(self, text):
@@ -315,17 +299,7 @@ class PrefixTree:
         Updates access time for the matched tenant.
         """
         # Record time when the prefix_match method is called
-        received_time = time.time()
-        
-        # Write timing data in JSON format if output file and request ID are provided
-        if output_file and request_id is not None:
-            with open(output_file, "a") as f:
-                f.write(json.dumps({
-                    "request_id": request_id,
-                    "stage": "received_by_prefix_match",
-                    "timestamp": received_time
-                }) + "\n")
-        
+        timing = {"received_by_prefix_match": time.time()}
         try:
             curr = self.root
             curr_idx = 0
@@ -379,18 +353,11 @@ class PrefixTree:
                     current_node = current_node.parent
             
             ret_text = text[:curr_idx]
-            return ret_text, tenant
+            return ret_text, tenant, timing
         
         finally:
             # Record completion time - this will execute regardless of how the function exits
-            completed_time = time.time()
-            if output_file and request_id is not None:
-                with open(output_file, "a") as f:
-                    f.write(json.dumps({
-                        "request_id": request_id,
-                        "stage": "completed_prefix_match",
-                        "timestamp": completed_time
-                    }) + "\n")
+            timing["completed_prefix_match"] = time.time()
     
     def prefix_match_tenant(self, text, tenant):
         """

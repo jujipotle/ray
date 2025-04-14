@@ -619,8 +619,8 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
                 if candidate_replica_ids:
                     chosen_ids = random.sample(
                         list(candidate_replica_ids),
-                        k=min(2, len(candidate_replica_ids)),
-                        # k=len(candidate_replica_ids)
+                        # k=min(2, len(candidate_replica_ids)),
+                        k=len(candidate_replica_ids)
                     )
                     yield [self._replicas[chosen_id] for chosen_id in chosen_ids]
 
@@ -823,38 +823,33 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
             )
         # END POW 2 LOGIC
 
-        # # BEGIN DUMMY TREE CALL
-        # hello = await self._tree_deployment.hello.remote()
-        # # hello = await self._tree_deployment.hello.remote()
-        # # END DUMMY TREE CALL
-
-        # BEGIN PREFIX AWARE LOGIC (don't forget update tree)
-        if pending_request is not None:
-            input_text = self._get_input_text(pending_request)
-            # matched_text, tenant_id = await self._tree_deployment.prefix_match.remote(input_text)
-            matched_text, tenant_id = self._tree_deployment.prefix_match(input_text)
-        # END PREFIX AWARE LOGIC
+        # # BEGIN PREFIX AWARE LOGIC (don't forget update tree)
+        # if pending_request is not None:
+        #     input_text = self._get_input_text(pending_request)
+        #     # matched_text, tenant_id = await self._tree_deployment.prefix_match.remote(input_text)
+        #     matched_text, tenant_id = self._tree_deployment.prefix_match(input_text)
+        # # END PREFIX AWARE LOGIC
 
 
-        # BEGIN PREFIX MATCH RATE TRACKING
-        if pending_request is not None:
-            input_text = self._get_input_text(pending_request)
-            # matched_text = await self._tree_deployment.prefix_match_tenant.remote(input_text, chosen_replica_id)
-            matched_text = self._tree_deployment.prefix_match_tenant(input_text, chosen_replica_id)
-            if chosen_replica_id.unique_id not in self._prefix_match_rates:
-                self._prefix_match_rates[chosen_replica_id.unique_id] = []
-            if matched_text is not None:
-                self._prefix_match_rates[chosen_replica_id.unique_id].append(len(matched_text) / len(input_text))
-            else:
-                self._prefix_match_rates[chosen_replica_id.unique_id].append(0.0)
-        # END PREFIX MATCH RATE TRACKING
+        # # BEGIN PREFIX MATCH RATE TRACKING
+        # if pending_request is not None:
+        #     input_text = self._get_input_text(pending_request)
+        #     # matched_text = await self._tree_deployment.prefix_match_tenant.remote(input_text, chosen_replica_id)
+        #     matched_text = self._tree_deployment.prefix_match_tenant(input_text, chosen_replica_id)
+        #     if chosen_replica_id.unique_id not in self._prefix_match_rates:
+        #         self._prefix_match_rates[chosen_replica_id.unique_id] = []
+        #     if matched_text is not None:
+        #         self._prefix_match_rates[chosen_replica_id.unique_id].append(len(matched_text) / len(input_text))
+        #     else:
+        #         self._prefix_match_rates[chosen_replica_id.unique_id].append(0.0)
+        # # END PREFIX MATCH RATE TRACKING
 
-        # BEGIN UPDATE TREE
-        if pending_request is not None:
-            input_text = self._get_input_text(pending_request)
-            # self._tree_deployment.insert.remote(input_text, chosen_replica_id)
-            self._tree_deployment.insert(input_text, chosen_replica_id)
-        # END UPDATE TREE
+        # # BEGIN UPDATE TREE
+        # if pending_request is not None:
+        #     input_text = self._get_input_text(pending_request)
+        #     # self._tree_deployment.insert.remote(input_text, chosen_replica_id)
+        #     self._tree_deployment.insert(input_text, chosen_replica_id)
+        # # END UPDATE TREE
 
         # `self._replicas` may have been updated since the candidates were chosen.
         # In that case, return `None` so a new one is selected.
