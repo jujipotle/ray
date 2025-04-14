@@ -1,6 +1,6 @@
 from ray._common.utils import import_attr
 
-from ray.llm._internal.serve.deployments.routers.prefix_tree import PrefixTree
+from ray.llm._internal.serve.deployments.routers.prefix_tree_deployment import PrefixTree
 
 from typing import List, Optional, Sequence
 
@@ -72,12 +72,12 @@ def build_openai_app(llm_serving_args: LLMServingArgs) -> Application:
         logger.error(
             "List of models is empty. Maybe some parameters cannot be parsed into the LLMConfig config."
         )
-    # tree_deployment = PrefixTree.bind()
-    # serve.run(tree_deployment)
+    tree_deployment = PrefixTree.bind()
+    serve.run(tree_deployment)
     # print(f"[application_builders.py: build_openai_app] tree_deployment: {tree_deployment}")
     llm_deployments = _get_llm_deployments(llm_configs)
     # print(f"[application_builders.py: build_openai_app] llm_deployments: {llm_deployments}")
     return LLMRouter.as_deployment(llm_configs=llm_configs).options(autoscaling_config=dict(min_replicas=1, max_replicas=1, initial_replicas=1)).bind(
         llm_deployments=llm_deployments, 
-        # tree_deployment=tree_deployment
+        tree_deployment=tree_deployment
     )
