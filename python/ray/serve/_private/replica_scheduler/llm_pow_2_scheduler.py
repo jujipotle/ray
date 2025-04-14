@@ -619,8 +619,8 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
                 if candidate_replica_ids:
                     chosen_ids = random.sample(
                         list(candidate_replica_ids),
-                        # k=min(2, len(candidate_replica_ids)),
-                        k=len(candidate_replica_ids)
+                        k=min(2, len(candidate_replica_ids)),
+                        # k=len(candidate_replica_ids)
                     )
                     yield [self._replicas[chosen_id] for chosen_id in chosen_ids]
 

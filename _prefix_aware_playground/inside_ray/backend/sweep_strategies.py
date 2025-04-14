@@ -29,9 +29,9 @@ DEFAULT_CONFIG = {
     # "worker_ports": "8001,8002,8003,8004",
     "scheduler_strategies_dict": {
         # "fake": "ray.serve._private.replica_scheduler.fake_replica_scheduler.FakeReplicaScheduler",
-        "random": "ray.serve._private.replica_scheduler.random_scheduler.RandomReplicaScheduler",
-        "round_robin": "ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler",
-        "pow_of_2": "ray.serve._private.replica_scheduler.llm_pow_2_scheduler.LLMPowerOfTwoChoicesReplicaScheduler",
+        # "random": "ray.serve._private.replica_scheduler.random_scheduler.RandomReplicaScheduler",
+        # "round_robin": "ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler",
+        # "pow_of_2": "ray.serve._private.replica_scheduler.llm_pow_2_scheduler.LLMPowerOfTwoChoicesReplicaScheduler",
         "prefix_aware": "ray.serve._private.replica_scheduler.prefix_aware_scheduler.PrefixAwareReplicaScheduler",
     },
 
