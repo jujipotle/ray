@@ -277,102 +277,105 @@ class LLMPowerOfTwoChoicesReplicaScheduler(ReplicaScheduler):
             self._vllm_metrics_over_time = {}
 
             while True:
-                await asyncio.sleep(0.1)
+                await asyncio.sleep(1)
                 current_time = time.time()
                 elapsed = round(current_time - self._benchmark_start_time, 2)
-
-                # === Load distribution ===
-                result = await self._probe_queue_lens(self._replicas.values(), 0)
-                result_dict = {r.replica_id: q for r, q in result}
                 total_load = 0
-                current_load = {}
 
-                for replica_id, replica in self._replicas.items():
-                    queue_len = result_dict[replica_id] or 0
-                    current_load[replica_id.unique_id] = queue_len
-                    total_load += queue_len
+                # # === Load distribution ===
+                # result = await self._probe_queue_lens(self._replicas.values(), 0)
+                # result_dict = {r.replica_id: q for r, q in result}
+                # current_load = {}
 
-                self._load_distribution[elapsed] = current_load
+                # for replica_id, replica in self._replicas.items():
+                #     queue_len = result_dict[replica_id] or 0
+                #     current_load[replica_id.unique_id] = queue_len
+                #     total_load += queue_len
 
-                # # === vLLM metrics via curl ===
-                # try:
-                #     output = subprocess.check_output(["curl", "-s", "http://localhost:5001/metrics"]).decode("utf-8")
-                #     lines = output.strip().split("\n")
-                #     current_vllm_metrics = {}
+                # self._load_distribution[elapsed] = current_load
 
-                #     for line in lines:
-                #         if line.startswith("#") or "vllm" not in line:
-                #             continue
+                # === vLLM metrics via curl ===
+                try:
+                    output = subprocess.check_output(["curl", "-s", "http://localhost:5001/metrics"]).decode("utf-8")
+                    lines = output.strip().split("\n")
+                    current_vllm_metrics = {}
 
-                #         parts = line.split()
-                #         if len(parts) != 2:
-                #             continue
+                    for line in lines:
+                        if line.startswith("#") or "vllm" not in line:
+                            continue
 
-                #         metric_line, value = parts
-                #         try:
-                #             value = float(value)
-                #         except ValueError:
-                #             continue
+                        parts = line.split()
+                        if len(parts) != 2:
+                            continue
 
-                #         # Parse metric name and labels
-                #         if "{" in metric_line:
-                #             name, label_str = metric_line.split("{", 1)
-                #             label_str = label_str.rstrip("}")
-                #             labels = dict(item.split("=") for item in label_str.split(","))
-                #             labels = {k: v.strip('"') for k, v in labels.items()}
-                #         else:
-                #             name = metric_line
-                #             labels = {}
+                        metric_line, value = parts
+                        try:
+                            value = float(value)
+                        except ValueError:
+                            continue
 
-                #         # Extract WorkerId
-                #         worker_id = labels.get("WorkerId", "unknown")
+                        # Parse metric name and labels
+                        if "{" in metric_line:
+                            name, label_str = metric_line.split("{", 1)
+                            if name == "ray_vllm:num_requests_running":
+                                total_load += value
+                            label_str = label_str.rstrip("}")
+                            labels = dict(item.split("=") for item in label_str.split(","))
+                            labels = {k: v.strip('"') for k, v in labels.items()}
+                        else:
+                            name = metric_line
+                            labels = {}
 
-                #         # Keep only important label keys
-                #         important_keys = {"le", "model_name"}
-                #         filtered_labels = {k: v for k, v in labels.items() if k in important_keys}
+                        # Extract WorkerId
+                        worker_id = labels.get("WorkerId", "unknown")
 
-                #         # Append important label suffix to metric name
-                #         if filtered_labels:
-                #             label_suffix = ",".join(f"{k}={v}" for k, v in sorted(filtered_labels.items()))
-                #             metric_key = f"{name}{{{label_suffix}}}"
-                #         else:
-                #             metric_key = name
+                        # Keep only important label keys
+                        important_keys = {"le", "model_name"}
+                        filtered_labels = {k: v for k, v in labels.items() if k in important_keys}
 
-                #         if worker_id not in current_vllm_metrics:
-                #             current_vllm_metrics[worker_id] = {}
-                #         current_vllm_metrics[worker_id][metric_key] = value
+                        # Append important label suffix to metric name
+                        if filtered_labels:
+                            label_suffix = ",".join(f"{k}={v}" for k, v in sorted(filtered_labels.items()))
+                            metric_key = f"{name}{{{label_suffix}}}"
+                        else:
+                            metric_key = name
 
-                #     self._vllm_metrics_over_time[elapsed] = current_vllm_metrics
+                        if worker_id not in current_vllm_metrics:
+                            current_vllm_metrics[worker_id] = {}
+                        current_vllm_metrics[worker_id][metric_key] = value
 
-                # except Exception as e:
-                #     print(f"[WARN] Failed to curl or parse /metrics: {e}")
+                    self._vllm_metrics_over_time[elapsed] = current_vllm_metrics
+
+                except Exception as e:
+                    print(f"[WARN] Failed to curl or parse /metrics: {e}")
+                    
                 # === End condition ===
-                # if self._num_requests_seen > 10 and total_load == 0:
-                #     self._zero_load_count += 1
-                #     if self._zero_load_count >= 10:
-                #         print("Benchmark ended, writing data to disk")
+                if self._num_requests_seen > 10 and total_load == 0:
+                    self._zero_load_count += 1
+                    if self._zero_load_count >= 10:
+                        print("Benchmark ended, writing data to disk")
 
-                #         # Dump load distribution
-                #         results_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/load_distributions"
-                #         os.makedirs(results_dir, exist_ok=True)
-                #         with open(os.path.join(results_dir, f"pow_of_2_{int(time.time())}.json"), "w") as f:
-                #             json.dump(self._load_distribution, f, indent=2)
+                        # # Dump load distribution
+                        # results_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/load_distributions"
+                        # os.makedirs(results_dir, exist_ok=True)
+                        # with open(os.path.join(results_dir, f"pow_of_2_{int(time.time())}.json"), "w") as f:
+                        #     json.dump(self._load_distribution, f, indent=2)
 
-                #         # Dump prefix match rates
-                #         prefix_match_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/prefix_match_rates"
-                #         os.makedirs(prefix_match_dir, exist_ok=True)
-                #         with open(os.path.join(prefix_match_dir, f"pow_of_2_{int(time.time())}.json"), "w") as f:
-                #             json.dump(self._prefix_match_rates, f, indent=2)
+                        # # Dump prefix match rates
+                        # prefix_match_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/prefix_match_rates"
+                        # os.makedirs(prefix_match_dir, exist_ok=True)
+                        # with open(os.path.join(prefix_match_dir, f"pow_of_2_{int(time.time())}.json"), "w") as f:
+                        #     json.dump(self._prefix_match_rates, f, indent=2)
 
-                #         # Dump vLLM metrics
-                #         metrics_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/vllm_metrics"
-                #         os.makedirs(metrics_dir, exist_ok=True)
-                #         with open(os.path.join(metrics_dir, f"pow_of_2_{int(time.time())}.json"), "w") as f:
-                #             json.dump(self._vllm_metrics_over_time, f, indent=2)
+                        # Dump vLLM metrics
+                        metrics_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/vllm_metrics"
+                        os.makedirs(metrics_dir, exist_ok=True)
+                        with open(os.path.join(metrics_dir, f"pow_of_2_{int(time.time())}.json"), "w") as f:
+                            json.dump(self._vllm_metrics_over_time, f, indent=2)
 
-                #         break
-                # else:
-                #     self._zero_load_count = 0
+                        break
+                else:
+                    self._zero_load_count = 0
         except Exception as e:
             print(f"Error in load tracking: {e}")
         finally:

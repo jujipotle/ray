@@ -29,10 +29,10 @@ DEFAULT_CONFIG = {
     # "worker_ports": "8001,8002,8003,8004",
     "scheduler_strategies_dict": {
         # "fake": "ray.serve._private.replica_scheduler.fake_replica_scheduler.FakeReplicaScheduler",
-        # "random": "ray.serve._private.replica_scheduler.random_scheduler.RandomReplicaScheduler",
-        # "round_robin": "ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler",
-        # "pow_of_2": "ray.serve._private.replica_scheduler.llm_pow_2_scheduler.LLMPowerOfTwoChoicesReplicaScheduler",
-        "prefix_aware": "ray.serve._private.replica_scheduler.prefix_aware_scheduler.PrefixAwareReplicaScheduler",
+        "random": "ray.serve._private.replica_scheduler.random_scheduler.RandomReplicaScheduler",
+        "round_robin": "ray.serve._private.replica_scheduler.round_robin_scheduler.RoundRobinReplicaScheduler",
+        "pow_of_2": "ray.serve._private.replica_scheduler.llm_pow_2_scheduler.LLMPowerOfTwoChoicesReplicaScheduler",
+        # "prefix_aware": "ray.serve._private.replica_scheduler.prefix_aware_scheduler.PrefixAwareReplicaScheduler",
     },
 
     # Model Info
@@ -42,7 +42,7 @@ DEFAULT_CONFIG = {
     "enable_prefix_caching": True,
     "enable_chunked_prefill": True,
     # Benchmark Info
-    "benchmark_label": "1_router_base_strategies",
+    "benchmark_label": "8_routers_base_strategies",
     "dataset_name": "sharegpt",
     "max_concurrency": 40,  # Max concurrency (total)
     "min_output_len": 10,

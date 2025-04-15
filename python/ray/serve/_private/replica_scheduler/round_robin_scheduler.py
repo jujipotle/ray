@@ -282,19 +282,19 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
                 await asyncio.sleep(0.1)
                 current_time = time.time()
                 elapsed = round(current_time - self._benchmark_start_time, 2)
-
-                # === Load distribution ===
-                result = await self._probe_queue_lens(self._replicas.values(), 0)
-                result_dict = {r.replica_id: q for r, q in result}
                 total_load = 0
-                current_load = {}
+                
+                # # === Load distribution ===
+                # result = await self._probe_queue_lens(self._replicas.values(), 0)
+                # result_dict = {r.replica_id: q for r, q in result}
+                # current_load = {}
 
-                for replica_id, replica in self._replicas.items():
-                    queue_len = result_dict[replica_id] or 0
-                    current_load[replica_id.unique_id] = queue_len
-                    total_load += queue_len
+                # for replica_id, replica in self._replicas.items():
+                #     queue_len = result_dict[replica_id] or 0
+                #     current_load[replica_id.unique_id] = queue_len
+                #     total_load += queue_len
 
-                self._load_distribution[elapsed] = current_load
+                # self._load_distribution[elapsed] = current_load
 
                 # === vLLM metrics via curl ===
                 try:
@@ -319,6 +319,8 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
                         # Parse metric name and labels
                         if "{" in metric_line:
                             name, label_str = metric_line.split("{", 1)
+                            if name == "ray_vllm:num_requests_running":
+                                total_load += value
                             label_str = label_str.rstrip("}")
                             labels = dict(item.split("=") for item in label_str.split(","))
                             labels = {k: v.strip('"') for k, v in labels.items()}
@@ -348,23 +350,24 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
 
                 except Exception as e:
                     print(f"[WARN] Failed to curl or parse /metrics: {e}")
+
                 # === End condition ===
                 if self._num_requests_seen > 10 and total_load == 0:
                     self._zero_load_count += 1
                     if self._zero_load_count >= 10:
                         print("Benchmark ended, writing data to disk")
 
-                        # Dump load distribution
-                        results_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/load_distributions"
-                        os.makedirs(results_dir, exist_ok=True)
-                        with open(os.path.join(results_dir, f"round_robin_{int(time.time())}.json"), "w") as f:
-                            json.dump(self._load_distribution, f, indent=2)
+                        # # Dump load distribution
+                        # results_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/load_distributions"
+                        # os.makedirs(results_dir, exist_ok=True)
+                        # with open(os.path.join(results_dir, f"round_robin_{int(time.time())}.json"), "w") as f:
+                        #     json.dump(self._load_distribution, f, indent=2)
 
-                        # Dump prefix match rates
-                        prefix_match_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/prefix_match_rates"
-                        os.makedirs(prefix_match_dir, exist_ok=True)
-                        with open(os.path.join(prefix_match_dir, f"round_robin_{int(time.time())}.json"), "w") as f:
-                            json.dump(self._prefix_match_rates, f, indent=2)
+                        # # Dump prefix match rates
+                        # prefix_match_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/prefix_match_rates"
+                        # os.makedirs(prefix_match_dir, exist_ok=True)
+                        # with open(os.path.join(prefix_match_dir, f"round_robin_{int(time.time())}.json"), "w") as f:
+                        #     json.dump(self._prefix_match_rates, f, indent=2)
 
                         # Dump vLLM metrics
                         metrics_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/vllm_metrics"
@@ -622,8 +625,8 @@ class RoundRobinReplicaScheduler(ReplicaScheduler):
                 if candidate_replica_ids:
                     chosen_ids = random.sample(
                         list(candidate_replica_ids),
-                        k=len(candidate_replica_ids),
                         # k=min(2, len(candidate_replica_ids)),
+                        k=len(candidate_replica_ids),
                     )
                     yield [self._replicas[chosen_id] for chosen_id in chosen_ids]
 
