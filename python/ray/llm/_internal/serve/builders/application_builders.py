@@ -76,8 +76,8 @@ def build_openai_app(llm_serving_args: LLMServingArgs) -> Application:
     # print(f"[application_builders.py: build_openai_app] tree_deployment: {tree_deployment}")
     llm_deployments = _get_llm_deployments(llm_configs)
     # print(f"[application_builders.py: build_openai_app] llm_deployments: {llm_deployments}")
-    # return LLMRouter.as_deployment(llm_configs=llm_configs).options(autoscaling_config=dict(min_replicas=1, max_replicas=1, initial_replicas=1)).bind(
-    return LLMRouter.as_deployment(llm_configs=llm_configs).bind(
+    return LLMRouter.as_deployment(llm_configs=llm_configs).options(autoscaling_config=dict(min_replicas=16, max_replicas=16, initial_replicas=16)).bind(
+    # return LLMRouter.as_deployment(llm_configs=llm_configs).bind(
         llm_deployments=llm_deployments, 
         tree_deployment=tree_deployment
     )

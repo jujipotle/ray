@@ -118,7 +118,7 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         self._zero_load_count = 0
         self._load_tracking_task = None
         self._num_requests_seen = 0
-        self._timing_output_file = f"/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/deployment_overhead/standalone/{time.strftime('%Y-%m-%d_%H-%M-%S')}.jsonl"
+        self._timing_output_file = f"/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/deployment_overhead/{time.strftime('%H-%M-%S')}_id_{random.randint(0, 1000000)}.jsonl"
 
         # Variables to track prefix match rates / replica
         self._prefix_match_rates: Dict[str, List[float]] = {}
@@ -287,77 +287,74 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
             import requests
             session = requests.Session()
             while True:
-                await asyncio.sleep(0.1)
+                await asyncio.sleep(1)
                 current_time = time.time()
                 elapsed = round(current_time - self._benchmark_start_time, 2)
                 total_load = 0
 
-                # # === Load distribution ===
-                # result = await self._probe_queue_lens(self._replicas.values(), 0)
-                # result_dict = {r.replica_id: q for r, q in result}
-                # current_load = {}
+                # === Load distribution ===
+                result = await self._probe_queue_lens(self._replicas.values(), 0)
+                result_dict = {r.replica_id: q for r, q in result}
+                current_load = {}
 
-                # for replica_id, replica in self._replicas.items():
-                #     queue_len = result_dict[replica_id] or 0
-                #     current_load[replica_id.unique_id] = queue_len
-                #     total_load += queue_len
+                for replica_id, replica in self._replicas.items():
+                    queue_len = result_dict[replica_id] or 0
+                    current_load[replica_id.unique_id] = queue_len
+                    total_load += queue_len
 
-                # self._load_distribution[elapsed] = current_load
+                self._load_distribution[elapsed] = current_load
 
                 # === vLLM metrics via curl ===
                 try:
-                    before_curl = time.time()
                     response = session.get("http://localhost:5001/metrics")
                     output = response.text
                     # output = subprocess.check_output(["curl", "-s", "http://localhost:5001/metrics"]).decode("utf-8")
-                    after_curl = time.time()
-                    print(f"Curl time: {after_curl - before_curl}s")
-                    # lines = output.strip().split("\n")
+                    lines = output.strip().split("\n")
                     current_vllm_metrics = {}
 
-                    # for line in lines:
-                    #     if line.startswith("#") or "vllm" not in line:
-                    #         continue
+                    for line in lines:
+                        if line.startswith("#") or "vllm" not in line:
+                            continue
 
-                    #     parts = line.split()
-                    #     if len(parts) != 2:
-                    #         continue
+                        parts = line.split()
+                        if len(parts) != 2:
+                            continue
 
-                    #     metric_line, value = parts
-                    #     try:
-                    #         value = float(value)
-                    #     except ValueError:
-                    #         continue
+                        metric_line, value = parts
+                        try:
+                            value = float(value)
+                        except ValueError:
+                            continue
 
-                    #     # Parse metric name and labels
-                    #     if "{" in metric_line:
-                    #         name, label_str = metric_line.split("{", 1)
-                    #         if name == "ray_vllm:num_requests_running":
-                    #             total_load += value
-                    #         label_str = label_str.rstrip("}")
-                    #         labels = dict(item.split("=") for item in label_str.split(","))
-                    #         labels = {k: v.strip('"') for k, v in labels.items()}
-                    #     else:
-                    #         name = metric_line
-                    #         labels = {}
+                        # Parse metric name and labels
+                        if "{" in metric_line:
+                            name, label_str = metric_line.split("{", 1)
+                            # if name == "ray_vllm:num_requests_running":
+                            #     total_load += value
+                            label_str = label_str.rstrip("}")
+                            labels = dict(item.split("=") for item in label_str.split(","))
+                            labels = {k: v.strip('"') for k, v in labels.items()}
+                        else:
+                            name = metric_line
+                            labels = {}
 
-                    #     # Extract WorkerId
-                    #     worker_id = labels.get("WorkerId", "unknown")
+                        # Extract WorkerId
+                        worker_id = labels.get("WorkerId", "unknown")
 
-                    #     # Keep only important label keys
-                    #     important_keys = {"le", "model_name"}
-                    #     filtered_labels = {k: v for k, v in labels.items() if k in important_keys}
+                        # Keep only important label keys
+                        important_keys = {"le", "model_name"}
+                        filtered_labels = {k: v for k, v in labels.items() if k in important_keys}
 
-                    #     # Append important label suffix to metric name
-                    #     if filtered_labels:
-                    #         label_suffix = ",".join(f"{k}={v}" for k, v in sorted(filtered_labels.items()))
-                    #         metric_key = f"{name}{{{label_suffix}}}"
-                    #     else:
-                    #         metric_key = name
+                        # Append important label suffix to metric name
+                        if filtered_labels:
+                            label_suffix = ",".join(f"{k}={v}" for k, v in sorted(filtered_labels.items()))
+                            metric_key = f"{name}{{{label_suffix}}}"
+                        else:
+                            metric_key = name
 
-                    #     if worker_id not in current_vllm_metrics:
-                    #         current_vllm_metrics[worker_id] = {}
-                    #     current_vllm_metrics[worker_id][metric_key] = value
+                        if worker_id not in current_vllm_metrics:
+                            current_vllm_metrics[worker_id] = {}
+                        current_vllm_metrics[worker_id][metric_key] = value
 
                     self._vllm_metrics_over_time[elapsed] = current_vllm_metrics
 
@@ -365,28 +362,28 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
                     print(f"[WARN] Failed to curl or parse /metrics: {e}")
                     
                 # === End condition ===
-                if self._num_requests_seen > 90:
-                # if self._num_requests_seen > 10 and total_load == 0:
+                # if self._num_requests_seen > 90:
+                if self._num_requests_seen > 10 and total_load == 0:
                     self._zero_load_count += 1
-                    if self._zero_load_count >= 10:
+                    if self._zero_load_count >= 2:
                         print("Benchmark ended, writing data to disk")
 
-                        # # Dump load distribution
-                        # results_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/load_distributions"
-                        # os.makedirs(results_dir, exist_ok=True)
-                        # with open(os.path.join(results_dir, f"prefix_aware_{int(time.time())}.json"), "w") as f:
-                        #     json.dump(self._load_distribution, f, indent=2)
+                        # Dump load distribution
+                        results_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/load_distributions"
+                        os.makedirs(results_dir, exist_ok=True)
+                        with open(os.path.join(results_dir, f"prefix_aware_{int(time.time())}_id_{random.randint(0, 1000000)}.json"), "w") as f:
+                            json.dump(self._load_distribution, f, indent=2)
 
-                        # # Dump prefix match rates
-                        # prefix_match_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/prefix_match_rates"
-                        # os.makedirs(prefix_match_dir, exist_ok=True)
-                        # with open(os.path.join(prefix_match_dir, f"prefix_aware_{int(time.time())}.json"), "w") as f:
-                        #     json.dump(self._prefix_match_rates, f, indent=2)
+                        # Dump prefix match rates
+                        prefix_match_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/prefix_match_rates"
+                        os.makedirs(prefix_match_dir, exist_ok=True)
+                        with open(os.path.join(prefix_match_dir, f"prefix_aware_{int(time.time())}_id_{random.randint(0, 1000000)}.json"), "w") as f:
+                            json.dump(self._prefix_match_rates, f, indent=2)
 
                         # Dump vLLM metrics
                         metrics_dir = "/home/ray/default/work/ray/_prefix_aware_playground/inside_ray/results/vllm_metrics"
                         os.makedirs(metrics_dir, exist_ok=True)
-                        with open(os.path.join(metrics_dir, f"prefix_aware_{int(time.time())}.json"), "w") as f:
+                        with open(os.path.join(metrics_dir, f"prefix_aware_{int(time.time())}_id_{random.randint(0, 1000000)}.json"), "w") as f:
                             json.dump(self._vllm_metrics_over_time, f, indent=2)
 
                         break
@@ -845,18 +842,19 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
 
         # BEGIN PREFIX AWARE LOGIC
         request_id = self._num_requests_seen + 1
-        # timing_info = {"request_id": request_id}
+        timing_info = {"request_id": request_id}
         # Determine if the load is imbalanced.
         if pending_request is not None:
             input_text = self._get_input_text(pending_request)
             is_imbalanced = highest_queue_len - lowest_queue_len > 10
-            if is_imbalanced:
+            # if is_imbalanced:
+            if False:
                 pass
             else:
-                # timing_info["before_calling_prefix_match"] = time.time()
+                timing_info["before_calling_prefix_match"] = time.time()
                 matched_text, tenant_id, match_timing = await self._tree_deployment.prefix_match.remote(input_text, output_file=self._timing_output_file, request_id=request_id)
-                # timing_info.update(match_timing)
-                # timing_info["after_calling_prefix_match"] = time.time()
+                timing_info.update(match_timing)
+                timing_info["after_calling_prefix_match"] = time.time()
                 match_rate = len(matched_text) / len(input_text) if input_text else 0
                 if match_rate < 0.1:
                     # chosen_replica = self._tree_deployment.get_smallest_tenant.remote()
@@ -887,13 +885,15 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         # BEGIN UPDATE TREE
         if pending_request is not None:
             input_text = self._get_input_text(pending_request)
-            # timing_info["before_calling_insert"] = time.time()
+            timing_info["before_calling_insert"] = time.time()
             success, insert_timing = await self._tree_deployment.insert.remote(input_text, tenant=chosen_replica_id, output_file=self._timing_output_file, request_id=request_id)
-            # timing_info.update(insert_timing)
-            # timing_info["after_calling_insert"] = time.time()
+            timing_info.update(insert_timing)
+            timing_info["after_calling_insert"] = time.time()
         # END UPDATE TREE
-        # with open(self._timing_output_file, "a") as f:
-        #     f.write(json.dumps(timing_info) + "\n")
+        
+        # write to file takes very little time (< 1 ms)
+        with open(self._timing_output_file, "a") as f:
+            f.write(json.dumps(timing_info) + "\n")
         self._num_requests_seen += 1
         return self._replicas.get(chosen_replica_id, None)
 
@@ -997,6 +997,8 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
                     if replica is not None:
                         self.fulfill_next_pending_request(replica, request_metadata)
                         break
+                    else:
+                        print(f"[prefix_aware_scheduler.py: fulfill_pending_requests] No replica found for request {request_metadata.request_id}")
 
                     backoff_index += 1
                     if backoff_index >= 50 and backoff_index % 50 == 0:
