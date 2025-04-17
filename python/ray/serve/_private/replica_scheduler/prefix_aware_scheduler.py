@@ -287,7 +287,7 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
             import requests
             session = requests.Session()
             while True:
-                await asyncio.sleep(1)
+                await asyncio.sleep(0.1)
                 current_time = time.time()
                 elapsed = round(current_time - self._benchmark_start_time, 2)
                 total_load = 0
@@ -480,9 +480,9 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
         self._replicas_updated_event.set()
         self.maybe_start_scheduling_tasks()
 
-        # # Start load tracking task if it's not already running and we have replicas
-        # if self._load_tracking_task is None and len(self._replicas) > 0:
-        #     self._load_tracking_task = self._event_loop.create_task(self._track_load_distribution())
+        # Start load tracking task if it's not already running and we have replicas
+        if self._load_tracking_task is None and len(self._replicas) > 0:
+            self._load_tracking_task = self._event_loop.create_task(self._track_load_distribution())
 
     def _get_replica_ids_with_fewest_multiplexed_models(self) -> Set[str]:
         """Get the set of replicas that have the fewest multiplexed models loaded."""
@@ -891,9 +891,9 @@ class PrefixAwareReplicaScheduler(ReplicaScheduler):
             timing_info["after_calling_insert"] = time.time()
         # END UPDATE TREE
         
-        # write to file takes very little time (< 1 ms)
-        with open(self._timing_output_file, "a") as f:
-            f.write(json.dumps(timing_info) + "\n")
+        # # write to file takes very little time (< 1 ms)
+        # with open(self._timing_output_file, "a") as f:
+        #     f.write(json.dumps(timing_info) + "\n")
         self._num_requests_seen += 1
         return self._replicas.get(chosen_replica_id, None)
 

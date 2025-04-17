@@ -1,8 +1,19 @@
 gpu_type,model_name,num_servers,enable_prefix_caching,enable_chunked_prefill,benchmark_label,scheduler_strategy,min_output_len,max_output_len,max_concurrency,request_rate,with_warmup,disable_ignore_eos,max_conversations,num_prompts,ray_vllm:prompt_tokens_total,ray_vllm:generation_tokens_total,ray_vllm:request_success_total,ray_vllm:time_to_first_token_seconds,ray_vllm:time_per_output_token_seconds,ray_vllm:e2e_request_latency_seconds,ray_vllm:request_queue_time_seconds,ray_vllm:request_inference_time_seconds,ray_vllm:request_prefill_time_seconds,ray_vllm:request_decode_time_seconds
-
-L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,1_router_40_concurrency_1,prefix_aware,10,200,40,100,False,False,10000,1000,1781449.0,96803.0,1001.0,0.1450478,0.0214737,2.2017,0.0560167,2.1456833,0.0890311,2.0566523
+L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,1_router_40_concurrency,random,10,200,40,100,False,False,10000,1000,1781449.0,97406.0,1001.0,0.1639602,0.0249735,2.5705731,0.0494735,2.5210996,0.1144867,2.4066129
+L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,1_router_40_concurrency,random,10,200,40,100,False,False,10000,1000,1781449.0,96788.0,1001.0,0.1598282,0.0253158,2.5836118,0.0461055,2.5375063,0.1137227,2.4237836
+L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,1_router_40_concurrency,round_robin,10,200,40,100,False,False,10000,1000,1781449.0,96860.0,1001.0,0.1262977,0.0249176,2.5148585,0.0288238,2.4860348,0.0974739,2.3885608
+L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,1_router_40_concurrency,round_robin,10,200,40,100,False,False,10000,1000,1781449.0,97054.0,1001.0,0.129608,0.0249019,2.52037,0.0312435,2.4891265,0.0983646,2.3907619
+L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,1_router_40_concurrency,pow_of_2,10,200,40,100,False,False,10000,1000,1781449.0,96882.0,1001.0,0.1912837,0.0265799,2.7384979,0.061955,2.6765429,0.1293287,2.5472141
+L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,1_router_40_concurrency,pow_of_2,10,200,40,100,False,False,10000,1000,1781449.0,96740.0,1001.0,0.191048,0.026262,2.7047843,0.060338,2.6444463,0.13071,2.5137363
+L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,1_router_40_concurrency,prefix_aware,10,200,40,100,False,False,10000,1000,1781449.0,96803.0,1001.0,0.1450478,0.0214737,2.2017,0.0560167,2.1456833,0.0890311,2.0566523
 L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,1_router_40_concurrency,prefix_aware,10,200,40,100,False,False,10000,1000,1781449.0,97226.0,1001.0,0.1378518,0.0216692,2.2224143,0.0516451,2.1707692,0.0862067,2.0845625
 
-L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,4_routers_40_concurrency,prefix_aware,10,200,40,100,False,False,10000,1000,1781449.0,96814.0,1001.0,0.1170924,0.0221259,2.2362411,0.0410111,2.1952301,0.0760814,2.1191487
-L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,16_routers_40_concurrency,prefix_aware,10,200,40,100,False,False,10000,1000,1781449.0,97193.0,1001.0,0.1102247,0.0227217,2.2954283,0.0369992,2.258429,0.0732255,2.1852035
-L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,16_routers_40_concurrency_2,prefix_aware,10,200,40,100,False,False,10000,1000,1781449.0,97072.0,1001.0,0.112496,0.0226998,2.2929126,0.037741,2.2551716,0.0747551,2.1804165
+L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,8_routers_40_concurrency,random,10,200,40,100,False,False,10000,1000,1781449.0,97017.0,1001.0,0.1476703,0.025148,2.5613977,0.04137,2.5200277,0.1063003,2.4137274
+L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,8_routers_40_concurrency,round_robin,10,200,40,100,False,False,10000,1000,1781449.0,96957.0,1001.0,0.1433675,0.024914,2.5328675,0.0386412,2.4942263,0.1047263,2.3895
+L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,8_routers_40_concurrency,pow_of_2,10,200,40,100,False,False,10000,1000,1781449.0,97156.0,1001.0,0.1622201,0.025215,2.5858151,0.0461954,2.5396197,0.1160247,2.423595
+L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,8_routers_40_concurrency,prefix_aware,10,200,40,100,False,False,10000,1000,1781449.0,96924.0,1001.0,0.1149148,0.0223926,2.2622811,0.0380068,2.2242743,0.076908,2.1473663
+L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,8_routers_40_concurrency,random,10,200,40,100,False,False,10000,1000,1781449.0,96861.0,1001.0,0.1470377,0.0250786,2.5504959,0.0418861,2.5086098,0.1051516,2.4034582
+L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,8_routers_40_concurrency,round_robin,10,200,40,100,False,False,10000,1000,1781449.0,96893.0,1001.0,0.144505,0.0248876,2.5298878,0.0395529,2.4903349,0.1049521,2.3853828
+L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,8_routers_40_concurrency,pow_of_2,10,200,40,100,False,False,10000,1000,1781449.0,96920.0,1001.0,0.162646,0.0253214,2.5908063,0.047619,2.5431873,0.115027,2.4281602
+L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,8_routers_40_concurrency,prefix_aware,10,200,40,100,False,False,10000,1000,1781449.0,97251.0,1001.0,0.1111786,0.0222091,2.2485544,0.0361378,2.2124166,0.0750408,2.1373758
+L4,Qwen/Qwen2.5-1.5B-Instruct,4,True,True,test_emit_metrics,prefix_aware,10,200,40,100,False,False,10000,1000,1781449.0,97133.0,1001.0,0.1299078,0.0214583,2.192247,0.0450194,2.1472275,0.0848884,2.0623392

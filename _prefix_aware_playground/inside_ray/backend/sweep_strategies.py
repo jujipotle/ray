@@ -42,7 +42,7 @@ DEFAULT_CONFIG = {
     "enable_prefix_caching": True,
     "enable_chunked_prefill": True,
     # Benchmark Info
-    "benchmark_label": "16_routers_40_concurrency_no_devnull",
+    "benchmark_label": "test_emit_metrics",
     "dataset_name": "sharegpt",
     "max_concurrency": 40,  # Max concurrency (total)
     "min_output_len": 10,
@@ -197,10 +197,10 @@ def restart_server_with_strategy(strategy, args):
     
     server_process = subprocess.Popen(
         cmd,
-        stdout=stdout_log,
-        stderr=stderr_log
-        # stdout=subprocess.DEVNULL,
-        # stderr=subprocess.DEVNULL
+        # stdout=stdout_log,
+        # stderr=stderr_log
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
     )
     
     # Wait for server to start - give it more time and retry health checks
